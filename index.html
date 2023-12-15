@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>generic traing gaem</title>
+    <script src="import/break_eternity.js"></script>
+    <script src="import/eMath.js"></script>
+    <script src="import/format.js"></script>
+    <script src="import/lz-string-1.4.4.js"></script>
+    <script src="main.js"></script>
+
+    <script src="game.js"></script>
+    <script src="classes/boost.js"></script>
+    <script src="classes/currency.js"></script>
+    
+    <script src="features/chronos.js"></script>
+    <script src="features/stats.js"></script>
+    <script src="features/upgrades.js"></script>
+    <script src="features/credits.js"></script>
+
+    <script src="features/movement.js"></script>
+
+    <script src="save.js"></script>
+</head>
+<body>
+    <p id="power"></p>
+    <p id="credits"></p>
+    <button onclick="Game.data.chronos.timewarp = E(10000)">Warp 10 seconds</button> <br>
+    <button onclick="Game.data.chronos.timewarp = E(60000)">Warp 60 seconds</button> <br>
+    <button onclick="Game.data.chronos.timewarp = E(60000 * 10)">Warp 10 minutes</button> <br>
+    <button onclick="Game.data.chronos.timewarp = E(60000 * 60)">Warp 60 Minutes</button> <br>
+    <button onclick="Game.data.chronos.timewarp = E(60000 * 60 * 6)">Warp 6 hours</button> <br>
+    <button onclick="Game.data.chronos.timewarp = E(60000 * 60 * 24)">Warp 24 hours</button> <br>
+    <button onclick="Game.data.chronos.timewarp = E(60000 * 60 * 72)">Warp 72 hours</button> <br>
+    <button onclick="Game.data.chronos.timewarp = E(60000 * 60 * 24 * 7)">Warp 7 days</button> <br>
+    <button onclick="Game.data.chronos.timewarp = E(60000 * 60 * 24 * 30)">Warp 30 days</button> <br>
+    <button onclick="Game.data.chronos.timewarp = E(60000 * 60 * 24 * 365)">Warp 365 days</button> <br>
+    <button onclick="Game.data.chronos.timewarp = E(60000 * 60 * 24 * 365 * 10)">Warp 10 years</button> <br>
+    <br>
+    <button onclick="Game.data.chronos.timewarp = E(`1e999`)">Win the game</button> <br>
+    <button onclick="Game.dataManagement.resetData(true)">Reset Data + Refresh</button>
+    
+</body>
+</html>
