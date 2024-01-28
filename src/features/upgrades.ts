@@ -104,27 +104,37 @@ const training = {
 /**
  * Function to format a training area.
  * @param n - The area to format.
- * @param type - The type of formatting to use. (deprecated)
  * @returns - The formatted area.
  */
-function formatTrainingArea (n: number, type = 0): string {
+function formatTrainingArea (n: number): string {
     let output = "";
-    if (type === 0) {
-        if (n < training.areas.length - 1) {
-            output = `${training.areas[n].emoji} | (${n}) ${training.areas[n].name}. Requires ${training.areas[n].req.format()} Power. Training Multiplier: x${training.areas[n].mul.format()}`;
-        } else {
-            output = `${training.areas[training.areas.length - 1].emoji} | (${n}) ${training.areas[training.areas.length - 1].name} ${E(n - training.areas.length + 2).toRoman()}. Requires ${rounding10(requirement(n + 1)).format()} Power. Training Multiplier: x${rounding10(multiplier(n + 1)).format()}`;
-        }
+    if (n < training.areas.length - 1) {
+        output = `${training.areas[n].emoji} | (${n}) ${training.areas[n].name}. Requires ${training.areas[n].req.format()} Power. Training Multiplier: x${training.areas[n].mul.format()}`;
+    } else {
+        output = `${training.areas[training.areas.length - 1].emoji} | (${n}) ${training.areas[training.areas.length - 1].name} ${E(n - training.areas.length + 2).toRoman()}. Requires ${rounding10(requirement(n + 1)).format()} Power. Training Multiplier: x${rounding10(multiplier(n + 1)).format()}`;
     }
-    // TODO: Add support for other types of formatting.
-    // else if (type === 1) {
-    //     if (n < training.areas.length - 1) {
-    //         output = training.areas[n];
-    //     } else {
-    //         output = { name: training.areas[training.areas.length - 1].name, emoji: training.areas[training.areas.length - 1].emoji, req: rounding10(requirement(n + 1)), mul: rounding10(multiplier(n + 1))};
-    //     }
-    // }
     return output;
 }
 
-export { training, formatTrainingArea, rounding10, requirement, multiplier};
+/**
+ * Function to get a training area.
+ * @param n - The area to get.
+ * @returns - The training area.
+ */
+function getTrainingArea (n: number): ITrainingArea {
+    let output: ITrainingArea;
+    if (n < training.areas.length - 1) {
+        output = training.areas[n];
+    } else {
+        // Extended training areas
+        output = {
+            name: training.areas[training.areas.length - 1].name,
+            emoji: training.areas[training.areas.length - 1].emoji,
+            req: rounding10(requirement(n + 1)),
+            mul: rounding10(multiplier(n + 1)),
+        };
+    }
+    return output;
+}
+
+export { training, formatTrainingArea, getTrainingArea, rounding10, requirement, multiplier};

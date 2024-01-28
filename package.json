@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "webpack-dev-server --mode development --devtool source-map --output-pathinfo",
+    "start": "webpack-dev-server --mode development --output-pathinfo",
     "build": "webpack --mode production",
     "lint": "eslint src/**/*.ts",
     "lint:fix": "eslint --fix src/**/*.ts"

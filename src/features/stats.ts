@@ -5,14 +5,14 @@ import Game from "../game";
 
 const power = Game.addCurrency("power");
 
-Game.eventManager.addEvent("Gain Power", "interval", 1000, (dt) => {
+Game.eventManager.addEvent("Gain Power", "interval", 100, (dt) => {
+    // console.log("Power gained");
     power.static.gain(dt);
+    // console.log(power.data.value.format());
     // TODO: Add display for power
+    const powerElement = document.getElementById("power") as HTMLElement;
+    powerElement.innerHTML = `✊ | Power: ${power.value.format()}`;
 });
 
-// addLoopFunction((dt) => {
-//     Game.static.stats.power.gain(dt);
-//     document.getElementById('power').innerHTML = `✊ | Power: ${Game.data.stats.power.value.format()}`;
-// });
 
 export { power };
