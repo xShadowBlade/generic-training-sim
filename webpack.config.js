@@ -1,0 +1,105 @@
+/**
+ * @file Webpack configuration file.
+ */
+/* eslint-disable jsdoc/check-tag-names */
+/* eslint-disable @typescript-eslint/no-var-requires */
+const path = require("path");
+const { EsbuildPlugin } = require("esbuild-loader");
+const webpack = require("webpack");
+// in case you run into any typescript error when configuring `devServer`
+require("webpack-dev-server");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const HtmlReplaceWebpackPlugin = require("html-replace-webpack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
+
+module.exports = (env, argv) => {
+    console.log("Args:", argv);
+    const mode = argv.mode;
+    /**
+     * @type {import("webpack").Configuration}
+     */
+    const options = {
+        entry: "./src/index.tsx", // Entry point of your application
+        output: {
+            path: path.resolve(__dirname, "dist"),
+            filename: "bundle.js", // Output bundle file name
+        },
+        // devtool: mode === "development" ? "source-map" : "none",
+        resolve: {
+            extensions: [".css", ".tsx", ".ts", ".js", "..."],
+        },
+        // watch: true,
+        // watchOptions: {
+        //     ignored: "**/node_modules",
+        // },
+        module: {
+            rules: [
+            // Use esbuild to compile JavaScript & TypeScript
+                {
+                // Match `.js`, `.jsx`, `.ts` or `.tsx` files
+                    test: /\.[jt]sx?$/,
+                    exclude: /node_modules/,
+                    loader: "esbuild-loader",
+                    options: {
+                    // JavaScript version to compile to
+                        target: "es2015",
+                        tsconfig: "./tsconfig.json",
+                    },
+                },
+                {
+                    test: /\.css$/i,
+                    use: ["css-loader"],
+                },
+            ],
+        },
+        optimization: {
+            minimizer: [
+                new EsbuildPlugin({
+                    target: "es2015", // Syntax to transpile to (see options below for possible values)
+                }),
+            ],
+        },
+        plugins: [
+            new HtmlWebpackPlugin({
+                template: "./public/index.html", // Use this HTML file as a template
+            }),
+            // new webpack.DefinePlugin({
+            //     // "%PUBLIC_URL%": JSON.stringify(mode === "production" ? "../public/" : "./"),
+            //     MODE: JSON.stringify(mode),
+            // }),
+            new EsbuildPlugin({
+                define: {
+                    // "%PUBLIC_URL%": JSON.stringify(mode === "production" ? "../public/" : "./"),
+                    MODE: JSON.stringify(mode),
+                },
+            }),
+            new HtmlReplaceWebpackPlugin([
+                {
+                    pattern: "%PUBLIC_URL%",
+                    // ! This is the public path of your app
+                    replacement: mode === "production" ? "./public/" : "./",
+                },
+            ]),
+        ],
+    };
+    if (mode === "production") {
+        options.plugins.push(
+            // new webpack.optimize.LimitChunkCountPlugin({
+            //     maxChunks: 1,
+            // }),
+            // Copies public folder to dist folder
+            new CopyPlugin({
+                patterns: [
+                    {
+                        from: "public",
+                        to: "public",
+                        globOptions: {
+                            ignore: ["**/index.html"],
+                        },
+                    },
+                ],
+            }),
+        );
+    }
+    return options;
+};
