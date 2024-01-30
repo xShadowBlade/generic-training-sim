@@ -31,9 +31,10 @@
     ]
   },
   "dependencies": {
+    "emath.js": "file:../emath.js",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "emath.js": "file:../emath.js"
+    "react-bootstrap": "^2.10.0",
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@types/css-modules": "^1.0.4",

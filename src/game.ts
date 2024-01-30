@@ -10,6 +10,9 @@ const Game = new game({
         title: "Generic Training Game",
         id: "generic-training-game",
     },
+    settings: {
+        framerate: 30,
+    },
 } as gameConfigOptions);
 
 if (Game.config.mode === "development") (window as any)["Game"] = Game;

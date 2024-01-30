@@ -28,8 +28,8 @@ function rounding10 (x: E) {
  */
 function requirement (x: ESource) {
     x = E(x);
-    const base = E(1.1).add(x).add(E(2).pow(E.mul(x, 0.5)));
-    const exponent = E(x);
+    const base = x.mul(2).add(E(2).pow(E.mul(x, 0.5)));
+    const exponent = x;
     const result = E.mul(10, E.pow(base, exponent));
     return result;
 }
@@ -41,7 +41,7 @@ function requirement (x: ESource) {
  */
 function multiplier (x: ESource) {
     x = E(x);
-    return E.pow(3, x.add(x.div(10).pow(1.1)).pow(1.2));
+    return E.pow(3, x.add(x.div(10).pow(1.2)).pow(1.4));
 }
 
 interface ITrainingAreaInit {

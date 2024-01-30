@@ -27,16 +27,8 @@ credits.static.addUpgrade([
     },
 ]);
 
-Game.eventManager.addEvent("gainCredits", "interval", 1000, (dt) => {
+Game.eventManager.setEvent("gainCredits", "interval", 0, (dt) => {
     credits.static.gain(dt);
-    // TODO: Add display for credits
-    const creditsElement = document.getElementById("credits") as HTMLElement;
-    creditsElement.innerHTML = `🪙 | Credits: ${credits.value.format()}`;
 });
-
-// addLoopFunction((dt) => {
-//     Game.static.credits.currency.gain(dt);
-//     document.getElementById("credits").innerHTML = `🪙 | Credits: ${Game.data.credits.currency.value.format()}`;
-// });
 
 export { credits };

@@ -2,9 +2,11 @@
  * @file This file contains all the functions related to movement.
  */
 import { E } from "emath.js";
-import { formatTrainingArea, getTrainingArea } from "./upgrades";
+import { formatTrainingArea, getTrainingArea } from "./training";
 import { power } from "./stats";
 import Game from "../game";
+
+let playerState: ["idle", ...any] = ["idle", 0];
 
 /**
  * Function to round a number to the nearest power of 10.
@@ -12,12 +14,13 @@ import Game from "../game";
  * @param force - Whether to force the move, regardless of power.
  */
 function move (areaN: number, force = false) {
-    if (!force && power.value.lt(getTrainingArea(areaN).req)) {
+    // console.log(power.value.gt(getTrainingArea(areaN).req));
+    if (!force && E.clone(power.value).lt(getTrainingArea(areaN).req)) {
         console.log(`You are not strong enough to train in this area. (You need ${getTrainingArea(areaN).req.format()} power)`);
         return;
     }
-    // Game.data.player.state = ["idle", areaN];
-    console.log(getTrainingArea(areaN).mul);
+    playerState = ["idle", areaN];
+    // console.log(getTrainingArea(areaN).mul);
     power.static.boost.setBoost(
         "trainingArea",
         "Training Area",
@@ -36,6 +39,7 @@ function move (areaN: number, force = false) {
 // addStartFunction(() => Game.functions.move(Game.data.player.state[1]));
 move(0, true);
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 if (Game.config.mode === "development") (window as any)["move"] = move;
 
-export { move };
+export { move, playerState };
