@@ -15,7 +15,7 @@ let playerState: ["idle", ...any] = ["idle", 0];
  */
 function move (areaN: number, force = false) {
     // console.log(power.value.gt(getTrainingArea(areaN).req));
-    if (!force && E.clone(power.value).lt(getTrainingArea(areaN).req)) {
+    if (!force && power.value.lt(getTrainingArea(areaN).req)) {
         console.log(`You are not strong enough to train in this area. (You need ${getTrainingArea(areaN).req.format()} power)`);
         return;
     }
@@ -29,7 +29,7 @@ function move (areaN: number, force = false) {
             // console.log("boost in", n);
             // console.log(",mul", getTrainingArea(areaN).mul);
             // console.log("return", E(1).mul(getTrainingArea(areaN).mul));
-            return E.clone(n).mul(getTrainingArea(areaN).mul);
+            return n.mul(getTrainingArea(areaN).mul);
             // return E(1); // debug
         },
         2,

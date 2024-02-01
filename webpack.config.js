@@ -26,6 +26,11 @@ module.exports = (env, argv) => {
         },
         resolve: {
             extensions: [".css", ".tsx", ".ts", ".js", "..."],
+            alias: {
+                // "@": path.resolve(__dirname, "src"),
+                "emath.js": "emath.js/ts",
+                "emath.js/game": "emath.js/ts/game",
+            },
         },
         // watch: true,
         // watchOptions: {

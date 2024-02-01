@@ -55,11 +55,11 @@ function TrainingMenu ({ renderCount }: { renderCount: number }) {
      */
     function progressBars (): [number, string, string] {
         if (playerState[0] !== "idle") return [0, "", ""];
-        const diffBetweenAreas = getTrainingArea(playerState[1] + 1).req.sub(getTrainingArea(playerState[1]).req);
+        // const diffBetweenAreas = getTrainingArea(playerState[1] + 1).req.sub(getTrainingArea(playerState[1]).req);
         // console.log("difA", diffBetweenAreas);
-        const playerP = E.clone(power.value).sub(getTrainingArea(playerState[1]).req);
+        const playerP = E.clone(power.value);
         // console.log("diffP", playerDiffBetweenAreas);
-        const percent = Math.min(playerP.div(diffBetweenAreas).mul(100).toNumber(), 100);
+        const percent = Math.min(playerP.div(getTrainingArea(playerState[1] + 1).req).mul(100).toNumber(), 100);
         // console.log("percent", percent);
 
         // Time remaining

@@ -7,9 +7,9 @@ import Button from "react-bootstrap/Button";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Form from "react-bootstrap/Form";
 
-// import { power } from "../features/stats";
-// import { credits } from "../features/credits"; // TODO: fix
-import Game from "../game";
+import { power } from "../features/stats";
+import { credits } from "../features/credits"; // TODO: fix
+// import Game from "../game";
 // import { E } from "emath.js";
 
 // eslint-disable-next-line jsdoc/require-param
@@ -24,12 +24,12 @@ function CheatsMenu ({ renderCount }: { renderCount: number }) {
         const dt = (document.getElementById("cheats-menu-dt") as HTMLInputElement).value;
         // dt = E(dt);
         console.log(dt);
-        // power.static.gain(dt);
-        // credits.static.gain(dt);
-        // @ts-expect-error - cheating
-        Game.dataManager.static.credits.currency.gain(dt);
-        // @ts-expect-error - cheating
-        Game.dataManager.static.power.currency.gain(dt);
+        power.static.gain(dt);
+        credits.static.gain(dt);
+        // // @ts-expect-error - cheating
+        // Game.dataManager.static.credits.currency.gain(dt);
+        // // @ts-expect-error - cheating
+        // Game.dataManager.static.power.currency.gain(dt);
     }
 
     return (
