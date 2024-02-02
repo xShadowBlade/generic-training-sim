@@ -13,9 +13,11 @@ import "./features/stats";
 import "./features/training";
 import "./features/movement";
 import "./features/credits";
+import "./features/augmentation";
 
 import StatsMenu from "./display/statsMenu";
 import TrainingMenu from "./display/trainingMenu";
+import AugmentMent from "./display/augmentsMenu";
 import CheatsMenu from "./display/cheats";
 
 Game.init();
@@ -39,6 +41,7 @@ function App () {
         <Accordion defaultActiveKey={["0"]} alwaysOpen>
             <StatsMenu renderCount={renderCount} />
             <TrainingMenu renderCount={renderCount} />
+            <AugmentMent renderCount={renderCount} />
             <CheatsMenu renderCount={renderCount} />
         </Accordion>
     </>);

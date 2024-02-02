@@ -9,7 +9,7 @@ import Game from "../game";
 let playerState: ["idle", ...any] = ["idle", 0];
 
 /**
- * Function to round a number to the nearest power of 10.
+ * Function to move to a new area.
  * @param areaN - The area to to move to.
  * @param force - Whether to force the move, regardless of power.
  */

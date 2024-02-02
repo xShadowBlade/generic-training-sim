@@ -20,22 +20,22 @@ import { power } from "../features/stats";
  */
 function TrainingMenu ({ renderCount }: { renderCount: number }) {
     const [trainingProgressBar, setTrainingProgressBar] = useState([0, "", ""] as [number, string, string]);
-    const [currentTrainingArea, setCurrentTrainingArea] = useState("");
-    /**
-     * Renders the training areas
-     * @returns The training areas
-     */
-    function renderTrainingAreas () {
-        const out = [];
-        for (let i = 0; i < training.areas.length; i++) {
-            // const areaElement = document.createElement("p");
-            // areaElement.innerHTML = formatTrainingArea(i);
-            // trainingAreasElement.appendChild(areaElement);
-            // out.push(areaElement);
-            out.push(<p key={`training-area-${i}`}>{formatTrainingArea(i)}</p>);
-        }
-        return out;
-    }
+    const [currentTrainingArea, setCurrentTrainingArea] = useState(formatTrainingArea(0));
+    // /**
+    //  * Renders the training areas
+    //  * @returns The training areas
+    //  */
+    // function renderTrainingAreas () {
+    //     const out = [];
+    //     for (let i = 0; i < training.areas.length; i++) {
+    //         // const areaElement = document.createElement("p");
+    //         // areaElement.innerHTML = formatTrainingArea(i);
+    //         // trainingAreasElement.appendChild(areaElement);
+    //         // out.push(areaElement);
+    //         out.push(<p key={`training-area-${i}`}>{formatTrainingArea(i)}</p>);
+    //     }
+    //     return out;
+    // }
 
     /**
      * Renders the training area dropdown
@@ -44,7 +44,10 @@ function TrainingMenu ({ renderCount }: { renderCount: number }) {
     function renderTrainingAreaDropdown () {
         const out = [];
         for (let i = 0; i < training.areas.length; i++) {
-            out.push(<Dropdown.Item key={`training-area-${i}`} onClick={() => move(i)}>{formatTrainingArea(i)}</Dropdown.Item>);
+            out.push(<Dropdown.Item key={`training-area-${i}`} onClick={() => {
+                move(i);
+                setCurrentTrainingArea(formatTrainingArea(playerState[1]));
+            }}>{formatTrainingArea(i)}</Dropdown.Item>);
         }
         return out;
     }
@@ -71,7 +74,7 @@ function TrainingMenu ({ renderCount }: { renderCount: number }) {
 
     useEffect(() => {
         setTrainingProgressBar(progressBars());
-        setCurrentTrainingArea(formatTrainingArea(playerState[1]));
+        // setCurrentTrainingArea(formatTrainingArea(playerState[1]));
     }, [renderCount]);
 
     return (

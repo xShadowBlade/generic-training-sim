@@ -33,7 +33,7 @@ function CheatsMenu ({ renderCount }: { renderCount: number }) {
     }
 
     return (
-        <Accordion.Item eventKey="2">
+        <Accordion.Item eventKey="3">
             <Accordion.Header>Cheats</Accordion.Header>
             <Accordion.Body>
                 <FloatingLabel label="Timewarp Time">

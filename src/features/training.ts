@@ -6,15 +6,18 @@ import { E, ESource } from "emath.js";
 /**
  * Function to round a number to the nearest power of 10.
  * @param x - The number to round.
+ * @param acc - The accuracy to round to.
+ * @param sig - The significant figures to round to.
  * @returns - The rounded number.
  */
-function rounding10 (x: E) {
-    const acc = 10;
+function rounding10 (x: E, acc = 10, sig = 0) {
+    // const acc = 10;
     if (x.gte(E.pow(10, 301))) return x;
     const power = E.floor(E.log(x, acc));
     let out = E(x).div(E.pow(acc, power));
     // console.log(out);
-    out = out.round();
+    out = out.mul(E.pow(acc, sig)).round();
+    out = out.div(E.pow(acc, sig));
     // console.log(out);
     out = out.mul(E.pow(acc, power));
     // console.log(out);
@@ -92,13 +95,6 @@ const training = {
         {"name": "Temporal Mastery Sphere", "emoji": "⏳"},
         {"name": "Galactic Omnipotence Citadel", "emoji": "🌠"},
     ] as ITrainingAreaInit[]),
-    augments: [
-        {"name": "Initiate Adept", "emoji": "🔰"},
-        {"name": "Tech Savant", "emoji": "🔷"},
-        {"name": "Psi-Warrior", "emoji": "🔮"},
-        {"name": "Cybernetic Vanguard", "emoji": "🤖"},
-        {"name": "Quantum Overlord", "emoji": "🌌"},
-    ],
 };
 
 /**
@@ -111,7 +107,7 @@ function formatTrainingArea (n: number): string {
     if (n < training.areas.length - 1) {
         output = `${training.areas[n].emoji} | (${n}) ${training.areas[n].name}. Requires ${training.areas[n].req.format()} Power. Training Multiplier: x${training.areas[n].mul.format()}`;
     } else {
-        output = `${training.areas[training.areas.length - 1].emoji} | (${n}) ${training.areas[training.areas.length - 1].name} ${E(n - training.areas.length + 2).toRoman()}. Requires ${rounding10(requirement(n + 1)).format()} Power. Training Multiplier: x${rounding10(multiplier(n + 1)).format()}`;
+        output = `${training.areas[training.areas.length - 1].emoji} | (${n}) ${training.areas[training.areas.length - 1].name} ${E(n - training.areas.length + 2).toRoman()}. Requires ${rounding10(requirement(n)).format()} Power. Training Multiplier: x${rounding10(multiplier(n)).format()}`;
     }
     return output;
 }
@@ -123,7 +119,7 @@ function formatTrainingArea (n: number): string {
  */
 function getTrainingArea (n: number): ITrainingArea {
     let output: ITrainingArea;
-    if (n < training.areas.length - 1) {
+    if (n <= training.areas.length - 1) {
         output = training.areas[n];
     } else {
         // Extended training areas
