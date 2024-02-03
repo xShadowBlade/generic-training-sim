@@ -21,7 +21,7 @@ function CheatsMenu ({ renderCount }: { renderCount: number }) {
      * Timewarps the game
      */
     function timeWarp () {
-        const dt = (document.getElementById("cheats-menu-dt") as HTMLInputElement).value;
+        const dt = (document.getElementById("cheats-menu-dt") as HTMLInputElement ?? { value: 0 }).value;
         // dt = E(dt);
         console.log(dt);
         power.static.gain(dt);

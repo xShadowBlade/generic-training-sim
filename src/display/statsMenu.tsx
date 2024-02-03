@@ -13,24 +13,19 @@ import { E } from "emath.js";
 
 StatsMenu.propTypes = {
     renderCount: PropTypes.number.isRequired,
+    // TODO: add proptypes for E
+    // powerStored: PropTypes.instanceOf(E).isRequired,
+    // creditsStored: PropTypes.instanceOf(E).isRequired,
 };
 // eslint-disable-next-line jsdoc/require-param
 /**
  * @returns The stats menu component
  */
-function StatsMenu ({ renderCount }: { renderCount: number }) {
-    const [powerStored, setPowerStored] = useState(power.value);
-    const [creditsStored, setCreditsStored] = useState(credits.value);
+function StatsMenu ({ renderCount, powerStored, creditsStored }: { renderCount: number, powerStored: E, creditsStored: E }) {
 
     // const [creditsBasicStatUpg, setcreditsBasicStatUpg] = useState(credits.static.calculateUpgrade("upg1Credits"));
     const [creditsBasicStatUpgCost, setCreditsBasicStatUpgCost] = useState(credits.static.getNextCost("upg1Credits"));
     const [powerMultiplier, setpowerMultiplier] = useState(power.static.boost.calculate());
-
-    useEffect(() => {
-        // Update the power and credits values every frame
-        setPowerStored(power.value);
-        setCreditsStored(credits.value);
-    }, [renderCount]);
 
     /**
      * Buys and renders the basic stat upgrade

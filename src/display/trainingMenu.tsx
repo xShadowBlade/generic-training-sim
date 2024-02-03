@@ -14,13 +14,20 @@ import { training, formatTrainingArea, getTrainingArea } from "../features/train
 import { move, playerState } from "../features/movement";
 import { power } from "../features/stats";
 
+import PropTypes from "prop-types";
+
+TrainingMenu.propTypes = {
+    renderCount: PropTypes.number.isRequired,
+    currentTrainingArea: PropTypes.string.isRequired,
+    setCurrentTrainingArea: PropTypes.func.isRequired,
+};
 // eslint-disable-next-line jsdoc/require-param
 /**
  * @returns The training menu component
  */
-function TrainingMenu ({ renderCount }: { renderCount: number }) {
+function TrainingMenu ({ renderCount, currentTrainingArea, setCurrentTrainingArea }: { renderCount: number, currentTrainingArea: string, setCurrentTrainingArea: (area: string) => void }) {
     const [trainingProgressBar, setTrainingProgressBar] = useState([0, "", ""] as [number, string, string]);
-    const [currentTrainingArea, setCurrentTrainingArea] = useState(formatTrainingArea(0));
+    // const [currentTrainingArea, setCurrentTrainingArea] = useState(formatTrainingArea(0));
     // /**
     //  * Renders the training areas
     //  * @returns The training areas

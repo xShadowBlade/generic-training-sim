@@ -2,7 +2,7 @@
  * @file Features/Augmentation - Augmentation
  */
 import { E, ESource } from "emath.js";
-import { rounding10 } from "./training";
+import { rounding10, formatTrainingArea } from "./training";
 import { power } from "./stats";
 import { credits } from "./credits";
 import Game from "../game";
@@ -40,7 +40,7 @@ function augmentMultiplierPower (x: ESource) {
  */
 function augmentMultiplierCredits (x: ESource) {
     x = E(x);
-    return E.pow(2, x.mul(1.5).pow(1.2));
+    return E.pow(2, x.mul(2).pow(1.3));
 }
 
 interface IAugmentInit {
@@ -72,8 +72,8 @@ const augments = ((augment: IAugmentInit[]) => {
     {"name": "Temporal Sovereign", "emoji": "⏳"},
     {"name": "Nebula Warden", "emoji": "💫"},
     {"name": "Astral Overlord", "emoji": "✨"},
-    {"name": "Stellar Arbiter", "emoji": "🌠"},
-    {"name": "Quantum Overlord", "emoji": "🌌"},
+    // {"name": "Stellar Arbiter", "emoji": "🌠"},
+    // {"name": "Quantum Overlord", "emoji": "🌌"},
 ]);
 
 /**
@@ -120,9 +120,11 @@ function getAugment (n: number): IAugment {
 /**
  * Function to change the augment.
  * @param augmentN - The augment to change to.
+ * @param reset - Whether to reset the power.
  * @param force - Whether to force the change, regardless of power.
+ * @param stateFn - The function to call to change the state.
  */
-function changeAugment (augmentN: number, force = false) {
+function changeAugment (augmentN: number, reset = true, force = false, stateFn?: (state: string) => void) {
     // console.log(power.value.gt(getTrainingArea(areaN).req));
     if (!force && power.value.lt(getAugment(augmentN).req)) {
         console.log(`You are not strong enough for this augment. (You need ${getAugment(augmentN).req.format()} power)`);
@@ -132,8 +134,11 @@ function changeAugment (augmentN: number, force = false) {
     // playerState = ["idle", augmentN];
     // console.log(getTrainingArea(areaN).mul);
     // Reset power
-    power.static.value = E(0);
-    move(0, true);
+    if (reset) {
+        power.static.value = E(0);
+        move(0, true);
+        if (stateFn) stateFn(formatTrainingArea(0));
+    }
     power.static.boost.setBoost(
         "augment",
         "Augment",

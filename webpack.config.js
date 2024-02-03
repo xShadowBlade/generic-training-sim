@@ -11,6 +11,8 @@ require("webpack-dev-server");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const HtmlReplaceWebpackPlugin = require("html-replace-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 
 module.exports = (env, argv) => {
     console.log("Args:", argv);
@@ -51,8 +53,15 @@ module.exports = (env, argv) => {
                     },
                 },
                 {
-                    test: /\.css$/i,
-                    use: ["css-loader"],
+                    // If you enable `experiments.css` or `experiments.futureDefaults`, please uncomment line below
+                    // type: "javascript/auto",
+                    test: /\.(sa|sc|c)ss$/i,
+                    use: [
+                        mode === "development" ? "style-loader" : MiniCssExtractPlugin.loader,
+                        "css-loader",
+                        // "postcss-loader",
+                        // "sass-loader",
+                    ],
                 },
             ],
         },
@@ -61,6 +70,7 @@ module.exports = (env, argv) => {
                 new EsbuildPlugin({
                     target: "es2015", // Syntax to transpile to (see options below for possible values)
                 }),
+                new CssMinimizerPlugin(),
             ],
         },
         plugins: [
@@ -103,6 +113,7 @@ module.exports = (env, argv) => {
                     },
                 ],
             }),
+            new MiniCssExtractPlugin(),
         );
     } else if (mode === "development") {
         options.devtool = "eval-cheap-module-source-map";

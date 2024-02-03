@@ -5,13 +5,13 @@
 import React, { useEffect, useState } from "react";
 import Accordion from "react-bootstrap/Accordion";
 import Dropdown from "react-bootstrap/Dropdown";
-import ProgressBar from "react-bootstrap/ProgressBar";
+// import ProgressBar from "react-bootstrap/ProgressBar";
 // import { AlertList, Alert, AlertContainer } from "react-bs-notifier";
-import Button from "react-bootstrap/Button";
-import { E } from "emath.js";
+// import Button from "react-bootstrap/Button";
+// import { E } from "emath.js";
 
 // import { training, formatTrainingArea, getTrainingArea } from "../features/training";
-import { augments, formatAugment, getAugment, changeAugment, currentAugment } from "../features/augmentation";
+import { augments, formatAugment, changeAugment, currentAugment } from "../features/augmentation";
 // import { move, playerState } from "../features/movement";
 // import { power } from "../features/stats";
 
@@ -19,7 +19,7 @@ import { augments, formatAugment, getAugment, changeAugment, currentAugment } fr
 /**
  * @returns The augment menu component
  */
-function AugmentMent ({ renderCount }: { renderCount: number }) {
+function AugmentMent ({ renderCount, setCurrentTrainingArea }: { renderCount: number, setCurrentTrainingArea: (area: string) => void }) {
     // const [trainingProgressBar, setTrainingProgressBar] = useState([0, "", ""] as [number, string, string]);
     const [currentAugmentStr, setCurrentAugmentStr] = useState(formatAugment(0));
     /**
@@ -30,7 +30,7 @@ function AugmentMent ({ renderCount }: { renderCount: number }) {
         const out = [];
         for (let i = 0; i < augments.length; i++) {
             out.push(<Dropdown.Item key={`augment-${i}`} onClick={() => {
-                changeAugment(i);
+                changeAugment(i, true, false, setCurrentTrainingArea);
                 updateAugment();
             }}>{formatAugment(i)}</Dropdown.Item>);
         }
@@ -62,6 +62,9 @@ function AugmentMent ({ renderCount }: { renderCount: number }) {
     //     setCurrentAugmentStr(formatAugment(currentAugment));
     // }, [renderCount]);
 
+    /**
+     * Updates the augment string
+     */
     function updateAugment () {
         setCurrentAugmentStr(formatAugment(currentAugment));
     }
