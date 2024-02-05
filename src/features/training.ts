@@ -94,6 +94,16 @@ const training = {
         {"name": "Astro-Techno Cathedral", "emoji": "🚀"},
         {"name": "Temporal Mastery Sphere", "emoji": "⏳"},
         {"name": "Galactic Omnipotence Citadel", "emoji": "🌠"},
+        {"name": "Quantum Harmonics Nexus", "emoji": "🎵"},
+        {"name": "Celestial Ascendancy Coliseum", "emoji": "🏟️"},
+        {"name": "Astro-Forge Cathedral", "emoji": "🏰"},
+        {"name": "Hypernova Mastery Observatory", "emoji": "🔭"},
+        {"name": "Stellar Nexus Bastion", "emoji": "🌌"},
+        {"name": "Nebula Resonance Sanctum", "emoji": "💫"},
+        {"name": "Ethereal Synthesis Chamber", "emoji": "🌈"},
+        {"name": "Quantum Elysium Arena", "emoji": "⚔️"},
+        {"name": "Cosmic Apex Observatory", "emoji": "🔍"},
+        {"name": "Galactic Singularity Citadel", "emoji": "🌠"},
     ] as ITrainingAreaInit[]),
 };
 

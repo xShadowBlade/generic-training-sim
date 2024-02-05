@@ -5,6 +5,7 @@
 import React, { useEffect, useState } from "react";
 import Accordion from "react-bootstrap/Accordion";
 import Dropdown from "react-bootstrap/Dropdown";
+import Modal from "react-bootstrap/Modal";
 // import ProgressBar from "react-bootstrap/ProgressBar";
 // import { AlertList, Alert, AlertContainer } from "react-bs-notifier";
 // import Button from "react-bootstrap/Button";
@@ -19,9 +20,14 @@ import { augments, formatAugment, changeAugment, currentAugment } from "../featu
 /**
  * @returns The augment menu component
  */
-function AugmentMent ({ renderCount, setCurrentTrainingArea }: { renderCount: number, setCurrentTrainingArea: (area: string) => void }) {
+function AugmentMenu (
+    { renderCount, setCurrentTrainingArea, currentAugmentStr, setCurrentAugmentStr }:
+    { renderCount: number, setCurrentTrainingArea: (area: string) => void, currentAugmentStr: string, setCurrentAugmentStr: (augment: string) => void},
+) {
     // const [trainingProgressBar, setTrainingProgressBar] = useState([0, "", ""] as [number, string, string]);
-    const [currentAugmentStr, setCurrentAugmentStr] = useState(formatAugment(0));
+    // const [currentAugmentStr, setCurrentAugmentStr] = useState(formatAugment(0));
+    const [showConfirm, setShowConfirm] = useState(false);
+    const [currentAugmentToChange, setCurrentAugmentToChange] = useState(0);
     /**
      * Renders the training area dropdown
      * @returns The training area dropdown
@@ -30,8 +36,10 @@ function AugmentMent ({ renderCount, setCurrentTrainingArea }: { renderCount: nu
         const out = [];
         for (let i = 0; i < augments.length; i++) {
             out.push(<Dropdown.Item key={`augment-${i}`} onClick={() => {
-                changeAugment(i, true, false, setCurrentTrainingArea);
-                updateAugment();
+                // changeAugment(i, true, false, setCurrentTrainingArea);
+                // updateAugment();
+                setCurrentAugmentToChange(i);
+                setShowConfirm(true);
             }}>{formatAugment(i)}</Dropdown.Item>);
         }
         return out;
@@ -86,6 +94,24 @@ function AugmentMent ({ renderCount, setCurrentTrainingArea }: { renderCount: nu
                     </Dropdown.Menu>
                 </Dropdown>
                 <p>{currentAugmentStr}</p>
+                <Modal show={showConfirm} onHide={() => setShowConfirm(false)}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Confirm Augmentation</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        Are you sure you want to change your augment? This will reset your training progress.
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <button type="button" className="btn btn-secondary" onClick={() => setShowConfirm(false)}>Cancel</button>
+                        <button type="button" className="btn btn-primary" onClick={() => {
+                            // changeAugment(currentAugment, true, true, setCurrentTrainingArea);
+                            // updateAugment();
+                            changeAugment(currentAugmentToChange, true, false, setCurrentTrainingArea);
+                            updateAugment();
+                            setShowConfirm(false);
+                        }}>Confirm</button>
+                    </Modal.Footer>
+                </Modal>
                 {/* <p>{`Progress to next area: ${trainingProgressBar[0].toFixed(2)}% (${trainingProgressBar[2]}) [${trainingProgressBar[1]} remaining]`}</p>
                 <ProgressBar
                     animated
@@ -98,4 +124,4 @@ function AugmentMent ({ renderCount, setCurrentTrainingArea }: { renderCount: nu
     );
 }
 
-export default AugmentMent;
+export default AugmentMenu;

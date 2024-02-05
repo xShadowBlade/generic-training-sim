@@ -72,8 +72,15 @@ const augments = ((augment: IAugmentInit[]) => {
     {"name": "Temporal Sovereign", "emoji": "⏳"},
     {"name": "Nebula Warden", "emoji": "💫"},
     {"name": "Astral Overlord", "emoji": "✨"},
-    // {"name": "Stellar Arbiter", "emoji": "🌠"},
-    // {"name": "Quantum Overlord", "emoji": "🌌"},
+    {"name": "Stellar Arbiter", "emoji": "🌠"},
+    {"name": "Eternal Nexus Guardian", "emoji": "🌌"},
+    {"name": "Quantum Paragon", "emoji": "👑"},
+    {"name": "Celestial Maestro", "emoji": "🎶"},
+    {"name": "Astral Sovereign", "emoji": "🌠"},
+    {"name": "Stellar Virtuoso", "emoji": "💫"},
+    {"name": "Nebula Luminary", "emoji": "🌌"},
+    {"name": "Cosmic Mastermind", "emoji": "🧠"},
+    {"name": "Quantum Overlord", "emoji": "🌌"},
 ]);
 
 /**
@@ -131,6 +138,7 @@ function changeAugment (augmentN: number, reset = true, force = false, stateFn?:
         return;
     }
     currentAugment = augmentN;
+    Game.dataManager.setData("currentAugment", augmentN);
     // playerState = ["idle", augmentN];
     // console.log(getTrainingArea(areaN).mul);
     // Reset power

@@ -20,6 +20,7 @@ function move (areaN: number, force = false) {
         return;
     }
     playerState = ["idle", areaN];
+    Game.dataManager.setData("currentArea", areaN);
     // console.log(getTrainingArea(areaN).mul);
     power.static.boost.setBoost(
         "trainingArea",

@@ -12,11 +12,30 @@ import Game from "./game";
 import { power } from "./features/stats";
 import { credits } from "./features/credits";
 import { formatTrainingArea } from "./features/training";
-import "./features/movement";
+import { move } from "./features/movement";
 import "./features/credits";
-import "./features/augmentation";
+import { changeAugment, formatAugment } from "./features/augmentation";
 
 Game.init();
+
+window.addEventListener("beforeunload", function (e) {
+    // Your code to run before the page unloads goes here
+    // For example, you can save user data to a server.
+    // Make sure to return a message to display to the user.
+    Game.dataManager.saveData();
+    // e.returnValue = "Are you sure you want to leave this page?";
+});
+
+Game.eventManager.setEvent("save", "interval", 30e3, () => {
+    Game.dataManager.saveData();
+    console.log("Auto save complete.");
+});
+
+Game.dataManager.loadData();
+const currentArea = Game.dataManager.getData("currentArea") ?? 0;
+move(currentArea, true);
+const currentAugment = Game.dataManager.getData("currentAugment") ?? 0;
+changeAugment(currentAugment, false, true);
 
 import "./css/bootstrap.min.css";
 
@@ -32,7 +51,8 @@ function App () {
     const [renderCount, setRenderCount] = useState(0);
     const [powerStored, setPowerStored] = useState(power.value);
     const [creditsStored, setCreditsStored] = useState(credits.value);
-    const [currentTrainingArea, setCurrentTrainingArea] = useState(formatTrainingArea(0));
+    const [currentTrainingArea, setCurrentTrainingArea] = useState(formatTrainingArea(currentArea));
+    const [currentAugmentStr, setCurrentAugmentStr] = useState(formatAugment(currentAugment));
 
     useEffect(() => {
         Game.eventManager.setEvent("render", "interval", 0, () => {
@@ -65,6 +85,8 @@ function App () {
             <AugmentMent
                 renderCount={renderCount}
                 setCurrentTrainingArea={setCurrentTrainingArea}
+                currentAugmentStr={currentAugmentStr}
+                setCurrentAugmentStr={setCurrentAugmentStr}
             />
             <CheatsMenu renderCount={renderCount} />
         </Accordion>

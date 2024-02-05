@@ -15,7 +15,7 @@ const Game = new game({
     },
 } as gameConfigOptions);
 
-console.log("configTest", E(69).format());
+// console.log("configTest", E(69).format());
 
 if (Game.config.mode === "development") (window as any)["Game"] = Game;
 
