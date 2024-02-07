@@ -15,12 +15,9 @@ function rounding10 (x: E, acc = 10, sig = 0) {
     if (x.gte(E.pow(10, 301))) return x;
     const power = E.floor(E.log(x, acc));
     let out = E(x).div(E.pow(acc, power));
-    // console.log(out);
     out = out.mul(E.pow(acc, sig)).round();
     out = out.div(E.pow(acc, sig));
-    // console.log(out);
     out = out.mul(E.pow(acc, power));
-    // console.log(out);
     return out;
 }
 

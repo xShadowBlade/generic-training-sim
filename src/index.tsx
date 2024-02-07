@@ -7,6 +7,9 @@ import { createRoot } from "react-dom/client";
 import Accordion from "react-bootstrap/Accordion";
 
 // TODO: Add proper loading
+import "emath.js";
+import "emath.js/game";
+
 import Game from "./game";
 
 import { power } from "./features/stats";
@@ -16,22 +19,33 @@ import { move } from "./features/movement";
 import "./features/credits";
 import { changeAugment, formatAugment } from "./features/augmentation";
 
+import { updateTimeLastPlayed, offlineProgress, IOfflineProgress } from "./features/time";
+
+import Settings, { ISettings, defaultSettings } from "./display/settings";
+
+Game.dataManager.setData("settings", defaultSettings);
+
 Game.init();
 
 window.addEventListener("beforeunload", function (e) {
     // Your code to run before the page unloads goes here
     // For example, you can save user data to a server.
     // Make sure to return a message to display to the user.
+    updateTimeLastPlayed();
     Game.dataManager.saveData();
     // e.returnValue = "Are you sure you want to leave this page?";
 });
 
 Game.eventManager.setEvent("save", "interval", 30e3, () => {
+    updateTimeLastPlayed();
     Game.dataManager.saveData();
     console.log("Auto save complete.");
 });
 
 Game.dataManager.loadData();
+
+// const progress = offlineProgress();
+
 const currentArea = Game.dataManager.getData("currentArea") ?? 0;
 move(currentArea, true);
 const currentAugment = Game.dataManager.getData("currentAugment") ?? 0;
@@ -41,8 +55,9 @@ import "./css/bootstrap.min.css";
 
 import StatsMenu from "./display/statsMenu";
 import TrainingMenu from "./display/trainingMenu";
-import AugmentMent from "./display/augmentsMenu";
+import AugmentMenu from "./display/augmentsMenu";
 import CheatsMenu from "./display/cheats";
+import OfflineProgress from "./display/offlineProgress";
 
 /**
  * @returns The main app component
@@ -53,6 +68,12 @@ function App () {
     const [creditsStored, setCreditsStored] = useState(credits.value);
     const [currentTrainingArea, setCurrentTrainingArea] = useState(formatTrainingArea(currentArea));
     const [currentAugmentStr, setCurrentAugmentStr] = useState(formatAugment(currentAugment));
+    const [progress, setProgress] = useState<IOfflineProgress>();
+    const [settings, setSettings] = useState<ISettings>(defaultSettings);
+
+    useEffect(() => {
+        Game.dataManager.setData("settings", settings);
+    }, [settings]);
 
     useEffect(() => {
         Game.eventManager.setEvent("render", "interval", 0, () => {
@@ -65,12 +86,20 @@ function App () {
     }, []);
 
     useEffect(() => {
+        Game.eventManager.setEvent("init", "timeout", 100, () => {
+            setProgress(offlineProgress());
+            setSettings(Game.dataManager.getData("settings") ?? defaultSettings);
+        });
+    }, []);
+
+    useEffect(() => {
         // Update the power and credits values every frame
         setPowerStored(power.value);
         setCreditsStored(credits.value);
     }, [renderCount]);
 
     return (<>
+        {progress && <OfflineProgress progress={progress} />}
         <Accordion defaultActiveKey={["0"]} alwaysOpen>
             <StatsMenu
                 renderCount={renderCount}
@@ -82,14 +111,22 @@ function App () {
                 currentTrainingArea={currentTrainingArea}
                 setCurrentTrainingArea={setCurrentTrainingArea}
             />
-            <AugmentMent
+            <AugmentMenu
                 renderCount={renderCount}
                 setCurrentTrainingArea={setCurrentTrainingArea}
                 currentAugmentStr={currentAugmentStr}
                 setCurrentAugmentStr={setCurrentAugmentStr}
             />
-            <CheatsMenu renderCount={renderCount} />
+            {settings.gameplay.cheats && <CheatsMenu
+                renderCount={renderCount}
+                setCurrentTrainingArea={setCurrentTrainingArea}
+                setCurrentAugmentStr={setCurrentAugmentStr}
+            />}
         </Accordion>
+        <Settings
+            settings={settings}
+            setSettings={setSettings}
+        />
     </>);
 }
 

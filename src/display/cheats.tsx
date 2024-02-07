@@ -9,6 +9,9 @@ import Form from "react-bootstrap/Form";
 
 import { power } from "../features/stats";
 import { credits } from "../features/credits"; // TODO: fix
+import { move } from "../features/movement";
+import { formatTrainingArea } from "../features/training";
+import { changeAugment, formatAugment } from "../features/augmentation";
 // import Game from "../game";
 // import { E } from "emath.js";
 
@@ -16,7 +19,7 @@ import { credits } from "../features/credits"; // TODO: fix
 /**
  * @returns The cheats menu component
  */
-function CheatsMenu ({ renderCount }: { renderCount: number }) {
+function CheatsMenu ({ renderCount, setCurrentTrainingArea, setCurrentAugmentStr }: { renderCount: number, setCurrentTrainingArea: (area: string) => void, setCurrentAugmentStr: (augment: string) => void}) {
     /**
      * Timewarps the game
      */
@@ -26,20 +29,70 @@ function CheatsMenu ({ renderCount }: { renderCount: number }) {
         console.log(dt);
         power.static.gain(dt);
         credits.static.gain(dt);
-        // // @ts-expect-error - cheating
-        // Game.dataManager.static.credits.currency.gain(dt);
-        // // @ts-expect-error - cheating
-        // Game.dataManager.static.power.currency.gain(dt);
     }
 
     return (
         <Accordion.Item eventKey="3">
             <Accordion.Header>Cheats</Accordion.Header>
             <Accordion.Body>
-                <FloatingLabel label="Timewarp Time">
-                    <Form.Control id="cheats-menu-dt" type="text" placeholder="1e3" />
-                </FloatingLabel>
-                <Button onClick={timeWarp}>Timewarp</Button>
+                <div style={{
+                    display: "flex",
+                }}>
+                    <FloatingLabel label="Timewarp Time">
+                        <Form.Control
+                            id="cheats-menu-dt"
+                            type="text"
+                            placeholder="1e3"
+                            // style={{
+                            //     width: "150%",
+                            // }}
+                        />
+                    </FloatingLabel>
+                    <Button onClick={timeWarp}>Timewarp</Button>
+                </div>
+                <div style={{
+                    display: "flex",
+                }}>
+                    <FloatingLabel label="Area Number">
+                        <Form.Control
+                            id="cheats-menu-area"
+                            type="text"
+                            placeholder="0"
+                            // style={{
+                            //     width: "150%",
+                            // }}
+                        />
+                    </FloatingLabel>
+                    <Button onClick={() => {
+                        const value = parseInt((document.getElementById("cheats-menu-area") as HTMLInputElement ?? { value: "0" }).value);
+                        move(value, true);
+                        setCurrentTrainingArea(formatTrainingArea(value));
+                    }}>Move</Button>
+                </div>
+                <div style={{
+                    display: "flex",
+                }}>
+                    <FloatingLabel label="Augment Number">
+                        <Form.Control
+                            id="cheats-menu-augment"
+                            type="text"
+                            placeholder="0"
+                            // style={{
+                            //     width: "150%",
+                            // }}
+                        />
+                    </FloatingLabel>
+                    <Button onClick={() => {
+                        const value = parseInt((document.getElementById("cheats-menu-augment") as HTMLInputElement ?? { value: "0" }).value);
+                        changeAugment(
+                            value,
+                            false,
+                            true,
+                            setCurrentTrainingArea,
+                        );
+                        setCurrentAugmentStr(formatAugment(value));
+                    }}>Change Augment</Button>
+                </div>
             </Accordion.Body>
         </Accordion.Item>
     );
