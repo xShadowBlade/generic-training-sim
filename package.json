@@ -34,6 +34,7 @@
     "emath.js": "file:../emath.js",
     "react": "^18.2.0",
     "react-bootstrap": "^2.10.0",
+    "react-bs-notifier": "^7.0.0",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {

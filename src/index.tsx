@@ -58,6 +58,7 @@ import TrainingMenu from "./display/trainingMenu";
 import AugmentMenu from "./display/augmentsMenu";
 import CheatsMenu from "./display/cheats";
 import OfflineProgress from "./display/offlineProgress";
+// import Alerts, { IAlerts } from "./display/alerts";
 
 /**
  * @returns The main app component
@@ -69,7 +70,22 @@ function App () {
     const [currentTrainingArea, setCurrentTrainingArea] = useState(formatTrainingArea(currentArea));
     const [currentAugmentStr, setCurrentAugmentStr] = useState(formatAugment(currentAugment));
     const [progress, setProgress] = useState<IOfflineProgress>();
-    const [settings, setSettings] = useState<ISettings>(defaultSettings);
+    const [settings, setSettings] = useState<ISettings>(Game.dataManager.getData("settings") ?? defaultSettings);
+    // const [alerts, setAlerts] = useState<IAlerts[]>([
+    //     {
+    //         id: 0,
+    //         type: "info",
+    //         headline: "Welcome",
+    //         message: "Welcome to the game!",
+    //     },
+    // ]);
+
+    // const addAlert = (alert: IAlerts) => {
+    //     setAlerts([...alerts, alert]);
+    // };
+
+    // console.log(Game.dataManager.getData("settings"));
+    // setSettings(Game.dataManager.getData("settings") ?? defaultSettings);
 
     useEffect(() => {
         Game.dataManager.setData("settings", settings);
@@ -86,10 +102,11 @@ function App () {
     }, []);
 
     useEffect(() => {
-        Game.eventManager.setEvent("init", "timeout", 100, () => {
-            setProgress(offlineProgress());
-            setSettings(Game.dataManager.getData("settings") ?? defaultSettings);
-        });
+        if (settings.gameplay.offlineProgress) {
+            Game.eventManager.setEvent("init", "timeout", 100, () => {
+                setProgress(offlineProgress());
+            });
+        }
     }, []);
 
     useEffect(() => {
@@ -100,6 +117,10 @@ function App () {
 
     return (<>
         {progress && <OfflineProgress progress={progress} />}
+        {/* <Alerts
+            alerts={alerts}
+            setAlerts={setAlerts}
+        /> */}
         <Accordion defaultActiveKey={["0"]} alwaysOpen>
             <StatsMenu
                 renderCount={renderCount}

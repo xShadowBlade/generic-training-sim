@@ -124,18 +124,21 @@ function getAugment (n: number): IAugment {
 //     console.log(i, augment.req.format(), augment.mulPower.format(), augment.mulCredits.format());
 // });
 
+const checkAugment = (augmentN: number): boolean => power.value.gt(getAugment(augmentN).req);
+
 /**
  * Function to change the augment.
  * @param augmentN - The augment to change to.
  * @param reset - Whether to reset the power.
  * @param force - Whether to force the change, regardless of power.
  * @param stateFn - The function to call to change the state.
+ * @returns - Whether the augment was changed.
  */
-function changeAugment (augmentN: number, reset = true, force = false, stateFn?: (state: string) => void) {
+function changeAugment (augmentN: number, reset = true, force = false, stateFn?: (state: string) => void): boolean {
     // console.log(power.value.gt(getTrainingArea(areaN).req));
-    if (!force && power.value.lt(getAugment(augmentN).req)) {
+    if (!force && !checkAugment(augmentN)) {
         console.log(`You are not strong enough for this augment. (You need ${getAugment(augmentN).req.format()} power)`);
-        return;
+        return false;
     }
     currentAugment = augmentN;
     Game.dataManager.setData("currentAugment", augmentN);
@@ -165,11 +168,12 @@ function changeAugment (augmentN: number, reset = true, force = false, stateFn?:
         },
         2,
     );
-    console.log(formatAugment(augmentN));
+    // console.log(formatAugment(augmentN));
+    return true;
 }
 changeAugment(0, true);
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 if (Game.config.mode === "development") (window as any)["changeAugment"] = changeAugment;
 
-export { augments, IAugment, IAugmentInit, formatAugment, getAugment, changeAugment, currentAugment };
+export { augments, IAugment, IAugmentInit, formatAugment, getAugment, changeAugment, checkAugment, currentAugment };

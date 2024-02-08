@@ -15,7 +15,7 @@ interface ISettings {
         cheats: boolean;
     };
     display: {
-        animations: boolean;
+        // animations: boolean;
     };
 }
 
@@ -25,7 +25,7 @@ const defaultSettings: ISettings = {
         cheats: false,
     },
     display: {
-        animations: true,
+        // animations: true,
     },
 };
 
@@ -47,7 +47,7 @@ function Settings ({ settings, setSettings }: { settings: ISettings, setSettings
                 cheats: (document.getElementById("settings-gameplay-cheats") as HTMLInputElement).checked,
             },
             display: {
-                animations: (document.getElementById("settings-display-animations") as HTMLInputElement).checked,
+                // animations: (document.getElementById("settings-display-animations") as HTMLInputElement).checked,
             },
         };
         setSettings(newSettings);
@@ -57,7 +57,7 @@ function Settings ({ settings, setSettings }: { settings: ISettings, setSettings
         <Button onClick={handleShow}>Settings</Button>
         <Offcanvas show={show} onHide={handleClose}>
             <Offcanvas.Header closeButton>
-                <Offcanvas.Title>Settings (bugged)</Offcanvas.Title>
+                <Offcanvas.Title>Settings</Offcanvas.Title>
                 <hr />
             </Offcanvas.Header>
             <Offcanvas.Body>
@@ -77,16 +77,23 @@ function Settings ({ settings, setSettings }: { settings: ISettings, setSettings
                     onChange={saveSettings}
                 />
                 <br />
-                <h3>Display</h3>
-                <Form.Check
+                {/* <h3>Display</h3> */}
+                {/* <Form.Check
                     type="switch"
                     label="Animations"
                     id="settings-display-animations"
                     checked={settings.display.animations}
                     onChange={saveSettings}
-                />
-                <br />
+                /> */}
+                {/* <br /> */}
                 <h3>Other</h3>
+                <Button
+                    variant="primary"
+                    onClick={() => {
+                        Game.dataManager.saveData();
+                    }}
+                >Save</Button>
+                <br />
                 <Button
                     variant="danger"
                     onClick={() => {
@@ -94,20 +101,13 @@ function Settings ({ settings, setSettings }: { settings: ISettings, setSettings
                             Game.dataManager.resetData(true);
                         }
                     }}
-                >Reset Progress</Button>
+                >Reset Data</Button>
                 <hr />
-                {/* <Button
-                    variant="primary"
-                    onClick={saveSettings}
-                >
-                    Save
-                </Button> */}
                 <h3>Credits</h3>
                 <p>Version 0.2.0</p>
                 <p>This game was made by <a href="https://github.com/xShadowBlade">xShadowBlade</a></p>
                 <p>It is open source and available on <a href="https://github.com/xShadowBlade/generic-training-sim">GitHub</a>.</p>
                 <p>It is licensed under the <a href="https://github.com/xShadowBlade/generic-training-sim/blob/main/LICENSE">MIT License</a>.</p>
-
             </Offcanvas.Body>
         </Offcanvas>
     </>;

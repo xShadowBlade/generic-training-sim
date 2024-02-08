@@ -12,12 +12,13 @@ let playerState: ["idle", ...any] = ["idle", 0];
  * Function to move to a new area.
  * @param areaN - The area to to move to.
  * @param force - Whether to force the move, regardless of power.
+ * @returns Whether the move was successful.
  */
-function move (areaN: number, force = false) {
+function move (areaN: number, force = false): boolean {
     // console.log(power.value.gt(getTrainingArea(areaN).req));
     if (!force && power.value.lt(getTrainingArea(areaN).req)) {
         console.log(`You are not strong enough to train in this area. (You need ${getTrainingArea(areaN).req.format()} power)`);
-        return;
+        return false;
     }
     playerState = ["idle", areaN];
     Game.dataManager.setData("currentArea", areaN);
@@ -35,7 +36,8 @@ function move (areaN: number, force = false) {
         },
         2,
     );
-    console.log(formatTrainingArea(areaN));
+    // console.log(formatTrainingArea(areaN));
+    return true;
 }
 // addStartFunction(() => Game.functions.move(Game.data.player.state[1]));
 move(0, true);

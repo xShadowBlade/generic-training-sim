@@ -52,7 +52,8 @@ function offlineProgress (): IOfflineProgress {
     const dt = now.sub(last);
     console.log("dt", dt);
     // If the last time played is less than 5 seconds ago, don't give any progress.
-    if (!last || dt.lt(5e3)) {
+    if (!last || dt.lt(5e3) || last.eq(0)) {
+        updateTimeLastPlayed();
         return {
             dt: E(0),
             power: E(0),

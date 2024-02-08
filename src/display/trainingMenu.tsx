@@ -6,8 +6,8 @@ import React, { useEffect, useState } from "react";
 import Accordion from "react-bootstrap/Accordion";
 import Dropdown from "react-bootstrap/Dropdown";
 import ProgressBar from "react-bootstrap/ProgressBar";
-// import { AlertList, Alert, AlertContainer } from "react-bs-notifier";
-// import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
+import Button from "react-bootstrap/Button";
 import { E } from "emath.js";
 
 import { training, formatTrainingArea, getTrainingArea } from "../features/training";
@@ -27,6 +27,13 @@ TrainingMenu.propTypes = {
  */
 function TrainingMenu ({ renderCount, currentTrainingArea, setCurrentTrainingArea }: { renderCount: number, currentTrainingArea: string, setCurrentTrainingArea: (area: string) => void }) {
     const [trainingProgressBar, setTrainingProgressBar] = useState([0, "", ""] as [number, string, string]);
+    const [modalPopup, setModalPopup] = useState({
+        show: false,
+        title: "",
+        body: "",
+    });
+    const resetModal = () => setModalPopup({ show: false, title: "", body: "" });
+
     // const [currentTrainingArea, setCurrentTrainingArea] = useState(formatTrainingArea(0));
     // /**
     //  * Renders the training areas
@@ -52,7 +59,14 @@ function TrainingMenu ({ renderCount, currentTrainingArea, setCurrentTrainingAre
         const out = [];
         for (let i = 0; i < training.areas.length; i++) {
             out.push(<Dropdown.Item key={`training-area-${i}`} onClick={() => {
-                move(i);
+                if (!move(i)) {
+                    setModalPopup({
+                        show: true,
+                        title: "Failed to move to area",
+                        body: `You are not strong enough to train in this area. (You need ${getTrainingArea(i).req.format()} power)`,
+                    });
+                    return;
+                }
                 setCurrentTrainingArea(formatTrainingArea(playerState[1]));
             }}>{formatTrainingArea(i)}</Dropdown.Item>);
         }
@@ -85,33 +99,49 @@ function TrainingMenu ({ renderCount, currentTrainingArea, setCurrentTrainingAre
     }, [renderCount]);
 
     return (
-        <Accordion.Item eventKey="1">
-            <Accordion.Header>Training Areas</Accordion.Header>
-            <Accordion.Body>
-                <Dropdown>
-                    <Dropdown.Toggle variant="success" id="dropdown-basic">
-                        Move to...
-                    </Dropdown.Toggle>
+        <>
+            <Modal
+                show={modalPopup.show}
+                onHide={resetModal}
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title>{modalPopup.title}</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>{modalPopup.body}</Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={resetModal}>
+                        Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+            <Accordion.Item eventKey="1">
+                <Accordion.Header>Training Areas</Accordion.Header>
+                <Accordion.Body>
+                    <Dropdown>
+                        <Dropdown.Toggle variant="success" id="dropdown-basic">
+                            Move to...
+                        </Dropdown.Toggle>
 
-                    <Dropdown.Menu>
-                        {/* <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-                        <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-                        <Dropdown.Item href="#/action-3">Something else</Dropdown.Item> */}
-                        {renderTrainingAreaDropdown()}
-                    </Dropdown.Menu>
-                </Dropdown>
-                <p>{currentTrainingArea}</p>
-                <p>{`Progress to next area: ${trainingProgressBar[0].toFixed(2)}% (${trainingProgressBar[2]}) [${trainingProgressBar[1]} remaining]`}</p>
-                <ProgressBar
-                    animated
-                    id="trainingProgressBar"
-                    now={trainingProgressBar[0]}
-                    // label={`Progress to next area: ${trainingProgressBar[0].toFixed(2)}% (${trainingProgressBar[1]} remaining)`}
-                />
-                {/* <div id="progressBars"></div> */}
-                {/* <div id="trainingAreas">{renderTrainingAreas()}</div> */}
-            </Accordion.Body>
-        </Accordion.Item>
+                        <Dropdown.Menu>
+                            {/* <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
+                            <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
+                            <Dropdown.Item href="#/action-3">Something else</Dropdown.Item> */}
+                            {renderTrainingAreaDropdown()}
+                        </Dropdown.Menu>
+                    </Dropdown>
+                    <p>{currentTrainingArea}</p>
+                    <p>{`Progress to next area: ${trainingProgressBar[0].toFixed(2)}% (${trainingProgressBar[2]}) [${trainingProgressBar[1]} remaining]`}</p>
+                    <ProgressBar
+                        animated
+                        id="trainingProgressBar"
+                        now={trainingProgressBar[0]}
+                        // label={`Progress to next area: ${trainingProgressBar[0].toFixed(2)}% (${trainingProgressBar[1]} remaining)`}
+                    />
+                    {/* <div id="progressBars"></div> */}
+                    {/* <div id="trainingAreas">{renderTrainingAreas()}</div> */}
+                </Accordion.Body>
+            </Accordion.Item>
+        </>
     );
 }
 
