@@ -9,14 +9,14 @@ import Modal from "react-bootstrap/Modal";
 // import ProgressBar from "react-bootstrap/ProgressBar";
 // import { AlertList, Alert, AlertContainer } from "react-bs-notifier";
 import Button from "react-bootstrap/Button";
-// import { E } from "emath.js";
+import { E } from "emath.js";
 
 // import { training, formatTrainingArea, getTrainingArea } from "../features/training";
 import { augments, formatAugment, changeAugment, currentAugment, checkAugment, getAugment } from "../features/augmentation";
 // import { move, playerState } from "../features/movement";
 // import { power } from "../features/stats";
 
-import { IAlerts } from "./alerts";
+import { IAlerts } from "./global/alerts";
 
 interface IAugmentMenuProps {
     renderCount: number,
@@ -24,6 +24,7 @@ interface IAugmentMenuProps {
     currentAugmentStr: string,
     setCurrentAugmentStr: (augment: string) => void,
     setAlertPopup: (alertPopup: IAlerts) => void,
+    gameFormat: (value: E) => string,
 }
 
 // eslint-disable-next-line jsdoc/require-param
@@ -31,7 +32,7 @@ interface IAugmentMenuProps {
  * @returns The augment menu component
  */
 function AugmentMenu (props: IAugmentMenuProps) {
-    const { setCurrentTrainingArea, currentAugmentStr, setCurrentAugmentStr, setAlertPopup } = props;
+    const { setCurrentTrainingArea, currentAugmentStr, setCurrentAugmentStr, setAlertPopup, gameFormat } = props;
     // const [trainingProgressBar, setTrainingProgressBar] = useState([0, "", ""] as [number, string, string]);
     // const [currentAugmentStr, setCurrentAugmentStr] = useState(formatAugment(0));
     const [showConfirm, setShowConfirm] = useState(false);
@@ -51,12 +52,12 @@ function AugmentMenu (props: IAugmentMenuProps) {
                     // console.log(`You are not strong enough for this augment. (You need ${getAugment(i).req.format()} power)`);
                     setAlertPopup({
                         title: "Failed to change augment",
-                        body: `You are not strong enough for this augment. (You need ${getAugment(i).req.format()} power)`,
+                        body: `You are not strong enough for this augment. (You need ${gameFormat(getAugment(i).req)} power)`,
                     });
                 } else {
                     setShowConfirm(true);
                 }
-            }}>{formatAugment(i)}</Dropdown.Item>);
+            }}>{formatAugment(i, gameFormat)}</Dropdown.Item>);
         }
         return out;
     }
@@ -65,7 +66,7 @@ function AugmentMenu (props: IAugmentMenuProps) {
      * Updates the augment string
      */
     function updateAugment () {
-        setCurrentAugmentStr(formatAugment(currentAugment));
+        setCurrentAugmentStr(formatAugment(currentAugment, gameFormat));
     }
 
     return (
@@ -100,13 +101,13 @@ function AugmentMenu (props: IAugmentMenuProps) {
                             if (!checkAugment(currentAugmentToChange)) {
                                 setAlertPopup({
                                     title: "Failed to change augment",
-                                    body: `You are not strong enough for this augment. (You need ${getAugment(currentAugmentToChange).req.format()} power)`,
+                                    body: `You are not strong enough for this augment. (You need ${gameFormat(getAugment(currentAugmentToChange).req)} power)`,
                                 });
                             } else {
                                 changeAugment(currentAugmentToChange, true, false, setCurrentTrainingArea);
                                 setAlertPopup({
                                     title: "Augment changed",
-                                    body: `You have changed your augment to ${formatAugment(currentAugmentToChange)}`,
+                                    body: `You have changed your augment to ${formatAugment(currentAugmentToChange, gameFormat)}`,
                                 });
                             }
                             updateAugment();

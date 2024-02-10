@@ -7,7 +7,7 @@ import { createRoot } from "react-dom/client";
 import Accordion from "react-bootstrap/Accordion";
 
 // TODO: Add proper loading
-import { E } from "emath.js";
+import { E, ESource } from "emath.js";
 import "emath.js/game";
 
 import Game from "./game";
@@ -15,7 +15,7 @@ import Game from "./game";
 import { power } from "./features/stats";
 import { credits } from "./features/credits";
 import { formatTrainingArea } from "./features/training";
-import { move } from "./features/movement";
+import { move, playerState } from "./features/movement";
 import "./features/credits";
 import { changeAugment, formatAugment } from "./features/augmentation";
 
@@ -57,23 +57,33 @@ import StatsMenu from "./display/statsMenu";
 import TrainingMenu from "./display/trainingMenu";
 import AugmentMenu from "./display/augmentsMenu";
 import CheatsMenu from "./display/cheats";
-import OfflineProgress from "./display/offlineProgress";
-import Alerts, { IAlerts, defaultAlerts } from "./display/alerts";
+import OfflineProgress from "./display/global/offlineProgress";
+import Alerts, { IAlerts, defaultAlerts } from "./display/global/alerts";
+import { gameFormatProps, gameFormatGainProps } from "./display/global/format";
 // import Hotkeys from "./display/hotkeys";
 
 /**
  * @returns The main app component
  */
 function App () {
+    // Misc / Global
+    const [renderCount, setRenderCount] = useState(0);
+    const [progress, setProgress] = useState<IOfflineProgress>();
+    const [settings, setSettings] = useState<ISettings>(Game.dataManager.getData("settings") ?? defaultSettings);
+    const [alertPopup, setAlertPopup] = useState(defaultAlerts);
+
+    const gameFormat = (x: ESource) => gameFormatProps(x, { settings });
+    const gameFormatGain = (x: ESource, gain: ESource) => gameFormatGainProps(x, gain, { settings });
+
     // Stats
     const [powerStored, setPowerStored] = useState(power.value);
     const [creditsStored, setCreditsStored] = useState(credits.value);
 
     // Training
-    const [currentTrainingArea, setCurrentTrainingArea] = useState(formatTrainingArea(currentArea));
+    const [currentTrainingArea, setCurrentTrainingArea] = useState(formatTrainingArea(currentArea, gameFormat));
 
     // Augmentation
-    const [currentAugmentStr, setCurrentAugmentStr] = useState(formatAugment(currentAugment));
+    const [currentAugmentStr, setCurrentAugmentStr] = useState(formatAugment(currentAugment, gameFormat));
 
     // Basic stat upgrade
     const [basicStatUpgCost, setBasicStatUpgCost] = useState({
@@ -81,16 +91,16 @@ function App () {
         power: power.static.boost.getBoosts("boostUpg1Credits")[0].value(E(1)),
     });
 
-    // Misc / Global
-    const [renderCount, setRenderCount] = useState(0);
-    const [progress, setProgress] = useState<IOfflineProgress>();
-    const [settings, setSettings] = useState<ISettings>(Game.dataManager.getData("settings") ?? defaultSettings);
-    const [alertPopup, setAlertPopup] = useState(defaultAlerts);
-
     // Update the settings when they change
     useEffect(() => {
         Game.dataManager.setData("settings", settings);
     }, [settings]);
+
+    // Rerender the game when the format changes
+    useEffect(() => {
+        setCurrentTrainingArea(formatTrainingArea(playerState[1], gameFormat));
+        setCurrentAugmentStr(formatAugment(currentAugment, gameFormat));
+    }, [settings.display.format]);
 
     // Run the render event every frame
     useEffect(() => {
@@ -120,7 +130,10 @@ function App () {
     }, [renderCount]);
 
     return (<>
-        {progress && <OfflineProgress progress={progress} />}
+        {progress && <OfflineProgress
+            progress={progress}
+            gameFormat={gameFormat}
+        />}
         <Alerts
             alertPopup={alertPopup}
             setAlertPopup={setAlertPopup}
@@ -128,6 +141,8 @@ function App () {
         <Accordion defaultActiveKey={["0"]} alwaysOpen>
             <StatsMenu
                 renderCount={renderCount}
+                gameFormat={gameFormat}
+                gameFormatGain={gameFormatGain}
                 powerStored={powerStored}
                 creditsStored={creditsStored}
                 basicStatUpgCost={basicStatUpgCost}
@@ -138,6 +153,7 @@ function App () {
                 currentTrainingArea={currentTrainingArea}
                 setCurrentTrainingArea={setCurrentTrainingArea}
                 setAlertPopup={setAlertPopup}
+                gameFormat={gameFormat}
             />
             <AugmentMenu
                 renderCount={renderCount}
@@ -145,6 +161,7 @@ function App () {
                 currentAugmentStr={currentAugmentStr}
                 setCurrentAugmentStr={setCurrentAugmentStr}
                 setAlertPopup={setAlertPopup}
+                gameFormat={gameFormat}
             />
             {settings.gameplay.cheats && <CheatsMenu
                 renderCount={renderCount}
@@ -158,6 +175,7 @@ function App () {
             setBasicStatUpgCost={setBasicStatUpgCost}
             setAlertPopup={setAlertPopup}
             setCurrentTrainingArea={setCurrentTrainingArea}
+            gameFormat={gameFormat}
         />
     </>);
 }

@@ -91,30 +91,31 @@ const training = {
         {"name": "Astro-Techno Cathedral", "emoji": "🚀"},
         {"name": "Temporal Mastery Sphere", "emoji": "⏳"},
         {"name": "Galactic Omnipotence Citadel", "emoji": "🌠"},
-        {"name": "Quantum Harmonics Nexus", "emoji": "🎵"},
-        {"name": "Celestial Ascendancy Coliseum", "emoji": "🏟️"},
-        {"name": "Astro-Forge Cathedral", "emoji": "🏰"},
-        {"name": "Hypernova Mastery Observatory", "emoji": "🔭"},
-        {"name": "Stellar Nexus Bastion", "emoji": "🌌"},
-        {"name": "Nebula Resonance Sanctum", "emoji": "💫"},
-        {"name": "Ethereal Synthesis Chamber", "emoji": "🌈"},
-        {"name": "Quantum Elysium Arena", "emoji": "⚔️"},
-        {"name": "Cosmic Apex Observatory", "emoji": "🔍"},
-        {"name": "Galactic Singularity Citadel", "emoji": "🌠"},
+        // {"name": "Quantum Harmonics Nexus", "emoji": "🎵"},
+        // {"name": "Celestial Ascendancy Coliseum", "emoji": "🏟️"},
+        // {"name": "Astro-Forge Cathedral", "emoji": "🏰"},
+        // {"name": "Hypernova Mastery Observatory", "emoji": "🔭"},
+        // {"name": "Stellar Nexus Bastion", "emoji": "🌌"},
+        // {"name": "Nebula Resonance Sanctum", "emoji": "💫"},
+        // {"name": "Ethereal Synthesis Chamber", "emoji": "🌈"},
+        // {"name": "Quantum Elysium Arena", "emoji": "⚔️"},
+        // {"name": "Cosmic Apex Observatory", "emoji": "🔍"},
+        // {"name": "Galactic Singularity Citadel", "emoji": "🌠"},
     ] as ITrainingAreaInit[]),
 };
 
 /**
  * Function to format a training area.
  * @param n - The area to format.
+ * @param formatFn - The format function to use.
  * @returns - The formatted area.
  */
-function formatTrainingArea (n: number): string {
+function formatTrainingArea (n: number, formatFn: typeof E.format | ((x: ESource) => string) = E.format): string {
     let output = "";
     if (n < training.areas.length - 1) {
-        output = `${training.areas[n].emoji} | (${n}) ${training.areas[n].name}. Requires ${training.areas[n].req.format()} Power. Training Multiplier: x${training.areas[n].mul.format()}`;
+        output = `${training.areas[n].emoji} | (${n}) ${training.areas[n].name}. Requires ${formatFn(training.areas[n].req)} Power. Training Multiplier: x${formatFn(training.areas[n].mul)}`;
     } else {
-        output = `${training.areas[training.areas.length - 1].emoji} | (${n}) ${training.areas[training.areas.length - 1].name} ${E(n - training.areas.length + 2).toRoman()}. Requires ${rounding10(requirement(n)).format()} Power. Training Multiplier: x${rounding10(multiplier(n)).format()}`;
+        output = `${training.areas[training.areas.length - 1].emoji} | (${n}) ${training.areas[training.areas.length - 1].name} ${E(n - training.areas.length + 2).toRoman()}. Requires ${formatFn(rounding10(requirement(n)))} Power. Training Multiplier: x${formatFn(rounding10(multiplier(n)))}`;
     }
     return output;
 }

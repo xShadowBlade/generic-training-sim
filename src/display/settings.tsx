@@ -9,10 +9,12 @@ import Form from "react-bootstrap/Form";
 import Dropdown from "react-bootstrap/Dropdown";
 
 // import { keys } from "emath.js/game";
+import { FormatType, FormatTypeList } from "emath.js";
 
 import Game from "../game";
 
-import Hotkeys, { IHotkeyData, defaultHotkeys, HotkeysProps, updateHotkeys } from "./hotkeys";
+import Hotkeys, { IHotkeyData, defaultHotkeys, HotkeysProps, updateHotkeys } from "./global/hotkeys";
+import FormatComponent from "./global/format";
 
 interface ISettings {
     gameplay: {
@@ -22,6 +24,7 @@ interface ISettings {
     display: {
         // animations: boolean;
         fps: number;
+        format: FormatType;
     };
     hotkeys: IHotkeyData[];
 }
@@ -34,6 +37,7 @@ const defaultSettings: ISettings = {
     display: {
         // animations: true,
         fps: 30,
+        format: "mixed_sc",
     },
     hotkeys: defaultHotkeys,
 };
@@ -87,6 +91,7 @@ function Settings (props: SettingsProps) {
             display: {
                 // animations: (document.getElementById("settings-display-animations") as HTMLInputElement).checked,
                 fps: parseInt((document.getElementById("settings-display-fps") as HTMLInputElement).value, 10),
+                format: (document.getElementById("settings-display-format") as HTMLInputElement).value as FormatType,
             },
             hotkeys: settings.hotkeys,
         };
@@ -108,98 +113,112 @@ function Settings (props: SettingsProps) {
         <Offcanvas show={show} onHide={handleClose}>
             <Offcanvas.Header closeButton>
                 <Offcanvas.Title>Settings</Offcanvas.Title>
-                <hr />
             </Offcanvas.Header>
             <Offcanvas.Body>
-                <h3>Gameplay</h3>
-                <Form.Check
-                    type="switch"
-                    label="Offline Progress"
-                    id="settings-gameplay-offlineProgress"
-                    checked={settings.gameplay.offlineProgress}
-                    onChange={saveSettings}
-                />
-                <Form.Check
-                    type="switch"
-                    label="Cheats"
-                    id="settings-gameplay-cheats"
-                    checked={settings.gameplay.cheats}
-                    onChange={saveSettings}
-                />
-                <br />
-                <h3>Hotkeys</h3>
-                <Hotkeys
-                    props={props}
-                />
-                <br />
-                <h3>Display</h3>
-                <Form.Group controlId="settings-display-fps">
-                    <Form.Label>FPS (set to 0 for max, anything above 60 is not supported yet)</Form.Label>
-                    <Form.Control
-                        type="number"
-                        min={0}
-                        max={60}
-                        step={1}
-                        value={settings.display.fps}
-                        onChange={(e) => {
-                            const newSettings = { ...settings };
-                            newSettings.display.fps = parseInt(e.target.value ?? "0", 10) ?? 30;
-                            setSettings(newSettings);
-                        }}
-                    />
-                </Form.Group>
-                {/* <Form.Check
-                    type="switch"
-                    label="Animations"
-                    id="settings-display-animations"
-                    checked={settings.display.animations}
-                    onChange={saveSettings}
-                /> */}
-                {/* <br /> */}
-                <h3>Data</h3>
-                <Button
-                    variant="primary"
-                    onClick={() => {
-                        Game.dataManager.saveData();
-                    }}
-                >Save Data</Button>
-                <br />
-                <Button
-                    variant="primary"
-                    onClick={() => {
-                        Game.dataManager.exportData();
-                    }}
-                >Export / Download Data</Button>
-                <br />
-                <Form.Group controlId="settings-importData">
-                    <Form.Label>Import / Upload Data</Form.Label>
-                    {/* <Form.Control
-                        type="text"
-                        placeholder="Paste your data here"
-                        // onChange={async (e) => importData(e as React.ChangeEvent<HTMLInputElement>)}
-                    />
-                    <Button
-                        onClick={async () => importData(document.getElementById("settings-importData") as unknown as React.ChangeEvent<HTMLInputElement>)}
-                    >Import (text)</Button> */}
-                    <Form.Control
-                        type="file"
-                        onChange={async (e) => importData(e as React.ChangeEvent<HTMLInputElement>)}
-                    />
-                </Form.Group>
-                <Button
-                    variant="danger"
-                    onClick={() => {
-                        if (window.confirm("Are you sure you want to reset your data?")) {
-                            Game.dataManager.resetData(true);
-                        }
-                    }}
-                >Reset Data</Button>
                 <hr />
-                <h3>Credits</h3>
-                <p>Version 0.2.0</p>
-                <p>This game was made by <a href="https://github.com/xShadowBlade">xShadowBlade</a></p>
-                <p>It is open source and available on <a href="https://github.com/xShadowBlade/generic-training-sim">GitHub</a>.</p>
-                <p>It is licensed under the <a href="https://github.com/xShadowBlade/generic-training-sim/blob/main/LICENSE">MIT License</a>.</p>
+                <div>
+                    <h3>Gameplay</h3>
+                    <Form.Check
+                        type="switch"
+                        label="Offline Progress"
+                        id="settings-gameplay-offlineProgress"
+                        checked={settings.gameplay.offlineProgress}
+                        onChange={saveSettings}
+                    />
+                    <Form.Check
+                        type="switch"
+                        label="Cheats"
+                        id="settings-gameplay-cheats"
+                        checked={settings.gameplay.cheats}
+                        onChange={saveSettings}
+                    />
+                </div>
+                <hr />
+                <div>
+                    <h3>Hotkeys</h3>
+                    <Hotkeys
+                        props={props}
+                    />
+                </div>
+                <hr />
+                <div>
+                    <h3>Display</h3>
+                    <Form.Group controlId="settings-display-fps">
+                        <Form.Label>FPS (set to 0 for max, anything above 60 is not supported yet)</Form.Label>
+                        <Form.Control
+                            type="number"
+                            min={0}
+                            max={60}
+                            step={1}
+                            value={settings.display.fps}
+                            onChange={(e) => {
+                                const newSettings = { ...settings };
+                                newSettings.display.fps = parseInt(e.target.value ?? "0", 10) ?? 30;
+                                setSettings(newSettings);
+                            }}
+                        />
+                    </Form.Group>
+                    {/* <Form.Check
+                        type="switch"
+                        label="Animations"
+                        id="settings-display-animations"
+                        checked={settings.display.animations}
+                        onChange={saveSettings}
+                    /> */}
+                    <FormatComponent
+                        props={props}
+                        show={true}
+                    />
+                </div>
+                <hr />
+                <div>
+                    <h3>Data</h3>
+                    <Button
+                        variant="primary"
+                        onClick={() => {
+                            Game.dataManager.saveData();
+                        }}
+                    >Save Data</Button>
+                    <br />
+                    <Button
+                        variant="primary"
+                        onClick={() => {
+                            Game.dataManager.exportData();
+                        }}
+                    >Export / Download Data</Button>
+                    <br />
+                    <Form.Group controlId="settings-importData">
+                        <Form.Label>Import / Upload Data</Form.Label>
+                        {/* <Form.Control
+                            type="text"
+                            placeholder="Paste your data here"
+                            // onChange={async (e) => importData(e as React.ChangeEvent<HTMLInputElement>)}
+                        />
+                        <Button
+                            onClick={async () => importData(document.getElementById("settings-importData") as unknown as React.ChangeEvent<HTMLInputElement>)}
+                        >Import (text)</Button> */}
+                        <Form.Control
+                            type="file"
+                            onChange={async (e) => importData(e as React.ChangeEvent<HTMLInputElement>)}
+                        />
+                    </Form.Group>
+                    <Button
+                        variant="danger"
+                        onClick={() => {
+                            if (window.confirm("Are you sure you want to reset your data?")) {
+                                Game.dataManager.resetData(true);
+                            }
+                        }}
+                    >Reset Data</Button>
+                </div>
+                <hr />
+                <div>
+                    <h3>Credits</h3>
+                    <p>Version 0.3.0</p>
+                    <p>This game was made by <a href="https://github.com/xShadowBlade">xShadowBlade</a></p>
+                    <p>It is open source and available on <a href="https://github.com/xShadowBlade/generic-training-sim">GitHub</a>.</p>
+                    <p>It is licensed under the <a href="https://github.com/xShadowBlade/generic-training-sim/blob/main/LICENSE">MIT License</a>.</p>
+                </div>
             </Offcanvas.Body>
         </Offcanvas>
     </>;

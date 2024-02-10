@@ -14,7 +14,7 @@ import { training, formatTrainingArea, getTrainingArea } from "../features/train
 import { move, playerState } from "../features/movement";
 import { power } from "../features/stats";
 
-import { IAlerts } from "./alerts";
+import { IAlerts } from "./global/alerts";
 
 interface TrainingMenuProps {
     renderCount: number,
@@ -22,6 +22,7 @@ interface TrainingMenuProps {
     setCurrentTrainingArea: (area: string) => void,
     // alertPopup: IAlerts,
     setAlertPopup: (alertPopup: IAlerts) => void,
+    gameFormat: (value: E) => string,
 }
 
 /**
@@ -29,16 +30,16 @@ interface TrainingMenuProps {
  * @param area - The training area to move to
  * @param props - The training menu props
  */
-function moveToAreaWithCheck (area: number, { setAlertPopup, setCurrentTrainingArea }: Pick<TrainingMenuProps, "setAlertPopup" | "setCurrentTrainingArea">) {
+function moveToAreaWithCheck (area: number, { setAlertPopup, setCurrentTrainingArea, gameFormat }: Pick<TrainingMenuProps, "setAlertPopup" | "setCurrentTrainingArea" | "gameFormat">) {
     if (area < 0) return;
     if (!move(area)) {
         setAlertPopup({
             title: "Failed to move to area",
-            body: `You are not strong enough to train in this area. (You need ${getTrainingArea(area).req.format()} power)`,
+            body: `You are not strong enough to train in this area. (You need ${gameFormat(getTrainingArea(area).req)} power)`,
         });
         return;
     }
-    setCurrentTrainingArea(formatTrainingArea(playerState[1]));
+    setCurrentTrainingArea(formatTrainingArea(playerState[1], gameFormat));
 }
 
 // eslint-disable-next-line jsdoc/require-param
@@ -46,14 +47,14 @@ function moveToAreaWithCheck (area: number, { setAlertPopup, setCurrentTrainingA
  * @returns The training menu component
  */
 function TrainingMenu (props: TrainingMenuProps) {
-    const { renderCount, currentTrainingArea } = props;
+    const { renderCount, currentTrainingArea, gameFormat } = props;
 
     const [trainingProgressBar, setTrainingProgressBar] = useState([0, "", ""] as [number, string, string]);
 
     const renderTrainingAreaDropdown = () => {
         const out = [];
         for (let i = 0; i < training.areas.length; i++) {
-            out.push(<Dropdown.Item key={`training-area-${i}`} onClick={() => moveToAreaWithCheck(i, props)}>{formatTrainingArea(i)}</Dropdown.Item>);
+            out.push(<Dropdown.Item key={`training-area-${i}`} onClick={() => moveToAreaWithCheck(i, props)}>{formatTrainingArea(i, gameFormat)}</Dropdown.Item>);
         }
         return out;
     };
@@ -64,13 +65,13 @@ function TrainingMenu (props: TrainingMenuProps) {
      */
     function progressBars (): [number, string, string] {
         if (playerState[0] !== "idle") return [0, "", ""];
-        const playerP = E.clone(power.value);
+        const playerP = power.value;
         const percent = Math.min(playerP.div(getTrainingArea(playerState[1] + 1).req).mul(100).toNumber(), 100);
 
         // Time remaining
         const playerDiffBetweenAreas = getTrainingArea(playerState[1] + 1).req.sub(playerP);
-        const timeRemaining = E.formats.formatTime(E.max(0, E.clone(playerDiffBetweenAreas).div(E.clone(power.static.boost.calculate()))));
-        return [percent, timeRemaining, `${E.clone(power.value).format()} / ${getTrainingArea(playerState[1] + 1).req.format()}`];
+        const timeRemaining = E.formats.formatTime(E.max(0, playerDiffBetweenAreas.div(power.static.boost.calculate())));
+        return [percent, timeRemaining, `${gameFormat(power.value)} / ${gameFormat(getTrainingArea(playerState[1] + 1).req)}`];
     }
 
     useEffect(() => {

@@ -7,16 +7,16 @@ import Form from "react-bootstrap/Form";
 import { E } from "emath.js";
 import { keys, KeyBinding } from "emath.js/game";
 
-import Game from "../game";
-import { playerState } from "../features/movement";
+import Game from "../../game";
+import { playerState } from "../../features/movement";
 // import { changeAugment } from "../features/augmentation";
-import { ISettings } from "./settings";
+import { ISettings } from "../settings";
 // import { credits } from "features/credits";
 // import { power } from "features/stats";
-import { moveToAreaWithCheck } from "./trainingMenu";
+import { moveToAreaWithCheck } from "../trainingMenu";
 
-import { buyBasicStatUpg } from "./statsMenu";
-import { TrainingMenuProps } from "./trainingMenu";
+import { buyBasicStatUpg } from "../statsMenu";
+import { TrainingMenuProps } from "../trainingMenu";
 
 interface IHotkey {
     name: string;
@@ -82,6 +82,7 @@ interface HotkeysProps extends Pick<TrainingMenuProps, "setAlertPopup" | "setCur
     settings: ISettings;
     setSettings: (settings: ISettings) => void;
     setBasicStatUpgCost: (basicStatUpgCost: { credits: E, power: E }) => void;
+    gameFormat: (x: E) => string;
 
     // setAlertPopup: (alertPopup: IAlerts) => void;
     // setCurrentTrainingArea: (area: string) => void;

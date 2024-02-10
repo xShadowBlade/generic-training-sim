@@ -71,29 +71,30 @@ const augments = ((augment: IAugmentInit[]) => {
     {"name": "Cybernetic Vanguard", "emoji": "🤖"},
     {"name": "Temporal Sovereign", "emoji": "⏳"},
     {"name": "Nebula Warden", "emoji": "💫"},
-    {"name": "Astral Overlord", "emoji": "✨"},
-    {"name": "Stellar Arbiter", "emoji": "🌠"},
-    {"name": "Eternal Nexus Guardian", "emoji": "🌌"},
-    {"name": "Quantum Paragon", "emoji": "👑"},
-    {"name": "Celestial Maestro", "emoji": "🎶"},
-    {"name": "Astral Sovereign", "emoji": "🌠"},
-    {"name": "Stellar Virtuoso", "emoji": "💫"},
-    {"name": "Nebula Luminary", "emoji": "🌌"},
-    {"name": "Cosmic Mastermind", "emoji": "🧠"},
+    // {"name": "Astral Overlord", "emoji": "✨"},
+    // {"name": "Stellar Arbiter", "emoji": "🌠"},
+    // {"name": "Eternal Nexus Guardian", "emoji": "🌌"},
+    // {"name": "Quantum Paragon", "emoji": "👑"},
+    // {"name": "Celestial Maestro", "emoji": "🎶"},
+    // {"name": "Astral Sovereign", "emoji": "🌠"},
+    // {"name": "Stellar Virtuoso", "emoji": "💫"},
+    // {"name": "Nebula Luminary", "emoji": "🌌"},
+    // {"name": "Cosmic Mastermind", "emoji": "🧠"},
     {"name": "Quantum Overlord", "emoji": "🌌"},
 ]);
 
 /**
  * Function to format an augment.
  * @param n - The augment to format.
+ * @param formatFn - The format function to use.
  * @returns - The formatted augment.
  */
-function formatAugment (n: number): string {
+function formatAugment (n: number, formatFn: typeof E.format | ((x: ESource) => string) = E.format): string {
     let output = "";
     if (n < augments.length) {
-        output = `${getAugment(n).emoji} | (${n}) ${getAugment(n).name}. Requires ${getAugment(n).req.format()} Power. Power Multiplier: x${getAugment(n).mulPower.format()}. Credits Multiplier: x${getAugment(n).mulCredits.format()}`;
+        output = `${getAugment(n).emoji} | (${n}) ${getAugment(n).name}. Requires ${formatFn(getAugment(n).req)} Power. Power Multiplier: x${formatFn(getAugment(n).mulPower)}. Credits Multiplier: x${formatFn(getAugment(n).mulCredits)}`;
     } else {
-        output = `${augments[augments.length - 1].emoji} | (${n}) ${augments[augments.length - 1].name} ${E(n - augments.length + 1).toRoman()}. Requires ${getAugment(n).req.format()} Power. Power Multiplier: x${getAugment(n).mulPower.format()}. Credits Multiplier: x${getAugment(n).mulCredits.format()}`;
+        output = `${augments[augments.length - 1].emoji} | (${n}) ${augments[augments.length - 1].name} ${E(n - augments.length + 1).toRoman()}. Requires ${formatFn(getAugment(n).req)} Power. Power Multiplier: x${formatFn(getAugment(n).mulPower)}. Credits Multiplier: x${formatFn(getAugment(n).mulCredits)}`;
     }
     return output;
 }
@@ -132,12 +133,13 @@ const checkAugment = (augmentN: number): boolean => power.value.gt(getAugment(au
  * @param reset - Whether to reset the power.
  * @param force - Whether to force the change, regardless of power.
  * @param stateFn - The function to call to change the state.
+ * @param formatFn - The format function to use.
  * @returns - Whether the augment was changed.
  */
-function changeAugment (augmentN: number, reset = true, force = false, stateFn?: (state: string) => void): boolean {
+function changeAugment (augmentN: number, reset = true, force = false, stateFn?: (state: string) => void, formatFn: typeof E.format | ((x: ESource) => string) = E.format): boolean {
     // console.log(power.value.gt(getTrainingArea(areaN).req));
     if (!force && !checkAugment(augmentN)) {
-        console.log(`You are not strong enough for this augment. (You need ${getAugment(augmentN).req.format()} power)`);
+        // console.log(`You are not strong enough for this augment. (You need ${getAugment(augmentN).req.format()} power)`);
         return false;
     }
     currentAugment = augmentN;
@@ -146,9 +148,10 @@ function changeAugment (augmentN: number, reset = true, force = false, stateFn?:
     // console.log(getTrainingArea(areaN).mul);
     // Reset power
     if (reset) {
-        power.static.value = E(0);
+        // power.static.value = E(0);
+        power.static.reset();
         move(0, true);
-        if (stateFn) stateFn(formatTrainingArea(0));
+        if (stateFn) stateFn(formatTrainingArea(0, formatFn));
     }
     power.static.boost.setBoost(
         "augment",

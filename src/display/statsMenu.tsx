@@ -31,6 +31,8 @@ interface IStatsMenuProps {
     creditsStored: E,
     basicStatUpgCost: { credits: E, power: E },
     setBasicStatUpgCost: (basicStatUpgCost: { credits: E, power: E }) => void,
+    gameFormat: (x: E) => string,
+    gameFormatGain: (x: E, gain: E) => string,
 }
 
 // eslint-disable-next-line jsdoc/require-param
@@ -39,22 +41,22 @@ interface IStatsMenuProps {
  */
 // eslint-disable-next-line react/prop-types
 function StatsMenu (props: IStatsMenuProps) {
-    const { renderCount, powerStored, creditsStored, basicStatUpgCost } = props;
+    const { renderCount, powerStored, creditsStored, basicStatUpgCost, gameFormat, gameFormatGain } = props;
 
     return (
         <Accordion.Item eventKey="0">
             <Accordion.Header>Stats</Accordion.Header>
             <Accordion.Body>
-                <p>{`✊ | Power: ${powerStored.format()} ${powerStored.formatGain(power.static.boost.calculate())}`}</p>
-                <p>{`🪙 | Credits: ${creditsStored.format()} ${creditsStored.formatGain(credits.static.boost.calculate())}`}</p>
+                <p>{`✊ | Power: ${gameFormat(powerStored)} ${gameFormatGain(powerStored, power.static.boost.calculate())}`}</p>
+                <p>{`🪙 | Credits: ${gameFormat(creditsStored)} ${gameFormatGain(creditsStored, credits.static.boost.calculate())}`}</p>
 
-                <p>{`⏫ | Current Multiplier: x${basicStatUpgCost.power.format()}`}</p>
+                <p>{`⏫ | Current Multiplier: x${gameFormat(basicStatUpgCost.power)}`}</p>
                 <Button
                     type="button"
                     onClick={() => buyBasicStatUpg(props)}
                     disabled={creditsStored.lt(basicStatUpgCost.credits)}
                 >
-                    {`Buy Basic Stat Upgrade (Cost: ${basicStatUpgCost.credits.format()})`}
+                    {`Buy Basic Stat Upgrade (Cost: ${gameFormat(basicStatUpgCost.credits)})`}
                 </Button>
             </Accordion.Body>
         </Accordion.Item>
