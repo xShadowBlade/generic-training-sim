@@ -94,7 +94,7 @@ const getHotkey = (name: string) => {
 const updateHotkeys = (props: HotkeysProps) => {
     const { settings } = props;
     console.log("Adding hotkeys");
-    Game.keyManager.addKey(settings.hotkeys.map(hotkey => {
+    Game.keyManager.addKey((settings.hotkeys ?? defaultHotkeys).map(hotkey => {
         const bind: KeyBinding = {
             name: hotkey.name,
             key: hotkey.key,
@@ -130,7 +130,7 @@ function Hotkeys ({ props }: { props: HotkeysProps }) {
             out.push(<Form.Group key={`settings-hotkey-${i}`} controlId={`settings-hotkey-${i}`}>
                 <Form.Label>{hotkeys[i].name}</Form.Label>
                 <Form.Select
-                    value={settings.hotkeys[i].key}
+                    value={(settings.hotkeys ?? defaultHotkeys)[i].key}
                     onChange={(e) => {
                         console.log(e.target.value);
                         const newSettings = { ...settings };
