@@ -7,7 +7,7 @@ import { createRoot } from "react-dom/client";
 import Accordion from "react-bootstrap/Accordion";
 
 // TODO: Add proper loading
-import "emath.js";
+import { E } from "emath.js";
 import "emath.js/game";
 
 import Game from "./game";
@@ -58,39 +58,41 @@ import TrainingMenu from "./display/trainingMenu";
 import AugmentMenu from "./display/augmentsMenu";
 import CheatsMenu from "./display/cheats";
 import OfflineProgress from "./display/offlineProgress";
-// import Alerts, { IAlerts } from "./display/alerts";
+import Alerts, { IAlerts, defaultAlerts } from "./display/alerts";
+// import Hotkeys from "./display/hotkeys";
 
 /**
  * @returns The main app component
  */
 function App () {
-    const [renderCount, setRenderCount] = useState(0);
+    // Stats
     const [powerStored, setPowerStored] = useState(power.value);
     const [creditsStored, setCreditsStored] = useState(credits.value);
+
+    // Training
     const [currentTrainingArea, setCurrentTrainingArea] = useState(formatTrainingArea(currentArea));
+
+    // Augmentation
     const [currentAugmentStr, setCurrentAugmentStr] = useState(formatAugment(currentAugment));
+
+    // Basic stat upgrade
+    const [basicStatUpgCost, setBasicStatUpgCost] = useState({
+        credits: credits.static.getNextCost("upg1Credits"),
+        power: power.static.boost.getBoosts("boostUpg1Credits")[0].value(E(1)),
+    });
+
+    // Misc / Global
+    const [renderCount, setRenderCount] = useState(0);
     const [progress, setProgress] = useState<IOfflineProgress>();
     const [settings, setSettings] = useState<ISettings>(Game.dataManager.getData("settings") ?? defaultSettings);
-    // const [alerts, setAlerts] = useState<IAlerts[]>([
-    //     {
-    //         id: 0,
-    //         type: "info",
-    //         headline: "Welcome",
-    //         message: "Welcome to the game!",
-    //     },
-    // ]);
+    const [alertPopup, setAlertPopup] = useState(defaultAlerts);
 
-    // const addAlert = (alert: IAlerts) => {
-    //     setAlerts([...alerts, alert]);
-    // };
-
-    // console.log(Game.dataManager.getData("settings"));
-    // setSettings(Game.dataManager.getData("settings") ?? defaultSettings);
-
+    // Update the settings when they change
     useEffect(() => {
         Game.dataManager.setData("settings", settings);
     }, [settings]);
 
+    // Run the render event every frame
     useEffect(() => {
         Game.eventManager.setEvent("render", "interval", 0, () => {
             setRenderCount((prevCount) => prevCount + 1);
@@ -101,6 +103,7 @@ function App () {
         };
     }, []);
 
+    // Offline progress
     useEffect(() => {
         if (settings.gameplay.offlineProgress) {
             Game.eventManager.setEvent("init", "timeout", 100, () => {
@@ -109,6 +112,7 @@ function App () {
         }
     }, []);
 
+    // Update the power and credits values every frame
     useEffect(() => {
         // Update the power and credits values every frame
         setPowerStored(power.value);
@@ -117,26 +121,30 @@ function App () {
 
     return (<>
         {progress && <OfflineProgress progress={progress} />}
-        {/* <Alerts
-            alerts={alerts}
-            setAlerts={setAlerts}
-        /> */}
+        <Alerts
+            alertPopup={alertPopup}
+            setAlertPopup={setAlertPopup}
+        />
         <Accordion defaultActiveKey={["0"]} alwaysOpen>
             <StatsMenu
                 renderCount={renderCount}
                 powerStored={powerStored}
                 creditsStored={creditsStored}
+                basicStatUpgCost={basicStatUpgCost}
+                setBasicStatUpgCost={setBasicStatUpgCost}
             />
             <TrainingMenu
                 renderCount={renderCount}
                 currentTrainingArea={currentTrainingArea}
                 setCurrentTrainingArea={setCurrentTrainingArea}
+                setAlertPopup={setAlertPopup}
             />
             <AugmentMenu
                 renderCount={renderCount}
                 setCurrentTrainingArea={setCurrentTrainingArea}
                 currentAugmentStr={currentAugmentStr}
                 setCurrentAugmentStr={setCurrentAugmentStr}
+                setAlertPopup={setAlertPopup}
             />
             {settings.gameplay.cheats && <CheatsMenu
                 renderCount={renderCount}
@@ -147,6 +155,9 @@ function App () {
         <Settings
             settings={settings}
             setSettings={setSettings}
+            setBasicStatUpgCost={setBasicStatUpgCost}
+            setAlertPopup={setAlertPopup}
+            setCurrentTrainingArea={setCurrentTrainingArea}
         />
     </>);
 }

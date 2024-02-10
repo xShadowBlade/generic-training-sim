@@ -1,57 +1,62 @@
 /**
- * @file Alert / notification info system
+ * @file Alert / notification info system using modals
  */
-import React, { useEffect, useState, useCallback } from "react";
-// import Alert from "react-bootstrap/Alert";
-// @ts-expect-error - Doesnt have types
-import { AlertList, Alert } from "react-bs-notifier";
+import React, { useEffect, useState } from "react";
+import Modal from "react-bootstrap/Modal";
+import Button from "react-bootstrap/Button";
 
 interface IAlerts {
-    id: number;
-    type: "info" | "warning" | "danger" | "success";
-    headline?: string;
-    message: string;
+    // show: boolean;
+    title: string;
+    body: string;
 }
+
+interface IAlertsProps {
+    // alerts: IAlerts[];
+    // setAlerts: (alerts: IAlerts[]) => void;
+    alertPopup: IAlerts;
+    setAlertPopup: (alertPopup: IAlerts) => void;
+}
+
+const defaultAlerts: IAlerts = {
+    // show: false,
+    title: "",
+    body: "",
+};
 
 // eslint-disable-next-line jsdoc/require-param
 /**
  * @returns The alerts component
  */
-function Alerts ({ alerts, setAlerts }: { alerts: IAlerts[], setAlerts: (alerts: IAlerts[]) => void}) {
-    const [alertList, setAlertList] = useState(alerts);
-
-    const onDismissed = useCallback((alert: IAlerts) => {
-        // @ts-expect-error - idk
-        setAlerts((alertsToRm: IAlerts[]) => {
-            const idx = alertsToRm.indexOf(alert);
-            if (idx < 0) return alertsToRm;
-            return [...alertsToRm.slice(0, idx), ...alertsToRm.slice(idx + 1)];
-        });
-    }, []);
-
-    // const addAlert = (alert: IAlerts) => {
-    //     setAlerts([...alerts, alert]);
-    // };
-
+function Alerts (props: IAlertsProps) {
+    const { alertPopup, setAlertPopup } = props;
+    const [show, setShow] = useState(false);
+    const resetAlertPopup = () => {
+        setAlertPopup({ title: "", body: "" });
+        setShow(false);
+    };
     useEffect(() => {
-        setAlertList(alerts);
-    }, [alerts]);
-
+        if (alertPopup.title !== "" || alertPopup.body !== "") {
+            setShow(true);
+        }
+    }, [alertPopup]);
     return (
-        <>
-            <Alert type="info" headline="Optional Headline" showIcon>
-                This is a message that explains what happened in a little more detail.
-            </Alert>
-            <AlertList
-                position="top-right"
-                alerts={alertList}
-                timeout={2000}
-                dismissTitle="Dismiss"
-                onDismiss={onDismissed}
-            />
-        </>
+        <Modal
+            show={show}
+            onHide={resetAlertPopup}
+        >
+            <Modal.Header closeButton>
+                <Modal.Title>{alertPopup.title}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>{alertPopup.body}</Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={resetAlertPopup}>
+                        Close
+                </Button>
+            </Modal.Footer>
+        </Modal>
     );
 }
 
 export default Alerts;
-export { IAlerts };
+export { IAlerts, defaultAlerts };
