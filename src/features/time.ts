@@ -1,7 +1,7 @@
 /**
  * @file Time
  */
-import { E } from "emath.js";
+import { E, ESource } from "emath.js";
 import Game from "../game";
 
 import { power } from "./stats";
@@ -16,14 +16,14 @@ Game.dataManager.setData("timeLastPlayed", E(0));
  * @param dt - dt
  * @param real - Whether to update the real time played.
  */
-function updateTimePlayed (dt: number, real = true) {
+function updateTimePlayed (dt: ESource, real = true) {
     const time = Game.dataManager.getData("timePlayed") ?? E(0);
     const timeReal = Game.dataManager.getData("timePlayedReal") ?? E(0);
     // const last = Game.dataManager.getData("timeLastPlayed");
-    const now = E(Date.now());
+    // const now = E(Date.now());
     // const dt = now.sub(last);
     Game.dataManager.setData("timePlayed", time.add(dt));
-    Game.dataManager.setData("timePlayedReal", timeReal.add(dt));
+    if (real) Game.dataManager.setData("timePlayedReal", timeReal.add(dt));
     // Game.dataManager.setData("timeLastPlayed", now);
 }
 

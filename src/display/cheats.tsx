@@ -12,23 +12,23 @@ import { credits } from "../features/credits"; // TODO: fix
 import { move } from "../features/movement";
 import { formatTrainingArea } from "../features/training";
 import { changeAugment, formatAugment } from "../features/augmentation";
+import { updateTimePlayed } from "../features/time";
 // import Game from "../game";
-// import { E } from "emath.js";
+import { E } from "emath.js";
 
 // eslint-disable-next-line jsdoc/require-param
 /**
  * @returns The cheats menu component
  */
 function CheatsMenu ({ renderCount, setCurrentTrainingArea, setCurrentAugmentStr }: { renderCount: number, setCurrentTrainingArea: (area: string) => void, setCurrentAugmentStr: (augment: string) => void}) {
-    /**
-     * Timewarps the game
-     */
+    /** Timewarps the game */
     function timeWarp () {
         const dt = (document.getElementById("cheats-menu-dt") as HTMLInputElement ?? { value: 0 }).value;
         // dt = E(dt);
         console.log(dt);
         power.static.gain(dt);
         credits.static.gain(dt);
+        updateTimePlayed(dt, false);
     }
 
     return (
@@ -38,7 +38,7 @@ function CheatsMenu ({ renderCount, setCurrentTrainingArea, setCurrentAugmentStr
                 <div style={{
                     display: "flex",
                 }}>
-                    <FloatingLabel label="Timewarp Time">
+                    <FloatingLabel label="Timewarp Time (ms)">
                         <Form.Control
                             id="cheats-menu-dt"
                             type="text"

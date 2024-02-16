@@ -9,11 +9,18 @@ import { offlineProgress } from "../../features/time";
 
 import Game from "../../game";
 
+interface OfflineProgressProps {
+    progress: ReturnType<typeof offlineProgress>
+    gameFormat: (value: E) => string,
+    gameFormatTime: (value: E) => string,
+}
+
 // eslint-disable-next-line jsdoc/require-param
 /**
  * @returns The offline progress component
  */
-function OfflineProgress ({ progress, gameFormat }: { progress: ReturnType<typeof offlineProgress>, gameFormat: (value: E) => string }) {
+function OfflineProgress (props: OfflineProgressProps) {
+    const { progress, gameFormat, gameFormatTime } = props;
     const [show, setShow] = useState(progress.dt.gt(0));
 
     const handleClose = () => setShow(false);
@@ -24,7 +31,7 @@ function OfflineProgress ({ progress, gameFormat }: { progress: ReturnType<typeo
                 <Modal.Title>Offline Progress</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                While you were away for {E.formats.formatTime(progress.dt.div(1000))} ...
+                While you were away for {gameFormatTime(progress.dt.div(1000))} ...
                 <br /> You gained {gameFormat(progress.power)} power.
                 <br /> You gained {gameFormat(progress.credits)} credits.
             </Modal.Body>

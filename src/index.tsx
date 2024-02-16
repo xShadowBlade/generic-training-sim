@@ -10,7 +10,7 @@ import Accordion from "react-bootstrap/Accordion";
 import { E, ESource } from "emath.js";
 import "emath.js/game";
 
-import Game from "./game";
+import Game, { gameConfig } from "./game";
 
 import { power } from "./features/stats";
 import { credits } from "./features/credits";
@@ -28,6 +28,7 @@ Game.dataManager.setData("settings", defaultSettings);
 Game.init();
 
 window.addEventListener("beforeunload", function (e) {
+    if (!(Game.dataManager.getData("settings") as ISettings).data.saveOnExit || !gameConfig.saveOnExit) return;
     // Your code to run before the page unloads goes here
     // For example, you can save user data to a server.
     // Make sure to return a message to display to the user.
@@ -37,6 +38,7 @@ window.addEventListener("beforeunload", function (e) {
 });
 
 Game.eventManager.setEvent("save", "interval", 30e3, () => {
+    if (!(Game.dataManager.getData("settings") as ISettings).data.autosave) return;
     updateTimeLastPlayed();
     Game.dataManager.saveData();
     console.log("Auto save complete.");
@@ -74,6 +76,7 @@ function App () {
 
     const gameFormat = (x: ESource) => gameFormatProps(x, { settings });
     const gameFormatGain = (x: ESource, gain: ESource) => gameFormatGainProps(x, gain, { settings });
+    const gameFormatTime = (x: ESource) => gameFormatProps(x, { settings, time: true });
 
     // Stats
     const [powerStored, setPowerStored] = useState(power.value);
@@ -133,6 +136,7 @@ function App () {
         {progress && <OfflineProgress
             progress={progress}
             gameFormat={gameFormat}
+            gameFormatTime={gameFormatTime}
         />}
         <Alerts
             alertPopup={alertPopup}
@@ -154,6 +158,8 @@ function App () {
                 setCurrentTrainingArea={setCurrentTrainingArea}
                 setAlertPopup={setAlertPopup}
                 gameFormat={gameFormat}
+                settings={settings}
+                gameFormatTime={gameFormatTime}
             />
             <AugmentMenu
                 renderCount={renderCount}
@@ -162,6 +168,8 @@ function App () {
                 setCurrentAugmentStr={setCurrentAugmentStr}
                 setAlertPopup={setAlertPopup}
                 gameFormat={gameFormat}
+                settings={settings}
+                gameFormatTime={gameFormatTime}
             />
             {settings.gameplay.cheats && <CheatsMenu
                 renderCount={renderCount}
@@ -172,10 +180,12 @@ function App () {
         <Settings
             settings={settings}
             setSettings={setSettings}
+            renderCount={renderCount}
             setBasicStatUpgCost={setBasicStatUpgCost}
             setAlertPopup={setAlertPopup}
             setCurrentTrainingArea={setCurrentTrainingArea}
             gameFormat={gameFormat}
+            gameFormatTime={gameFormatTime}
         />
     </>);
 }

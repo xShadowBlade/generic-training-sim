@@ -32,19 +32,19 @@ interface IHotkeyData {
 const defaultHotkeys: IHotkeyData[] = [
     {
         name: "Buy Upgrade",
-        key: "u",
+        key: "z",
     },
     // {
     //     name: "Buy Augment",
     //     key: "a",
     // },
     {
-        name: "Move to Next Area",
-        key: "n",
+        name: "Move to Previous Area", // why would you want to go back?
+        key: "x",
     },
     {
-        name: "Move to Previous Area", // why would you want to go back?
-        key: "p",
+        name: "Move to Next Area",
+        key: "c",
     },
 ];
 
@@ -61,17 +61,17 @@ const hotkeys: IHotkey[] = [
     //     key: "a",
     // },
     {
-        name: "Move to Next Area",
+        name: "Move to Previous Area", // why would you want to go back?
         effect: (props) => {
-            const newArea = playerState[1] + 1;
+            const newArea = playerState[1] - 1;
             // console.log(newArea);
             moveToAreaWithCheck(newArea, props);
         },
     },
     {
-        name: "Move to Previous Area", // why would you want to go back?
+        name: "Move to Next Area",
         effect: (props) => {
-            const newArea = playerState[1] - 1;
+            const newArea = playerState[1] + 1;
             // console.log(newArea);
             moveToAreaWithCheck(newArea, props);
         },
@@ -94,7 +94,7 @@ const getHotkey = (name: string) => {
 
 const updateHotkeys = (props: HotkeysProps) => {
     const { settings } = props;
-    console.log("Adding hotkeys");
+    // console.log("Adding hotkeys");
     Game.keyManager.addKey((settings.hotkeys ?? defaultHotkeys).map(hotkey => {
         const bind: KeyBinding = {
             name: hotkey.name,
@@ -104,7 +104,7 @@ const updateHotkeys = (props: HotkeysProps) => {
                 if (hotkeyToAdd && hotkeyToAdd.effect) hotkeyToAdd.effect(props);
             },
         };
-        console.log(bind);
+        // console.log(bind);
         return bind;
     }));
 };
@@ -115,6 +115,10 @@ const updateHotkeys = (props: HotkeysProps) => {
  */
 function Hotkeys ({ props }: { props: HotkeysProps }) {
     const { settings, setSettings } = props;
+
+    useEffect(() => {
+        updateHotkeys(props);
+    }, [settings]);
 
     const renderHotkeys = () => {
         const out = [];
@@ -137,7 +141,7 @@ function Hotkeys ({ props }: { props: HotkeysProps }) {
                         const newSettings = { ...settings };
                         newSettings.hotkeys[i].key = e.target.value;
                         setSettings(newSettings);
-                        updateHotkeys(props);
+                        // updateHotkeys(props);
                     }}
                 >
                     {keyDropdown}

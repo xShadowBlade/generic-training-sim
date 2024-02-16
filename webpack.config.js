@@ -84,7 +84,7 @@ module.exports = (env, argv) => {
             new EsbuildPlugin({
                 define: {
                     // "%PUBLIC_URL%": JSON.stringify(mode === "production" ? "../public/" : "./"),
-                    MODE: JSON.stringify(mode),
+                    MODE: `"${mode}"`,
                 },
             }),
             new HtmlReplaceWebpackPlugin([

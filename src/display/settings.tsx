@@ -9,12 +9,12 @@ import Form from "react-bootstrap/Form";
 import Dropdown from "react-bootstrap/Dropdown";
 
 // import { keys } from "emath.js/game";
-import { FormatType, FormatTypeList } from "emath.js";
+import { E, FormatType, FormatTypeList } from "emath.js";
 
-import Game from "../game";
+import Game, { gameConfig } from "../game";
 
 import Hotkeys, { IHotkeyData, defaultHotkeys, HotkeysProps, updateHotkeys } from "./global/hotkeys";
-import FormatComponent from "./global/format";
+import FormatComponent, { FormatComponentProps, FormatTimeType } from "./global/format";
 
 interface ISettings {
     gameplay: {
@@ -25,6 +25,14 @@ interface ISettings {
         // animations: boolean;
         fps: number;
         format: FormatType;
+        timeFormat: "short" | "long";
+        trainingAreaFailPopup: boolean;
+        augmentFailPopup: boolean;
+        confirmAugment: boolean;
+    };
+    data: {
+        autosave: boolean;
+        saveOnExit: boolean;
     };
     hotkeys: IHotkeyData[];
 }
@@ -38,13 +46,23 @@ const defaultSettings: ISettings = {
         // animations: true,
         fps: 30,
         format: "mixed_sc",
+        timeFormat: "short",
+        trainingAreaFailPopup: true,
+        augmentFailPopup: true,
+        confirmAugment: true,
+    },
+    data: {
+        autosave: true,
+        saveOnExit: true,
     },
     hotkeys: defaultHotkeys,
 };
 
-interface SettingsProps extends HotkeysProps {
+interface SettingsProps extends HotkeysProps, FormatComponentProps {
     settings: ISettings;
     setSettings: (settings: ISettings) => void;
+    renderCount: number;
+    gameFormatTime: (value: E) => string;
 }
 
 // eslint-disable-next-line jsdoc/require-param
@@ -52,8 +70,12 @@ interface SettingsProps extends HotkeysProps {
  * @returns The settings component
  */
 function Settings (props: SettingsProps) {
-    const { settings, setSettings } = props;
+    const { settings, setSettings, renderCount, gameFormatTime } = props;
     const [show, setShow] = useState(false);
+    const [playtime, setPlaytime] = useState({
+        real: "",
+        total: "",
+    });
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -78,6 +100,7 @@ function Settings (props: SettingsProps) {
         const dataString = await fileToString(inputElement.files[0]);
         Game.dataManager.loadData(dataString);
         Game.dataManager.saveData(dataString);
+        gameConfig.saveOnExit = false;
         window.location.reload();
     };
 
@@ -92,6 +115,14 @@ function Settings (props: SettingsProps) {
                 // animations: (document.getElementById("settings-display-animations") as HTMLInputElement).checked,
                 fps: parseInt((document.getElementById("settings-display-fps") as HTMLInputElement).value, 10),
                 format: (document.getElementById("settings-display-format") as HTMLInputElement).value as FormatType,
+                timeFormat: (document.getElementById("settings-display-time-format") as HTMLInputElement).value as FormatTimeType,
+                confirmAugment: (document.getElementById("settings-data-confirmAugment") as HTMLInputElement).checked,
+                trainingAreaFailPopup: (document.getElementById("settings-data-trainingAreaFailPopup") as HTMLInputElement).checked,
+                augmentFailPopup: (document.getElementById("settings-data-augmentFailPopup") as HTMLInputElement).checked,
+            },
+            data: {
+                autosave: (document.getElementById("settings-data-autosave") as HTMLInputElement).checked,
+                saveOnExit: (document.getElementById("settings-data-saveOnExit") as HTMLInputElement).checked,
             },
             hotkeys: settings.hotkeys,
         };
@@ -108,13 +139,42 @@ function Settings (props: SettingsProps) {
         updateHotkeys(props);
     }, [settings.hotkeys]);
 
+    // Update playtime
+    useEffect(() => {
+        setPlaytime({
+            real: gameFormatTime(Game.dataManager.getData("timePlayedReal").div(1000) ?? 0),
+            total: gameFormatTime(Game.dataManager.getData("timePlayed").div(1000) ?? 0),
+        });
+    }, [renderCount]);
+
     return <>
+        <Button
+            variant="light"
+            style={{
+                position: "absolute",
+                top: "10px",
+                right: "10px",
+                backgroundImage: "url(https://img.icons8.com/plasticine/50/settings.png)",
+                backgroundSize: "cover",
+                // background: "none",
+                width: "50px",
+                height: "50px",
+                border: "solid 3px black",
+                zIndex: 1000,
+            }}
+            onClick={handleShow}
+        />
         <Button onClick={handleShow}>Settings</Button>
         <Offcanvas show={show} onHide={handleClose}>
             <Offcanvas.Header closeButton>
                 <Offcanvas.Title>Settings</Offcanvas.Title>
             </Offcanvas.Header>
             <Offcanvas.Body>
+                <div>
+                    <h3>Statistics</h3>
+                    <p>Time played (real): {playtime.real}</p>
+                    <p>Time played (total): {playtime.total}</p>
+                </div>
                 <hr />
                 <div>
                     <h3>Gameplay</h3>
@@ -158,21 +218,49 @@ function Settings (props: SettingsProps) {
                             }}
                         />
                     </Form.Group>
-                    {/* <Form.Check
-                        type="switch"
-                        label="Animations"
-                        id="settings-display-animations"
-                        checked={settings.display.animations}
-                        onChange={saveSettings}
-                    /> */}
                     <FormatComponent
                         props={props}
                         show={true}
+                    />
+                    <Form.Check
+                        type="switch"
+                        label="Training area fail popup"
+                        id="settings-data-trainingAreaFailPopup"
+                        checked={settings.display.trainingAreaFailPopup}
+                        onChange={saveSettings}
+                    />
+                    <Form.Check
+                        type="switch"
+                        label="Augment fail popup"
+                        id="settings-data-augmentFailPopup"
+                        checked={settings.display.augmentFailPopup}
+                        onChange={saveSettings}
+                    />
+                    <Form.Check
+                        type="switch"
+                        label="Confirm augment"
+                        id="settings-data-confirmAugment"
+                        checked={settings.display.confirmAugment}
+                        onChange={saveSettings}
                     />
                 </div>
                 <hr />
                 <div>
                     <h3>Data</h3>
+                    <Form.Check
+                        type="switch"
+                        label="Autosave"
+                        id="settings-data-autosave"
+                        checked={settings.data.autosave}
+                        onChange={saveSettings}
+                    />
+                    <Form.Check
+                        type="switch"
+                        label="Save on exit"
+                        id="settings-data-saveOnExit"
+                        checked={settings.data.saveOnExit}
+                        onChange={saveSettings}
+                    />
                     <Button
                         variant="primary"
                         onClick={() => {
@@ -214,7 +302,7 @@ function Settings (props: SettingsProps) {
                 <hr />
                 <div>
                     <h3>Credits</h3>
-                    <p>Version 0.3.0</p>
+                    <p>Version 0.4.0</p>
                     <p>This game was made by <a href="https://github.com/xShadowBlade">xShadowBlade</a></p>
                     <p>It is open source and available on <a href="https://github.com/xShadowBlade/generic-training-sim">GitHub</a>.</p>
                     <p>It is licensed under the <a href="https://github.com/xShadowBlade/generic-training-sim/blob/main/LICENSE">MIT License</a>.</p>

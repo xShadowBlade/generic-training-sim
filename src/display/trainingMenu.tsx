@@ -13,6 +13,7 @@ import { E } from "emath.js";
 import { training, formatTrainingArea, getTrainingArea } from "../features/training";
 import { move, playerState } from "../features/movement";
 import { power } from "../features/stats";
+import { ISettings } from "./settings";
 
 import { IAlerts } from "./global/alerts";
 
@@ -23,6 +24,8 @@ interface TrainingMenuProps {
     // alertPopup: IAlerts,
     setAlertPopup: (alertPopup: IAlerts) => void,
     gameFormat: (value: E) => string,
+    gameFormatTime: (value: E) => string,
+    settings: ISettings,
 }
 
 /**
@@ -30,9 +33,9 @@ interface TrainingMenuProps {
  * @param area - The training area to move to
  * @param props - The training menu props
  */
-function moveToAreaWithCheck (area: number, { setAlertPopup, setCurrentTrainingArea, gameFormat }: Pick<TrainingMenuProps, "setAlertPopup" | "setCurrentTrainingArea" | "gameFormat">) {
+function moveToAreaWithCheck (area: number, { setAlertPopup, setCurrentTrainingArea, gameFormat, settings }: Pick<TrainingMenuProps, "setAlertPopup" | "setCurrentTrainingArea" | "gameFormat" | "settings">) {
     if (area < 0) return;
-    if (!move(area)) {
+    if (!move(area) && settings.display.trainingAreaFailPopup) {
         setAlertPopup({
             title: "Failed to move to area",
             body: `You are not strong enough to train in this area. (You need ${gameFormat(getTrainingArea(area).req)} power)`,
@@ -47,7 +50,7 @@ function moveToAreaWithCheck (area: number, { setAlertPopup, setCurrentTrainingA
  * @returns The training menu component
  */
 function TrainingMenu (props: TrainingMenuProps) {
-    const { renderCount, currentTrainingArea, gameFormat } = props;
+    const { renderCount, currentTrainingArea, gameFormat, settings, gameFormatTime } = props;
 
     const [trainingProgressBar, setTrainingProgressBar] = useState([0, "", ""] as [number, string, string]);
 
@@ -70,7 +73,7 @@ function TrainingMenu (props: TrainingMenuProps) {
 
         // Time remaining
         const playerDiffBetweenAreas = getTrainingArea(playerState[1] + 1).req.sub(playerP);
-        const timeRemaining = E.formats.formatTime(E.max(0, playerDiffBetweenAreas.div(power.static.boost.calculate())));
+        const timeRemaining = gameFormatTime(E.max(0, playerDiffBetweenAreas.div(power.static.boost.calculate())));
         return [percent, timeRemaining, `${gameFormat(power.value)} / ${gameFormat(getTrainingArea(playerState[1] + 1).req)}`];
     }
 

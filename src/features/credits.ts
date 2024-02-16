@@ -12,7 +12,7 @@ credits.static.addUpgrade([
     {
         name: "Basic Stat Boost",
         id: "upg1Credits",
-        cost: n => rounding10(E.pow(1.4, E.scale(E(n), 1e6, 2, 0)).mul(10), 10, 1), // TODO: come up with a better formula
+        cost: n => rounding10(E.pow(1.2, n.pow(1.075)).mul(10), 10, 1), // TODO: come up with a better formula
         maxLevel: E(1000),
         effect: function (level) {
             // console.log(this);

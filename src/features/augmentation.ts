@@ -54,34 +54,24 @@ interface IAugment extends IAugmentInit {
     mulCredits: E;
 }
 
-const augments = ((augment: IAugmentInit[]) => {
-    const out: IAugment[] = augment.map((augment, i) => {
-        return {
-            ...augment,
-            req: i === 0 ? E(0) : rounding10(augmentRequirement(i)),
-            mulPower: i === 0 ? E(1) : rounding10(augmentMultiplierPower(i)),
-            mulCredits: i === 0 ? E(1) : rounding10(augmentMultiplierCredits(i)),
-        };
-    });
-    return out;
-})([
-    {"name": "Initiate Adept", "emoji": "🔰"},
-    {"name": "Tech Savant", "emoji": "🔷"},
-    {"name": "Psi-Warrior", "emoji": "🔮"},
-    {"name": "Cybernetic Vanguard", "emoji": "🤖"},
-    {"name": "Temporal Sovereign", "emoji": "⏳"},
-    {"name": "Nebula Warden", "emoji": "💫"},
-    // {"name": "Astral Overlord", "emoji": "✨"},
-    // {"name": "Stellar Arbiter", "emoji": "🌠"},
-    // {"name": "Eternal Nexus Guardian", "emoji": "🌌"},
-    // {"name": "Quantum Paragon", "emoji": "👑"},
-    // {"name": "Celestial Maestro", "emoji": "🎶"},
-    // {"name": "Astral Sovereign", "emoji": "🌠"},
-    // {"name": "Stellar Virtuoso", "emoji": "💫"},
-    // {"name": "Nebula Luminary", "emoji": "🌌"},
-    // {"name": "Cosmic Mastermind", "emoji": "🧠"},
-    {"name": "Quantum Overlord", "emoji": "🌌"},
-]);
+const augments: IAugmentInit[] = [
+    { name: "Initiate", emoji: "🔰" },
+    { name: "Warrior", emoji: "🔷" },
+    { name: "Vanguard", emoji: "🔮" },
+    { name: "Sovereign", emoji: "🌠" },
+    { name: "Luminary", emoji: "🧠" },
+    { name: "Ethereal", emoji: "🌌" },
+    { name: "Paragon", emoji: "⭐️" },
+    { name: "Overlord", emoji: "👑" },
+    // { name: "Stellar Arbiter", emoji: "🌠" },
+    // { name: "Eternal Nexus Guardian", emoji: "🌌" },
+    // { name: "Quantum Paragon", emoji: "👑" },
+    // { name: "Celestial Maestro", emoji: "🎶" },
+    // { name: "Astral Sovereign", emoji: "🌠" },
+    // { name: "Stellar Virtuoso", emoji: "💫" },
+    // { name: "Nebula Luminary", emoji: "🌌" },
+    // { name: "Cosmic Mastermind", emoji: "🧠" },
+];
 
 /**
  * Function to format an augment.
@@ -90,13 +80,16 @@ const augments = ((augment: IAugmentInit[]) => {
  * @returns - The formatted augment.
  */
 function formatAugment (n: number, formatFn: typeof E.format | ((x: ESource) => string) = E.format): string {
-    let output = "";
-    if (n < augments.length) {
-        output = `${getAugment(n).emoji} | (${n}) ${getAugment(n).name}. Requires ${formatFn(getAugment(n).req)} Power. Power Multiplier: x${formatFn(getAugment(n).mulPower)}. Credits Multiplier: x${formatFn(getAugment(n).mulCredits)}`;
-    } else {
-        output = `${augments[augments.length - 1].emoji} | (${n}) ${augments[augments.length - 1].name} ${E(n - augments.length + 1).toRoman()}. Requires ${formatFn(getAugment(n).req)} Power. Power Multiplier: x${formatFn(getAugment(n).mulPower)}. Credits Multiplier: x${formatFn(getAugment(n).mulCredits)}`;
-    }
-    return output;
+    // let output = "";
+    // if (n < augments.length) {
+    //     output = `${getAugment(n).emoji} | (${n}) ${getAugment(n).name}. Requires ${formatFn(getAugment(n).req)} Power. Power Multiplier: x${formatFn(getAugment(n).mulPower)}. Credits Multiplier: x${formatFn(getAugment(n).mulCredits)}`;
+    // } else {
+    //     output = `${augments[augments.length - 1].emoji} | (${n}) ${augments[augments.length - 1].name} ${E(n - augments.length + 1).toRoman()}. Requires ${formatFn(getAugment(n).req)} Power. Power Multiplier: x${formatFn(getAugment(n).mulPower)}. Credits Multiplier: x${formatFn(getAugment(n).mulCredits)}`;
+    // }
+    // return output;
+    const isExtended = n > augments.length - 1;
+    const { name, emoji, req, mulPower, mulCredits } = getAugment(n);
+    return `${emoji} | (${n}) ${name} ${isExtended ? E(n - augments.length + 2).toRoman() : ""}. Requires ${formatFn(req)} Power. Power Multiplier: x${formatFn(mulPower)}. Credits Multiplier: x${formatFn(mulCredits)}`;
 }
 
 /**
@@ -105,20 +98,15 @@ function formatAugment (n: number, formatFn: typeof E.format | ((x: ESource) => 
  * @returns - The augment.
  */
 function getAugment (n: number): IAugment {
-    let output: IAugment;
-    if (n <= augments.length - 1) {
-        output = augments[n];
-    } else {
-        // Extended augments
-        output = {
-            name: augments[augments.length - 1].name,
-            emoji: augments[augments.length - 1].emoji,
-            req: rounding10(augmentRequirement(n)),
-            mulPower: rounding10(augmentMultiplierPower(n)),
-            mulCredits: rounding10(augmentMultiplierCredits(n)),
-        };
-    }
-    return output;
+    // let output: IAugment;
+    const isExtended = n > augments.length - 1;
+    return {
+        name: augments[isExtended ? augments.length - 1 : n].name,
+        emoji: augments[isExtended ? augments.length - 1 : n].emoji,
+        req: n !== 0 ? rounding10(augmentRequirement(n)) : E(0),
+        mulPower: n !== 0 ? rounding10(augmentMultiplierPower(n)) : E(1),
+        mulCredits: n !== 0 ? rounding10(augmentMultiplierCredits(n)) : E(1),
+    };
 }
 
 // augments.forEach((augment, i) => {
@@ -139,19 +127,16 @@ const checkAugment = (augmentN: number): boolean => power.value.gt(getAugment(au
 function changeAugment (augmentN: number, reset = true, force = false, stateFn?: (state: string) => void, formatFn: typeof E.format | ((x: ESource) => string) = E.format): boolean {
     // console.log(power.value.gt(getTrainingArea(areaN).req));
     if (!force && !checkAugment(augmentN)) {
-        // console.log(`You are not strong enough for this augment. (You need ${getAugment(augmentN).req.format()} power)`);
         return false;
     }
     currentAugment = augmentN;
     Game.dataManager.setData("currentAugment", augmentN);
-    // playerState = ["idle", augmentN];
-    // console.log(getTrainingArea(areaN).mul);
     // Reset power
     if (reset) {
         // power.static.value = E(0);
         power.static.reset();
         move(0, true);
-        if (stateFn) stateFn(formatTrainingArea(0, formatFn));
+        stateFn?.(formatTrainingArea(0, formatFn));
     }
     power.static.boost.setBoost(
         "augment",
