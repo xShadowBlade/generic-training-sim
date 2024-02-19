@@ -7,19 +7,17 @@ import Form from "react-bootstrap/Form";
 import { E } from "emath.js";
 import { keys, KeyBinding } from "emath.js/game";
 
-import Game from "../../game";
-import { playerState } from "../../features/movement";
-// import { changeAugment } from "../features/augmentation";
+import Game, { player } from "../../game";
+// import { playerState } from "../../features/movement";
 import { ISettings } from "../settings";
-// import { credits } from "features/credits";
-// import { power } from "features/stats";
 import { moveToAreaWithCheck } from "../trainingMenu";
-
 import { buyBasicStatUpg } from "../statsMenu";
 import { TrainingMenuProps } from "../trainingMenu";
+import { gameFormatClass } from "./format";
 
 interface IHotkey {
     name: string;
+    // name: keyof typeof defaultHotkeys;
     // description?: string;
     effect?: (props: HotkeysProps) => void;
 }
@@ -63,17 +61,17 @@ const hotkeys: IHotkey[] = [
     {
         name: "Move to Previous Area", // why would you want to go back?
         effect: (props) => {
-            const newArea = playerState[1] - 1;
+            const newArea = player.training.area - 1;
             // console.log(newArea);
-            moveToAreaWithCheck(newArea, props);
+            moveToAreaWithCheck("power", newArea, props);
         },
     },
     {
         name: "Move to Next Area",
         effect: (props) => {
-            const newArea = playerState[1] + 1;
+            const newArea = player.training.area + 1;
             // console.log(newArea);
-            moveToAreaWithCheck(newArea, props);
+            moveToAreaWithCheck("power", newArea, props);
         },
     },
 ];
@@ -82,7 +80,7 @@ interface HotkeysProps extends Pick<TrainingMenuProps, "setAlertPopup" | "setCur
     settings: ISettings;
     setSettings: (settings: ISettings) => void;
     setBasicStatUpgCost: (basicStatUpgCost: { credits: E, power: E }) => void;
-    gameFormat: (x: E) => string;
+    gameFormats: gameFormatClass;
 
     // setAlertPopup: (alertPopup: IAlerts) => void;
     // setCurrentTrainingArea: (area: string) => void;

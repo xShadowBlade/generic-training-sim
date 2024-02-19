@@ -2,15 +2,15 @@
  * @file Time
  */
 import { E, ESource } from "emath.js";
-import Game from "../game";
+import Game, { player } from "../game";
 
-import { power } from "./stats";
+import { power, body, mind } from "./stats";
 import { credits } from "./credits";
+// import { playerState } from "./movement";
 
 Game.dataManager.setData("timePlayed", E(0));
 Game.dataManager.setData("timePlayedReal", E(0));
 Game.dataManager.setData("timeLastPlayed", E(0));
-
 /**
  * Function to update the time played.
  * @param dt - dt
@@ -40,6 +40,8 @@ interface IOfflineProgress {
     dt: E;
     power: E;
     credits: E;
+    body: E;
+    mind: E;
 }
 
 /**
@@ -58,18 +60,27 @@ function offlineProgress (): IOfflineProgress {
             dt: E(0),
             power: E(0),
             credits: E(0),
+            body: E(0),
+            mind: E(0),
         };
     }
     updateTimePlayed(dt.toNumber(), false);
     updateTimeLastPlayed();
 
-    const powerGain = power.static.gain(dt);
+    // const currentAreaType = playerState[1];
+    const currentAreaType = player.training.type;
+
+    // const powerGain = power.static.gain(dt);
     const creditsGain = credits.static.gain(dt);
 
     return {
         dt,
-        power: powerGain,
+        // power: powerGain,
         credits: creditsGain,
+        power: currentAreaType === "power" ? power.static.gain(dt) : E(0),
+        // credits: currentAreaType === "credits" ? credits.static.gain(dt) : E(0),
+        body: currentAreaType === "body" ? body.static.gain(dt) : E(0),
+        mind: currentAreaType === "mind" ? mind.static.gain(dt) : E(0),
     };
 }
 

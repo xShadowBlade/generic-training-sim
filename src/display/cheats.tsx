@@ -10,8 +10,8 @@ import Form from "react-bootstrap/Form";
 import { power } from "../features/stats";
 import { credits } from "../features/credits"; // TODO: fix
 import { move } from "../features/movement";
-import { formatTrainingArea } from "../features/training";
-import { changeAugment, formatAugment } from "../features/augmentation";
+// import { formatTrainingArea } from "../features/training";
+// import { changeAugment, formatAugment } from "../features/augmentation";
 import { updateTimePlayed } from "../features/time";
 // import Game from "../game";
 import { E } from "emath.js";
@@ -35,7 +35,8 @@ function CheatsMenu ({ renderCount, setCurrentTrainingArea, setCurrentAugmentStr
         <Accordion.Item eventKey="3">
             <Accordion.Header>Cheats</Accordion.Header>
             <Accordion.Body>
-                <div style={{
+                Sorry, cheats are temporarily disabled. (use a save editor [hint: use LZString] or something idc)
+                {/* <div style={{
                     display: "flex",
                 }}>
                     <FloatingLabel label="Timewarp Time (ms)">
@@ -92,7 +93,7 @@ function CheatsMenu ({ renderCount, setCurrentTrainingArea, setCurrentAugmentStr
                         );
                         setCurrentAugmentStr(formatAugment(value));
                     }}>Change Augment</Button>
-                </div>
+                </div> */}
             </Accordion.Body>
         </Accordion.Item>
     );

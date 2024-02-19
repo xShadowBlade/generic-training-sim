@@ -10,15 +10,14 @@ import Accordion from "react-bootstrap/Accordion";
 import { E, ESource } from "emath.js";
 import "emath.js/game";
 
-import Game, { gameConfig } from "./game";
+import Game, { gameConfig, player } from "./game";
 
-import { power } from "./features/stats";
+import { power, mind, body, StatsStored } from "./features/stats";
 import { credits } from "./features/credits";
-import { formatTrainingArea } from "./features/training";
-import { move, playerState } from "./features/movement";
+import { training } from "./features/training";
+import { move } from "./features/movement";
 import "./features/credits";
-import { changeAugment, formatAugment } from "./features/augmentation";
-
+import { powerAugment, changePowerAugment } from "./features/augmentation";
 import { updateTimeLastPlayed, offlineProgress, IOfflineProgress } from "./features/time";
 
 import Settings, { ISettings, defaultSettings } from "./display/settings";
@@ -46,22 +45,36 @@ Game.eventManager.setEvent("save", "interval", 30e3, () => {
 
 Game.dataManager.loadData();
 
-// const progress = offlineProgress();
+// Merge old save data
+// const currentArea = Game.dataManager.getData("currentArea") ?? 0;
+Object.assign(player, Game.dataManager.getData("player") ?? {});
+Object.assign(player, {
+    training: {
+        type: "power",
+        area: Game.dataManager.getData("currentArea") ?? 0,
+    },
+    augment: {
+        current: Game.dataManager.getData("currentAugment") ?? 0,
+    },
+});
 
-const currentArea = Game.dataManager.getData("currentArea") ?? 0;
-move(currentArea, true);
-const currentAugment = Game.dataManager.getData("currentAugment") ?? 0;
-changeAugment(currentAugment, false, true);
+// const progress = offlineProgress();
+const currentArea = player.training.area;
+move[player.training.type](currentArea, true);
+// const currentAugment = Game.dataManager.getData("currentAugment") ?? 0;
+const currentAugment = player.augment.current;
+changePowerAugment(currentAugment, false, true);
 
 import "./css/bootstrap.min.css";
 
 import StatsMenu from "./display/statsMenu";
 import TrainingMenu from "./display/trainingMenu";
 import AugmentMenu from "./display/augmentsMenu";
+// TODO: CheatsMenu
 import CheatsMenu from "./display/cheats";
 import OfflineProgress from "./display/global/offlineProgress";
 import Alerts, { IAlerts, defaultAlerts } from "./display/global/alerts";
-import { gameFormatProps, gameFormatGainProps } from "./display/global/format";
+import { gameFormatClass } from "./display/global/format";
 // import Hotkeys from "./display/hotkeys";
 
 /**
@@ -74,19 +87,29 @@ function App () {
     const [settings, setSettings] = useState<ISettings>(Game.dataManager.getData("settings") ?? defaultSettings);
     const [alertPopup, setAlertPopup] = useState(defaultAlerts);
 
-    const gameFormat = (x: ESource) => gameFormatProps(x, { settings });
-    const gameFormatGain = (x: ESource, gain: ESource) => gameFormatGainProps(x, gain, { settings });
-    const gameFormatTime = (x: ESource) => gameFormatProps(x, { settings, time: true });
+    const gameFormats = new gameFormatClass({ settings: settings ?? defaultSettings });
+    // console.log(gameFormats);
+
+    // TODO
 
     // Stats
+    /** @deprecated */
     const [powerStored, setPowerStored] = useState(power.value);
+    /** @deprecated */
     const [creditsStored, setCreditsStored] = useState(credits.value);
 
+    const [statsStored, setStatsStored] = useState<StatsStored>({
+        power: power.value,
+        mind: mind.value,
+        body: body.value,
+        credits: credits.value,
+    });
+
     // Training
-    const [currentTrainingArea, setCurrentTrainingArea] = useState(formatTrainingArea(currentArea, gameFormat));
+    const [currentTrainingArea, setCurrentTrainingArea] = useState(training.power.formatArea(currentArea, gameFormats.format));
 
     // Augmentation
-    const [currentAugmentStr, setCurrentAugmentStr] = useState(formatAugment(currentAugment, gameFormat));
+    const [currentAugmentStr, setCurrentAugmentStr] = useState(powerAugment.formatArea(currentAugment, gameFormats.format));
 
     // Basic stat upgrade
     const [basicStatUpgCost, setBasicStatUpgCost] = useState({
@@ -101,8 +124,8 @@ function App () {
 
     // Rerender the game when the format changes
     useEffect(() => {
-        setCurrentTrainingArea(formatTrainingArea(playerState[1], gameFormat));
-        setCurrentAugmentStr(formatAugment(currentAugment, gameFormat));
+        setCurrentTrainingArea(training.power.formatArea(player.training.area, gameFormats.format));
+        setCurrentAugmentStr(powerAugment.formatArea(currentAugment, gameFormats.format));
     }, [settings.display.format]);
 
     // Run the render event every frame
@@ -128,15 +151,21 @@ function App () {
     // Update the power and credits values every frame
     useEffect(() => {
         // Update the power and credits values every frame
-        setPowerStored(power.value);
-        setCreditsStored(credits.value);
+        // setPowerStored(power.value);
+        // setCreditsStored(credits.value);
+        setStatsStored({
+            power: power.value,
+            mind: mind.value,
+            body: body.value,
+            credits: credits.value,
+        });
     }, [renderCount]);
 
     return (<>
         {progress && <OfflineProgress
             progress={progress}
-            gameFormat={gameFormat}
-            gameFormatTime={gameFormatTime}
+            gameFormats={gameFormats}
+            // gameFormatTime={gameFormatTime}
         />}
         <Alerts
             alertPopup={alertPopup}
@@ -145,10 +174,11 @@ function App () {
         <Accordion defaultActiveKey={["0"]} alwaysOpen>
             <StatsMenu
                 renderCount={renderCount}
-                gameFormat={gameFormat}
-                gameFormatGain={gameFormatGain}
-                powerStored={powerStored}
-                creditsStored={creditsStored}
+                gameFormats={gameFormats}
+                // gameFormatGain={gameFormatGain}
+                // powerStored={powerStored}
+                // creditsStored={creditsStored}
+                statsStored={statsStored}
                 basicStatUpgCost={basicStatUpgCost}
                 setBasicStatUpgCost={setBasicStatUpgCost}
             />
@@ -157,9 +187,9 @@ function App () {
                 currentTrainingArea={currentTrainingArea}
                 setCurrentTrainingArea={setCurrentTrainingArea}
                 setAlertPopup={setAlertPopup}
-                gameFormat={gameFormat}
+                gameFormats={gameFormats}
                 settings={settings}
-                gameFormatTime={gameFormatTime}
+                // gameFormatTime={gameFormatTime}
             />
             <AugmentMenu
                 renderCount={renderCount}
@@ -167,9 +197,9 @@ function App () {
                 currentAugmentStr={currentAugmentStr}
                 setCurrentAugmentStr={setCurrentAugmentStr}
                 setAlertPopup={setAlertPopup}
-                gameFormat={gameFormat}
+                gameFormats={gameFormats}
                 settings={settings}
-                gameFormatTime={gameFormatTime}
+                // gameFormatTime={gameFormatTime}
             />
             {settings.gameplay.cheats && <CheatsMenu
                 renderCount={renderCount}
@@ -184,8 +214,8 @@ function App () {
             setBasicStatUpgCost={setBasicStatUpgCost}
             setAlertPopup={setAlertPopup}
             setCurrentTrainingArea={setCurrentTrainingArea}
-            gameFormat={gameFormat}
-            gameFormatTime={gameFormatTime}
+            gameFormats={gameFormats}
+            // gameFormat={gameFormat} // Add the missing gameFormat property
         />
     </>);
 }

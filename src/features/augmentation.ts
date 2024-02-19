@@ -2,13 +2,15 @@
  * @file Features/Augmentation - Augmentation
  */
 import { E, ESource } from "emath.js";
-import { rounding10, formatTrainingArea } from "./training";
+import { gameCurrency } from "emath.js/game";
+import { rounding10 } from "./training";
+import { multiplierBasedArea, BaseArea } from "../utility/area";
 import { power } from "./stats";
 import { credits } from "./credits";
-import Game from "../game";
+import Game, { player } from "../game";
 import { move } from "./movement";
 
-let currentAugment = 0;
+// let currentAugment = 0;
 
 /**
  * Function to calculate the requirement for a given augment.
@@ -19,8 +21,8 @@ function augmentRequirement (x: ESource) {
     x = E(x);
     const base = x.mul(30).add(E(2).pow(x));
     const exponent = x.mul(5);
-    const result = E.pow(base, exponent).mul("250e12");
-    return result;
+    const result = rounding10(E.pow(base, exponent).mul("250e12"));
+    return result.neq(0) ? result : E(0);
 }
 
 /**
@@ -30,7 +32,17 @@ function augmentRequirement (x: ESource) {
  */
 function augmentMultiplierPower (x: ESource) {
     x = E(x);
-    return E.pow(2, x.add(x.pow(1.4)).pow(1.5)).mul(10);
+    return x.neq(0) ? rounding10(E.pow(2, x.add(x.pow(1.4)).pow(1.5)).mul(10)) : E(1);
+}
+
+/**
+ * Function to calculate the multiplier for a given augment.
+ * @param x - The augment to calculate the multiplier for.
+ * @returns - The multiplier for the given augment.
+ */
+function augmentMultiplerSecondary (x: ESource) {
+    x = E(x);
+    return x.neq(0) ? rounding10(E.pow(2, x.mul(2).pow(1.3)).mul(10)) : E(1);
 }
 
 /**
@@ -40,21 +52,10 @@ function augmentMultiplierPower (x: ESource) {
  */
 function augmentMultiplierCredits (x: ESource) {
     x = E(x);
-    return E.pow(2, x.mul(2).pow(1.3));
+    return x.neq(0) ? rounding10(E.pow(2, x.mul(2).pow(1.3)).mul(10)) : E(1);
 }
 
-interface IAugmentInit {
-    name: string;
-    emoji: string;
-}
-
-interface IAugment extends IAugmentInit {
-    req: E;
-    mulPower: E;
-    mulCredits: E;
-}
-
-const augments: IAugmentInit[] = [
+const augments: BaseArea[] = [
     { name: "Initiate", emoji: "🔰" },
     { name: "Warrior", emoji: "🔷" },
     { name: "Vanguard", emoji: "🔮" },
@@ -73,47 +74,57 @@ const augments: IAugmentInit[] = [
     // { name: "Cosmic Mastermind", emoji: "🧠" },
 ];
 
-/**
- * Function to format an augment.
- * @param n - The augment to format.
- * @param formatFn - The format function to use.
- * @returns - The formatted augment.
- */
-function formatAugment (n: number, formatFn: typeof E.format | ((x: ESource) => string) = E.format): string {
-    // let output = "";
-    // if (n < augments.length) {
-    //     output = `${getAugment(n).emoji} | (${n}) ${getAugment(n).name}. Requires ${formatFn(getAugment(n).req)} Power. Power Multiplier: x${formatFn(getAugment(n).mulPower)}. Credits Multiplier: x${formatFn(getAugment(n).mulCredits)}`;
-    // } else {
-    //     output = `${augments[augments.length - 1].emoji} | (${n}) ${augments[augments.length - 1].name} ${E(n - augments.length + 1).toRoman()}. Requires ${formatFn(getAugment(n).req)} Power. Power Multiplier: x${formatFn(getAugment(n).mulPower)}. Credits Multiplier: x${formatFn(getAugment(n).mulCredits)}`;
-    // }
-    // return output;
-    const isExtended = n > augments.length - 1;
-    const { name, emoji, req, mulPower, mulCredits } = getAugment(n);
-    return `${emoji} | (${n}) ${name} ${isExtended ? E(n - augments.length + 2).toRoman() : ""}. Requires ${formatFn(req)} Power. Power Multiplier: x${formatFn(mulPower)}. Credits Multiplier: x${formatFn(mulCredits)}`;
-}
+// /**
+//  * Function to format an augment.
+//  * @param n - The augment to format.
+//  * @param formatFn - The format function to use.
+//  * @returns - The formatted augment.
+//  */
+// function formatAugment (n: number, formatFn: typeof E.format | ((x: ESource) => string) = E.format): string {
+//     // let output = "";
+//     // if (n < augments.length) {
+//     //     output = `${getAugment(n).emoji} | (${n}) ${getAugment(n).name}. Requires ${formatFn(getAugment(n).req)} Power. Power Multiplier: x${formatFn(getAugment(n).mulPower)}. Credits Multiplier: x${formatFn(getAugment(n).mulCredits)}`;
+//     // } else {
+//     //     output = `${augments[augments.length - 1].emoji} | (${n}) ${augments[augments.length - 1].name} ${E(n - augments.length + 1).toRoman()}. Requires ${formatFn(getAugment(n).req)} Power. Power Multiplier: x${formatFn(getAugment(n).mulPower)}. Credits Multiplier: x${formatFn(getAugment(n).mulCredits)}`;
+//     // }
+//     // return output;
+//     const isExtended = n > augments.length - 1;
+//     const { name, emoji, req, mulPower, mulCredits } = getAugment(n);
+//     return `${emoji} | (${n}) ${name} ${isExtended ? E(n - augments.length + 2).toRoman() : ""}. Requires ${formatFn(req)} Power. Power Multiplier: x${formatFn(mulPower)}. Credits Multiplier: x${formatFn(mulCredits)}`;
+// }
 
-/**
- * Function to get an augment.
- * @param n - The augment to get.
- * @returns - The augment.
- */
-function getAugment (n: number): IAugment {
-    // let output: IAugment;
-    const isExtended = n > augments.length - 1;
-    return {
-        name: augments[isExtended ? augments.length - 1 : n].name,
-        emoji: augments[isExtended ? augments.length - 1 : n].emoji,
-        req: n !== 0 ? rounding10(augmentRequirement(n)) : E(0),
-        mulPower: n !== 0 ? rounding10(augmentMultiplierPower(n)) : E(1),
-        mulCredits: n !== 0 ? rounding10(augmentMultiplierCredits(n)) : E(1),
-    };
-}
+// /**
+//  * Function to get an augment.
+//  * @param n - The augment to get.
+//  * @returns - The augment.
+//  */
+// function getAugment (n: number): IAugment {
+//     // let output: IAugment;
+//     const isExtended = n > augments.length - 1;
+//     return {
+//         name: augments[isExtended ? augments.length - 1 : n].name,
+//         emoji: augments[isExtended ? augments.length - 1 : n].emoji,
+//         req: n !== 0 ? rounding10(augmentRequirement(n)) : E(0),
+//         mulPower: n !== 0 ? rounding10(augmentMultiplierPower(n)) : E(1),
+//         mulCredits: n !== 0 ? rounding10(augmentMultiplierCredits(n)) : E(1),
+//     };
+// }
+
+const augmentMulti = {
+    Power: augmentMultiplierPower,
+    // TODO: Create unique multipliers for mind and body
+    Body: augmentMultiplerSecondary,
+    Mind: augmentMultiplerSecondary,
+    Credits: augmentMultiplierCredits,
+};
+
+const powerAugment = new multiplierBasedArea<typeof augmentMulti>(power, augments, augmentRequirement, augmentMulti);
 
 // augments.forEach((augment, i) => {
 //     console.log(i, augment.req.format(), augment.mulPower.format(), augment.mulCredits.format());
 // });
 
-const checkAugment = (augmentN: number): boolean => power.value.gt(getAugment(augmentN).req);
+const checkAugment = (augmentN: number): boolean => power.value.gt(powerAugment.getArea(augmentN).req);
 
 /**
  * Function to change the augment.
@@ -124,26 +135,27 @@ const checkAugment = (augmentN: number): boolean => power.value.gt(getAugment(au
  * @param formatFn - The format function to use.
  * @returns - Whether the augment was changed.
  */
-function changeAugment (augmentN: number, reset = true, force = false, stateFn?: (state: string) => void, formatFn: typeof E.format | ((x: ESource) => string) = E.format): boolean {
+function changePowerAugment (augmentN: number, reset = true, force = false, stateFn?: (state: string) => void, formatFn: typeof E.format | ((x: ESource) => string) = E.format): boolean {
     // console.log(power.value.gt(getTrainingArea(areaN).req));
     if (!force && !checkAugment(augmentN)) {
         return false;
     }
-    currentAugment = augmentN;
+    // currentAugment = augmentN;
+    player.augment.current = augmentN;
     Game.dataManager.setData("currentAugment", augmentN);
     // Reset power
     if (reset) {
         // power.static.value = E(0);
         power.static.reset();
-        move(0, true);
-        stateFn?.(formatTrainingArea(0, formatFn));
+        move.power(0, true);
+        stateFn?.(powerAugment.formatArea(0, formatFn));
     }
     power.static.boost.setBoost(
         "augment",
         "Augment",
         "Boost from augment",
         (n) => {
-            return n.mul(getAugment(augmentN).mulPower);
+            return n.mul(powerAugment.getArea(augmentN).multipliers.Power);
         },
         3,
     );
@@ -152,16 +164,16 @@ function changeAugment (augmentN: number, reset = true, force = false, stateFn?:
         "Augment",
         "Boost from augment",
         (n) => {
-            return n.mul(getAugment(augmentN).mulCredits);
+            return n.mul(powerAugment.getArea(augmentN).multipliers.Credits);
         },
         2,
     );
     // console.log(formatAugment(augmentN));
     return true;
 }
-changeAugment(0, true);
+changePowerAugment(0, true);
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-if (Game.config.mode === "development") (window as any)["changeAugment"] = changeAugment;
+if (Game.config.mode === "development") (window as any)["changeAugment"] = changePowerAugment;
 
-export { augments, IAugment, IAugmentInit, formatAugment, getAugment, changeAugment, checkAugment, currentAugment };
+export { powerAugment, augments, changePowerAugment, checkAugment };

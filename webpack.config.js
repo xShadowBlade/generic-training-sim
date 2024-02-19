@@ -48,7 +48,7 @@ module.exports = (env, argv) => {
                     loader: "esbuild-loader",
                     options: {
                     // JavaScript version to compile to
-                        target: "es2015",
+                        target: "es2017",
                         tsconfig: "./tsconfig.json",
                     },
                 },
@@ -69,6 +69,9 @@ module.exports = (env, argv) => {
             minimizer: [
                 new EsbuildPlugin({
                     target: "es2015", // Syntax to transpile to (see options below for possible values)
+                    // loader: "tsx", // Specify the loader for TypeScript files
+                    // minify: true, // Enable minification
+                    // format: "esm", // Generate ES modules (ESM)
                 }),
                 new CssMinimizerPlugin(),
             ],

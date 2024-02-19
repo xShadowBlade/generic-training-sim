@@ -8,17 +8,21 @@ import Form from "react-bootstrap/Form";
 // import Button from "react-bootstrap/Button";
 import { E, FormatType, FormatTypeList, ESource } from "emath.js";
 
-import { ISettings } from "../settings";
+import { ISettings, defaultSettings } from "../settings";
 
-const gameFormatProps = (value: ESource, props: Pick<FormatComponentProps, "settings"> & { time?: boolean }): string => {
+const gameFormatProps = (value: ESource, props: Pick<FormatComponentProps, "settings"> & { time?: boolean, multi?: boolean }): string => {
     if (props.time) {
         // return E.formatTime(value, 2, 9, props.settings.display.format ?? "mixed_sc");
         switch (props.settings.display.timeFormat) {
         case "short":
-            return E.formats.formatTime(value, 1, props.settings.display.format ?? "mixed_sc");
+            return E.formats.formatTime(value, 2, props.settings.display.format ?? "mixed_sc");
         case "long":
             return E.formats.formatTimeLong(value, true, 0, 9, props.settings.display.format ?? "mixed_sc");
         }
+    }
+    if (props.multi) {
+        // TODO: Fix params
+        return E.formats.formatMult(value, 2);
     }
     return E.format(value, 2, 9, props.settings.display.format ?? "mixed_sc");
 };
@@ -26,6 +30,40 @@ const gameFormatProps = (value: ESource, props: Pick<FormatComponentProps, "sett
 const gameFormatGainProps = (value: ESource, gain: ESource, props: Pick<FormatComponentProps, "settings">): string => {
     return E.formatGain(value, gain, props.settings.display.format ?? "mixed_sc");
 };
+
+/**
+ * Class to represent a game format.
+ */
+class gameFormatClass {
+    public props: Pick<FormatComponentProps, "settings">;
+    constructor (props: Pick<FormatComponentProps, "settings">) {
+        // console.log("gameFormatClass constructor", props);
+        this.props = props;
+        // console.log("gameFormatClass constructor2", this.props);
+        
+    }
+    // public format (x: ESource) {
+    //     console.log("gameFormatClass constructor3", this);
+    //     return gameFormatProps(x, this.props);
+    // }
+
+    // public gain (x: ESource, gain: ESource) {
+    //     return gameFormatGainProps(x, gain, this.props);
+    // }
+
+    // public time (x: ESource) {
+    //     return gameFormatProps(x, { ...this.props, time: true });
+    // }
+
+    // public multi (x: ESource) {
+    //     return gameFormatProps(x, { ...this.props, multi: true });
+    // }
+
+    public format = (x: ESource) => gameFormatProps(x, this.props);
+    public gain = (x: ESource, gain: ESource) => gameFormatGainProps(x, gain, this.props);
+    public time = (x: ESource) => gameFormatProps(x, { ...this.props, time: true });
+    public multi = (x: ESource) => gameFormatProps(x, { ...this.props, multi: true });
+}
 
 interface FormatComponentProps {
     settings: ISettings;
@@ -143,4 +181,4 @@ function FormatComponent ({ show, props }: { show: boolean, props: FormatCompone
 }
 
 export default FormatComponent;
-export { FormatComponentProps, gameFormatProps, gameFormatGainProps, formatOptions, formatTimeOptions, FormatOption, FormatTimeType };
+export { FormatComponentProps, gameFormatProps, gameFormatGainProps, formatOptions, formatTimeOptions, FormatOption, FormatTimeType, gameFormatClass };

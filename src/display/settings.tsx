@@ -14,7 +14,7 @@ import { E, FormatType, FormatTypeList } from "emath.js";
 import Game, { gameConfig } from "../game";
 
 import Hotkeys, { IHotkeyData, defaultHotkeys, HotkeysProps, updateHotkeys } from "./global/hotkeys";
-import FormatComponent, { FormatComponentProps, FormatTimeType } from "./global/format";
+import FormatComponent, { FormatComponentProps, FormatTimeType, gameFormatClass } from "./global/format";
 
 interface ISettings {
     gameplay: {
@@ -62,7 +62,7 @@ interface SettingsProps extends HotkeysProps, FormatComponentProps {
     settings: ISettings;
     setSettings: (settings: ISettings) => void;
     renderCount: number;
-    gameFormatTime: (value: E) => string;
+    gameFormats: gameFormatClass;
 }
 
 // eslint-disable-next-line jsdoc/require-param
@@ -70,7 +70,7 @@ interface SettingsProps extends HotkeysProps, FormatComponentProps {
  * @returns The settings component
  */
 function Settings (props: SettingsProps) {
-    const { settings, setSettings, renderCount, gameFormatTime } = props;
+    const { settings, setSettings, renderCount, gameFormats } = props;
     const [show, setShow] = useState(false);
     const [playtime, setPlaytime] = useState({
         real: "",
@@ -142,8 +142,8 @@ function Settings (props: SettingsProps) {
     // Update playtime
     useEffect(() => {
         setPlaytime({
-            real: gameFormatTime(Game.dataManager.getData("timePlayedReal").div(1000) ?? 0),
-            total: gameFormatTime(Game.dataManager.getData("timePlayed").div(1000) ?? 0),
+            real: gameFormats.time(Game.dataManager.getData("timePlayedReal").div(1000) ?? 0),
+            total: gameFormats.time(Game.dataManager.getData("timePlayed").div(1000) ?? 0),
         });
     }, [renderCount]);
 
