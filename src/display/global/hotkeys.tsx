@@ -44,15 +44,28 @@ const defaultHotkeys: IHotkeyData[] = [
         name: "Move to Next Area",
         key: "c",
     },
+
+    {
+        name: "Move to Power Areas",
+        key: "b",
+    },
+    {
+        name: "Move to Body Areas",
+        key: "n",
+    },
+    {
+        name: "Move to Mind Areas",
+        key: "m",
+    },
 ];
 
 const hotkeys: IHotkey[] = [
     {
         name: "Buy Upgrade",
-        effect: (props) => {
-            // console.log("buy upgrade");
-            buyBasicStatUpg(props);
-        },
+        // effect: (props) => {
+        //     // console.log("buy upgrade");
+        //     buyBasicStatUpg(props);
+        // },
     },
     // {
     //     name: "Buy Augment",
@@ -61,17 +74,35 @@ const hotkeys: IHotkey[] = [
     {
         name: "Move to Previous Area", // why would you want to go back?
         effect: (props) => {
-            const newArea = player.training.area - 1;
+            const newArea = player.training[`${player.training.current}Area`] - 1;
             // console.log(newArea);
-            moveToAreaWithCheck("power", newArea, props);
+            moveToAreaWithCheck(player.training.current, newArea, props);
         },
     },
     {
         name: "Move to Next Area",
         effect: (props) => {
-            const newArea = player.training.area + 1;
+            const newArea = player.training[`${player.training.current}Area`] + 1;
             // console.log(newArea);
-            moveToAreaWithCheck("power", newArea, props);
+            moveToAreaWithCheck(player.training.current, newArea, props);
+        },
+    },
+    {
+        name: "Move to Power Areas",
+        effect: (props) => {
+            moveToAreaWithCheck("power", player.training.powerArea, props);
+        },
+    },
+    {
+        name: "Move to Body Areas",
+        effect: (props) => {
+            moveToAreaWithCheck("body", player.training.bodyArea, props);
+        },
+    },
+    {
+        name: "Move to Mind Areas",
+        effect: (props) => {
+            moveToAreaWithCheck("mind", player.training.mindArea, props);
         },
     },
 ];
@@ -79,7 +110,7 @@ const hotkeys: IHotkey[] = [
 interface HotkeysProps extends Pick<TrainingMenuProps, "setAlertPopup" | "setCurrentTrainingArea"> {
     settings: ISettings;
     setSettings: (settings: ISettings) => void;
-    setBasicStatUpgCost: (basicStatUpgCost: { credits: E, power: E }) => void;
+    // setBasicStatUpgCost: (basicStatUpgCost: { credits: E, power: E }) => void;
     gameFormats: gameFormatClass;
 
     // setAlertPopup: (alertPopup: IAlerts) => void;
@@ -133,7 +164,7 @@ function Hotkeys ({ props }: { props: HotkeysProps }) {
             out.push(<Form.Group key={`settings-hotkey-${i}`} controlId={`settings-hotkey-${i}`}>
                 <Form.Label>{hotkeys[i].name}</Form.Label>
                 <Form.Select
-                    value={(settings.hotkeys ?? defaultHotkeys)[i].key}
+                    value={(settings.hotkeys ?? defaultHotkeys)[i]?.key}
                     onChange={(e) => {
                         console.log(e.target.value);
                         const newSettings = { ...settings };

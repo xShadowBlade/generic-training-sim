@@ -20,14 +20,25 @@ const Game = new game({
 const player = {
     name: "Player", // TODO: Name
     training: {
-        type: "power" as AreaType,
-        area: 0,
+        // type: "power" as AreaType,
+        // area: 0,
+
+        current: "power" as AreaType,
+        powerArea: 0,
+        mindArea: 0,
+        bodyArea: 0,
     },
     augment: {
         current: 0,
     },
 };
 Game.dataManager.setData("player", player);
+
+// TODO: Object.defineProperty
+// Object.defineProperty(this, "player", {
+//     get: () => Game.dataManager.getData("player"),
+//     set: (val) => Game.dataManager.setData("player", val),
+// });
 
 /** debug */
 const gameConfig = {

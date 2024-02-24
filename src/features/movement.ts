@@ -147,13 +147,20 @@ function moveArea (areaType: AreaType, areaN: number, force = false): boolean {
     if (!force && currency.value.lt(trainingArea.req)) {
         return false;
     }
-
+    // Game.dataManager.setData("currentArea", areaN);
     // playerState = ["idle", areaType, areaN];
+    // player.training = {
+    //     type: areaType,
+    //     area: areaN,
+    // };
+    // player.training.area = areaN;
+    // player.training.type = areaType;
     player.training = {
-        type: areaType,
-        area: areaN,
+        ...player.training,
+        current: areaType,
+        [`${areaType}Area`]: areaN,
     };
-    Game.dataManager.setData("currentArea", areaN);
+    Game.dataManager.setData("player", player);
 
     currency.static.boost.setBoost(
         "trainingArea",
@@ -179,9 +186,9 @@ const move = {
 // movePowerArea(0, true);
 // moveMindArea(0, true);
 // moveBodyArea(0, true);
-move.power(0, true);
-move.mind(0, true);
-move.body(0, true);
+// move.power(0, true);
+// move.mind(0, true);
+// move.body(0, true);
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 // if (Game.config.mode === "development") (window as any)["move"] = move;

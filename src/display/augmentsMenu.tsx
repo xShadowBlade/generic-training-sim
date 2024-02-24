@@ -71,7 +71,7 @@ function AugmentMenu (props: IAugmentMenuProps) {
         return out;
     }
 
-    const updateAugment = () => setCurrentAugmentStr(formatAugment(currentAugment, format));
+    const updateAugment = () => setCurrentAugmentStr(formatAugment(currentAugment + 1, format));
 
     /**
      * Renders the training area progress bars

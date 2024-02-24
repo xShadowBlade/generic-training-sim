@@ -7,14 +7,15 @@ import Button from "react-bootstrap/Button";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Form from "react-bootstrap/Form";
 
-import { power } from "../features/stats";
-import { credits } from "../features/credits"; // TODO: fix
+import { gainStats } from "../features/stats";
+import { gainCredits } from "../features/credits"; // TODO: fix
 import { move } from "../features/movement";
 // import { formatTrainingArea } from "../features/training";
 // import { changeAugment, formatAugment } from "../features/augmentation";
 import { updateTimePlayed } from "../features/time";
 // import Game from "../game";
 import { E } from "emath.js";
+import Game from "../game";
 
 // eslint-disable-next-line jsdoc/require-param
 /**
@@ -26,8 +27,10 @@ function CheatsMenu ({ renderCount, setCurrentTrainingArea, setCurrentAugmentStr
         const dt = (document.getElementById("cheats-menu-dt") as HTMLInputElement ?? { value: 0 }).value;
         // dt = E(dt);
         console.log(dt);
-        power.static.gain(dt);
-        credits.static.gain(dt);
+        // power.static.gain(dt);
+        // credits.static.gain(dt);
+        gainStats(E(dt));
+        gainCredits(E(dt));
         updateTimePlayed(dt, false);
     }
 
@@ -35,8 +38,8 @@ function CheatsMenu ({ renderCount, setCurrentTrainingArea, setCurrentAugmentStr
         <Accordion.Item eventKey="3">
             <Accordion.Header>Cheats</Accordion.Header>
             <Accordion.Body>
-                Sorry, cheats are temporarily disabled. (use a save editor [hint: use LZString] or something idc)
-                {/* <div style={{
+                Sorry, certain cheats are temporarily disabled. (use a save editor [hint: use LZString] or something idc)
+                <div style={{
                     display: "flex",
                 }}>
                     <FloatingLabel label="Timewarp Time (ms)">
@@ -51,7 +54,7 @@ function CheatsMenu ({ renderCount, setCurrentTrainingArea, setCurrentAugmentStr
                     </FloatingLabel>
                     <Button onClick={timeWarp}>Timewarp</Button>
                 </div>
-                <div style={{
+                {/* <div style={{
                     display: "flex",
                 }}>
                     <FloatingLabel label="Area Number">

@@ -2,7 +2,7 @@
  * @file Features/Augmentation - Augmentation
  */
 import { E, ESource } from "emath.js";
-import { gameCurrency } from "emath.js/game";
+// import { gameCurrency } from "emath.js/game";
 import { rounding10 } from "./training";
 import { multiplierBasedArea, BaseArea } from "../utility/area";
 import { power } from "./stats";
@@ -42,7 +42,7 @@ function augmentMultiplierPower (x: ESource) {
  */
 function augmentMultiplerSecondary (x: ESource) {
     x = E(x);
-    return x.neq(0) ? rounding10(E.pow(2, x.mul(2).pow(1.3)).mul(10)) : E(1);
+    return x.neq(0) ? rounding10(E.pow(2, x.add(x.pow(1.3)).pow(1.4)).mul(5)) : E(1);
 }
 
 /**
@@ -142,7 +142,8 @@ function changePowerAugment (augmentN: number, reset = true, force = false, stat
     }
     // currentAugment = augmentN;
     player.augment.current = augmentN;
-    Game.dataManager.setData("currentAugment", augmentN);
+    Game.dataManager.setData("player", player);
+    // Game.dataManager.setData("currentAugment", augmentN);
     // Reset power
     if (reset) {
         // power.static.value = E(0);

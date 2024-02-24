@@ -15,6 +15,7 @@ interface OfflineProgressProps {
     // gameFormat: (value: E) => string,
     // gameFormatTime: (value: E) => string,
     gameFormats: gameFormatClass,
+    dataState: ReturnType<typeof Game.dataManager.loadData>,
 }
 
 // eslint-disable-next-line jsdoc/require-param
@@ -22,7 +23,7 @@ interface OfflineProgressProps {
  * @returns The offline progress component
  */
 function OfflineProgress (props: OfflineProgressProps) {
-    const { progress, gameFormats } = props;
+    const { progress, gameFormats, dataState } = props;
     const { format, time } = gameFormats;
     const [show, setShow] = useState(progress.dt.gt(0));
 
@@ -34,10 +35,11 @@ function OfflineProgress (props: OfflineProgressProps) {
                 <Modal.Title>Offline Progress</Modal.Title>
             </Modal.Header>
             <Modal.Body>
+                {!dataState && <>Your data is corrupted (or you&apos;re cheating). <br /></>}
                 While you were away for {time(progress.dt.div(1000))} ...
                 <br /> You gained {format(progress.power)} power.
                 <br /> You gained {format(progress.credits)} credits.
-                <br /> Note: Hotkeys and cheats are currently disabled.
+
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={handleClose}>

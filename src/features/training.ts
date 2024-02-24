@@ -102,7 +102,7 @@ function requirement (x: ESource): E {
     const base = x.mul(2).add(E(2).pow(E.mul(x, 0.5)));
     const exponent = x;
     const result = E.mul(10, E.pow(base, exponent));
-    return rounding10(result);
+    return result;
 }
 
 /**
@@ -112,12 +112,12 @@ function requirement (x: ESource): E {
  */
 function multiplier (x: ESource): E {
     x = E(x);
-    return rounding10(E.pow(3, x.add(x.div(10).pow(1.2)).pow(1.4)));
+    return E.pow(3, x.add(x.div(10).pow(1.2)).pow(1.4));
 }
 
 // TODO: Make unique areas, requirements, and multipliers for mind training
 const powerTraining = (() => {
-    return new multiplierBasedArea<PowerTrainingAreaMul>(power, powerAreaList, requirement, { Power: multiplier});
+    return new multiplierBasedArea<PowerTrainingAreaMul>(power, powerAreaList, (x: ESource) => rounding10(requirement(x)), { Power: (x: ESource) => rounding10(multiplier(x)) });
 })();
 
 // Test
@@ -126,16 +126,16 @@ console.log(powerTraining.getArea(2).multipliers.Power);
 const mindTraining = (() => {
     // TODO: Make unique areas, requirements, and multipliers for mind training
     const mindAreaList = powerAreaList;
-    const req = (x: ESource) => requirement(x).mul(3);
-    const mul = (x: ESource) => multiplier(x).div(3);
+    const req = (x: ESource) => E(x).neq(0) ? rounding10(requirement(x).mul(3)) : E(0);
+    const mul = (x: ESource) => E(x).neq(0) ? rounding10(multiplier(x).div(3)) : E(0.3);
     return new multiplierBasedArea<MindTrainingAreaMul>(mind, mindAreaList, req, { Mind: mul });
 })();
 
 const bodyTraining = (() => {
     // TODO: Make unique areas, requirements, and multipliers for body training
     const bodyAreaList = powerAreaList;
-    const req = (x: ESource) => requirement(x).mul(2);
-    const mul = (x: ESource) => multiplier(x).div(2);
+    const req = (x: ESource) => E(x).neq(0) ? rounding10(requirement(x).mul(2)) : E(0);
+    const mul = (x: ESource) => E(x).neq(0) ? rounding10(multiplier(x).div(2)) : E(0.5);
     return new multiplierBasedArea(body, bodyAreaList, req, { Body: mul });
 })();
 

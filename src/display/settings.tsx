@@ -151,7 +151,7 @@ function Settings (props: SettingsProps) {
         <Button
             variant="light"
             style={{
-                position: "absolute",
+                position: "fixed",
                 top: "10px",
                 right: "10px",
                 backgroundImage: "url(https://img.icons8.com/plasticine/50/settings.png)",
@@ -294,7 +294,11 @@ function Settings (props: SettingsProps) {
                         variant="danger"
                         onClick={() => {
                             if (window.confirm("Are you sure you want to reset your data?")) {
-                                Game.dataManager.resetData(true);
+                                Game.dataManager.resetData();
+                                localStorage.setItem(`${Game.config.name.id}-data`, "");
+                                gameConfig.saveOnExit = false;
+                                window.location.reload();
+                                // Game.dataManager.resetData(true);
                             }
                         }}
                     >Reset Data</Button>

@@ -47,7 +47,7 @@ function moveToAreaWithCheck (areaType: AreaType, area: number, { setAlertPopup,
         });
         return;
     }
-    setCurrentTrainingArea(areaClass.formatArea(player.training.area, gameFormats.format));
+    setCurrentTrainingArea(areaClass.formatArea(area, gameFormats.format));
 }
 
 // eslint-disable-next-line jsdoc/require-param
@@ -77,13 +77,14 @@ function TrainingMenuStat (props: TrainingMenuProps & { areaType: AreaType, show
     function progressBars (): [number, string, string] {
         // if (playerState[0] !== "idle") return [0, "", ""];
         const getTrainingArea = area.getArea;
+        const currentArea = player.training[`${areaType}Area`];
         const playerP = stat.value;
-        const percent = Math.min(playerP.div(getTrainingArea(player.training.area + 1).req).mul(100).toNumber(), 100);
+        const percent = Math.min(playerP.div(getTrainingArea(currentArea + 1).req).mul(100).toNumber(), 100);
 
         // Time remaining
-        const playerDiffBetweenAreas = getTrainingArea(player.training.area + 1).req.sub(playerP);
+        const playerDiffBetweenAreas = getTrainingArea(currentArea + 1).req.sub(playerP);
         const timeRemaining = time(E.max(0, playerDiffBetweenAreas.div(stat.static.boost.calculate())));
-        return [percent, timeRemaining, `${format(stat.value)} / ${format(getTrainingArea(player.training.area + 1).req)}`];
+        return [percent, timeRemaining, `${format(stat.value)} / ${format(getTrainingArea(currentArea + 1).req)}`];
     }
 
     useEffect(() => {
@@ -127,13 +128,13 @@ function TrainingMenu (props: TrainingMenuProps) {
             <Accordion.Header>Training Areas</Accordion.Header>
             <Accordion.Body>
                 <h1>Power</h1>
-                <TrainingMenuStat {...props} areaType={"power"} showProgressBar={player.training.type === "power"} />
+                <TrainingMenuStat {...props} areaType={"power"} showProgressBar={player.training.current === "power"} />
                 <hr />
                 <h1>Body</h1>
-                <TrainingMenuStat {...props} areaType={"body"} showProgressBar={player.training.type === "body"} />
+                <TrainingMenuStat {...props} areaType={"body"} showProgressBar={player.training.current === "body"} />
                 <hr />
                 <h1>Mind</h1>
-                <TrainingMenuStat {...props} areaType={"mind"} showProgressBar={player.training.type === "mind"} />
+                <TrainingMenuStat {...props} areaType={"mind"} showProgressBar={player.training.current === "mind"} />
             </Accordion.Body>
         </Accordion.Item>
     );

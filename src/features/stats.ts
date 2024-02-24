@@ -1,7 +1,7 @@
 /**
  * @file Initializes stats.
  */
-import { E } from "emath.js";
+import { E, ESource } from "emath.js";
 import Game, { player } from "../game";
 import { gameCurrency, Pointer } from "emath.js/game";
 import type { multiplierBasedArea } from "utility/area";
@@ -24,16 +24,6 @@ class stat<Multipliers> {
 // Power is the main currency, used to change augmentations and train
 const power = Game.addCurrency("power");
 
-// Mind is power but ^0.75, but alot more effective in combat (^2, so it is ^1.5)
-const mind = Game.addCurrency("mind");
-mind.static.boost.setBoost({
-    id: "mind",
-    name: "Mind",
-    desc: "Boost from mind",
-    value: (n) => n.pow(0.75),
-    order: 99,
-});
-
 // Body is power but ^0.9, and is used for health and defense
 const body = Game.addCurrency("body");
 body.static.boost.setBoost({
@@ -44,9 +34,36 @@ body.static.boost.setBoost({
     order: 99,
 });
 
-Game.eventManager.setEvent("Gain Stats", "interval", 0, (dt) => {
-    // console.log("Power gained");
-    switch (player.training.type) {
+// Mind is power but ^0.75, but alot more effective in combat (^2, so it is ^1.5)
+const mind = Game.addCurrency("mind");
+mind.static.boost.setBoost({
+    id: "mind",
+    name: "Mind",
+    desc: "Boost from mind",
+    value: (n) => n.pow(0.75),
+    order: 99,
+});
+
+// Mind boosts body which boosts power
+const secondaryStatBoost = (n: E, x: E) => x.mul(n.add(1).div(1000).pow(0.1).add(0.5));
+power.static.boost.setBoost({
+    id: "boostFromBody",
+    name: "Boost from body",
+    desc: "Boost from body",
+    value: (n) => secondaryStatBoost(body.value, n),
+    order: 99,
+});
+
+body.static.boost.setBoost({
+    id: "boostFromMind",
+    name: "Boost from mind",
+    desc: "Boost from mind",
+    value: (n) => secondaryStatBoost(mind.value, n),
+    order: 99,
+});
+
+const gainStats = (dt: ESource) => {
+    switch (player.training.current) {
     case "power": default:
         power.static.gain(dt);
         break;
@@ -58,7 +75,9 @@ Game.eventManager.setEvent("Gain Stats", "interval", 0, (dt) => {
         break;
     }
     // power.static.gain(dt);
-});
+};
+
+Game.eventManager.setEvent("Gain Stats", "interval", 0, gainStats);
 
 // Circular dependency
 // eslint-disable-next-line import/first
@@ -81,4 +100,4 @@ interface StatsStored {
     credits: E;
 }
 
-export { power, mind, body, StatsStored };
+export { power, mind, body, StatsStored, gainStats };

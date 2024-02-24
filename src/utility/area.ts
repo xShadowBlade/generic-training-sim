@@ -2,7 +2,7 @@
  * @file Declare a class to represent multiplier based training areas or other similar features.
  */
 import { E, ESource } from "emath.js";
-import { gameCurrency } from "emath.js/game";
+import { gameCurrency, Pointer } from "emath.js/game";
 // import { power, mind } from "./stats";
 interface BaseArea {
     name: string;
@@ -29,8 +29,9 @@ class multiplierBasedArea<Multipliers> {
      * @param multipliers - The multipliers to use. Note: The multipliers should be functions that take a Decimal and return a Decimal. 
      * The multiplier keys are also used to format the training area, so they should be capitalized or otherwise formatted correctly.
      */
-    constructor (stat: gameCurrency, areas: BaseArea[], req: (x: ESource) => E, multipliers: Multipliers) {
-        this.stat = stat;
+    constructor (stat: Pointer<gameCurrency>, areas: BaseArea[], req: (x: ESource) => E, multipliers: Multipliers) {
+        // this.stat = stat;
+        this.stat = typeof stat === "function" ? stat() : stat;
         this.areas = areas;
         this.req = req;
         this.multipliers = multipliers;
@@ -75,7 +76,7 @@ class multiplierBasedArea<Multipliers> {
         const { name, emoji, req, multipliers } = this.getArea(n);
         const statName = this.stat.name ? ` ${this.stat.name}` : "";
         const multipliersStr = Object.keys(multipliers).map(key => `${key} Multiplier: x${formatFn((multipliers as any)[key])}`).join(". ");
-        return `${emoji} | (${n}) ${name} ${isExtended ? E(n - this.areas.length + 2).toRoman() : ""}. Requires ${formatFn(req)}${statName}. ${multipliersStr}`;
+        return `${emoji} | (${n}) ${name}${isExtended ? " " + E(n - this.areas.length + 2).toRoman() : ""}. Requires ${formatFn(req)}${statName}. ${multipliersStr}`;
     }
 }
 
