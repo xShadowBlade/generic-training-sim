@@ -4,6 +4,7 @@
 		"allowJs": true,
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
+        "noEmit": true,
 		"target": "ES5",
 		"module": "NodeNext",
 		"strict": true,
@@ -18,6 +19,7 @@
 	},
 	"include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.js", "src/**/*.jsx", "../emath.js/dist/**/*", "../emath.js/src/**/*"],
 	"exclude": [
-	  	"node_modules/"
+	  	"node_modules/",
+        "../emath.js/src/E/new/**/*",
 	]
 }

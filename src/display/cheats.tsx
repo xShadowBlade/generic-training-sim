@@ -38,7 +38,7 @@ function CheatsMenu ({ renderCount, setCurrentTrainingArea, setCurrentAugmentStr
         <Accordion.Item eventKey="3">
             <Accordion.Header>Cheats</Accordion.Header>
             <Accordion.Body>
-                Sorry, certain cheats are temporarily disabled. (use a save editor [hint: use LZString] or something idc)
+                Certain cheats are temporarily disabled.
                 <div style={{
                     display: "flex",
                 }}>

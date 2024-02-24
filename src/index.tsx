@@ -21,7 +21,7 @@ import "./features/credits";
 import { powerAugment, changePowerAugment } from "./features/augmentation";
 import { updateTimeLastPlayed, offlineProgress, IOfflineProgress } from "./features/time";
 
-import Settings, { ISettings, defaultSettings } from "./display/settings";
+import Settings, { ISettings, defaultSettings, resetData } from "./display/settings";
 
 Game.dataManager.setData("settings", defaultSettings);
 
@@ -49,17 +49,20 @@ const dataState = Game.dataManager.loadData();
 // Backwards compatibility
 // console.log("c", player.training);
 
-Object.assign({}, player, {
-    training: {
-        // type: "power",
-        // area: Game.dataManager.getData("currentArea") ?? 0,
-        current: "power",
-        powerArea: Game.dataManager.getData("currentArea") ?? 0,
-    },
-    augment: {
-        current: Game.dataManager.getData("currentAugment") ?? 0,
-    },
-});
+// Object.assign({}, player, {
+//     training: {
+//         // type: "power",
+//         // area: Game.dataManager.getData("currentArea") ?? 0,
+//         current: "power",
+//         powerArea: Game.dataManager.getData("currentArea") ?? 0,
+//     },
+//     augment: {
+//         current: Game.dataManager.getData("currentAugment") ?? 0,
+//     },
+// });
+
+// if old data exists, reset it
+// if (Game.dataManager.getData("currentArea")) resetData();
 // console.log("b", player.training);
 
 Object.assign(player, Game.dataManager.getData("player") ?? {});
@@ -94,7 +97,7 @@ function App () {
     // Misc / Global
     const [renderCount, setRenderCount] = useState(0);
     const [progress, setProgress] = useState<IOfflineProgress>();
-    const [settings, setSettings] = useState<ISettings>(Game.dataManager.getData("settings") ?? defaultSettings);
+    const [settings, setSettings] = useState<ISettings>((Game.dataManager.getData("settings") as ISettings | undefined) ?? defaultSettings);
     const [alertPopup, setAlertPopup] = useState(defaultAlerts);
 
     const gameFormats = new gameFormatClass({ settings: settings ?? defaultSettings });
@@ -221,6 +224,8 @@ function App () {
             setCurrentTrainingArea={setCurrentTrainingArea}
             gameFormats={gameFormats}
             // gameFormat={gameFormat} // Add the missing gameFormat property
+            basicStatUpg={basicStatUpg}
+            setBasicStatUpg={setBasicStatUpg}
         />
     </>);
 }

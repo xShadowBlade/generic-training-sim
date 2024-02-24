@@ -11,7 +11,7 @@ import Game, { player } from "../../game";
 // import { playerState } from "../../features/movement";
 import { ISettings } from "../settings";
 import { moveToAreaWithCheck } from "../trainingMenu";
-import { buyBasicStatUpg } from "../statsMenu";
+import { StatsMenuProps, buyBasicStatUpg } from "../statsMenu";
 import { TrainingMenuProps } from "../trainingMenu";
 import { gameFormatClass } from "./format";
 
@@ -28,14 +28,26 @@ interface IHotkeyData {
 }
 
 const defaultHotkeys: IHotkeyData[] = [
-    {
-        name: "Buy Upgrade",
-        key: "z",
-    },
+    // {
+    //     name: "Buy Upgrade",
+    //     key: "z",
+    // },
     // {
     //     name: "Buy Augment",
     //     key: "a",
     // },
+    {
+        name: "Buy Power Upgrade",
+        key: "h",
+    },
+    {
+        name: "Buy Body Upgrade",
+        key: "j",
+    },
+    {
+        name: "Buy Mind Upgrade",
+        key: "k",
+    },
     {
         name: "Move to Previous Area", // why would you want to go back?
         key: "x",
@@ -60,17 +72,35 @@ const defaultHotkeys: IHotkeyData[] = [
 ];
 
 const hotkeys: IHotkey[] = [
-    {
-        name: "Buy Upgrade",
-        // effect: (props) => {
-        //     // console.log("buy upgrade");
-        //     buyBasicStatUpg(props);
-        // },
-    },
+    // {
+    //     name: "Buy Upgrade",
+    //     // effect: (props) => {
+    //     //     // console.log("buy upgrade");
+    //     //     buyBasicStatUpg(props);
+    //     // },
+    // },
     // {
     //     name: "Buy Augment",
     //     key: "a",
     // },
+    {
+        name: "Buy Power Upgrade",
+        effect: (props) => {
+            buyBasicStatUpg({ ...props, upgType: "power" });
+        },
+    },
+    {
+        name: "Buy Body Upgrade",
+        effect: (props) => {
+            buyBasicStatUpg({ ...props, upgType: "body" });
+        },
+    },
+    {
+        name: "Buy Mind Upgrade",
+        effect: (props) => {
+            buyBasicStatUpg({ ...props, upgType: "mind" });
+        },
+    },
     {
         name: "Move to Previous Area", // why would you want to go back?
         effect: (props) => {
@@ -107,7 +137,7 @@ const hotkeys: IHotkey[] = [
     },
 ];
 
-interface HotkeysProps extends Pick<TrainingMenuProps, "setAlertPopup" | "setCurrentTrainingArea"> {
+interface HotkeysProps extends Pick<TrainingMenuProps, "setAlertPopup" | "setCurrentTrainingArea">, Pick<StatsMenuProps, "setBasicStatUpg" | "basicStatUpg"> {
     settings: ISettings;
     setSettings: (settings: ISettings) => void;
     // setBasicStatUpgCost: (basicStatUpgCost: { credits: E, power: E }) => void;

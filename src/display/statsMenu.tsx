@@ -14,10 +14,10 @@ import { AreaType } from "../features/movement";
 
 
 /**
- * Buys and renders the basic stat upgrade  
+ * Buys and renders the basic stat upgrade
  * @param setBasicStatUpgCost - The function to set the basic stat upgrade cost
  */
-function buyBasicStatUpg({ setBasicStatUpg, basicStatUpg, upgType }: Pick<IStatsMenuProps, "setBasicStatUpg" | "basicStatUpg"> & { upgType: AreaType }) {
+function buyBasicStatUpg({ setBasicStatUpg, basicStatUpg, upgType }: Pick<StatsMenuProps, "setBasicStatUpg" | "basicStatUpg"> & { upgType: AreaType }) {
     // Function implementation
     console.log("Buying basic stat upgrade");
     const boostId = [null, "power", "body", "mind"].indexOf(upgType) ?? 1;
@@ -37,7 +37,7 @@ function buyBasicStatUpg({ setBasicStatUpg, basicStatUpg, upgType }: Pick<IStats
     setBasicStatUpg(getUpgDefaults());
 }
 
-interface IStatsMenuProps {
+interface StatsMenuProps {
     renderCount: number,
     statsStored: StatsStored,
     basicStatUpg: ReturnType<typeof getUpgDefaults>,
@@ -49,7 +49,7 @@ interface IStatsMenuProps {
 /**
  * @returns A button to buy the basic stat upgrade for the specified stat
  */
-function BuyUpgStat (props: IStatsMenuProps & { upgType: AreaType }) {
+function BuyUpgStat (props: StatsMenuProps & { upgType: AreaType }) {
     const { statsStored, upgType, basicStatUpg, gameFormats } = props;
     const statAmt = statsStored[upgType];
     const creditsStored = statsStored.credits;
@@ -76,7 +76,7 @@ function BuyUpgStat (props: IStatsMenuProps & { upgType: AreaType }) {
  * @returns The stats menu component
  */
 // eslint-disable-next-line react/prop-types
-function StatsMenu (props: IStatsMenuProps) {
+function StatsMenu (props: StatsMenuProps) {
     const { renderCount, statsStored, basicStatUpg, gameFormats } = props;
     const { format, gain } = gameFormats;
 
@@ -111,4 +111,4 @@ function StatsMenu (props: IStatsMenuProps) {
 }
 
 export default StatsMenu;
-export { buyBasicStatUpg };
+export { buyBasicStatUpg, StatsMenuProps };

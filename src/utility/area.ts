@@ -26,7 +26,7 @@ class multiplierBasedArea<Multipliers> {
      * @param stat - The currency to use.
      * @param areas - The areas to use.
      * @param req - The requirement function to use.
-     * @param multipliers - The multipliers to use. Note: The multipliers should be functions that take a Decimal and return a Decimal. 
+     * @param multipliers - The multipliers to use. Note: The multipliers should be functions that take a Decimal and return a Decimal.
      * The multiplier keys are also used to format the training area, so they should be capitalized or otherwise formatted correctly.
      */
     constructor (stat: Pointer<gameCurrency>, areas: BaseArea[], req: (x: ESource) => E, multipliers: Multipliers) {

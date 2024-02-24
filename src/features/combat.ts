@@ -39,7 +39,6 @@ class entity {
 class player<T> extends entity {
     public stats: T;
     constructor (stats: T) {
-        
         this.stats = stats;
     }
 }

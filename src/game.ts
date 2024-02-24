@@ -49,5 +49,10 @@ const gameConfig = {
 
 if (Game.config.mode === "development") (window as any)["Game"] = Game;
 
+// Aliases
+/** @alias Game.dataManager.setData */
+const setData = Game.dataManager.setData.bind(Game.dataManager);
+
 export default Game;
 export { gameConfig, player };
+export { setData };

@@ -37,8 +37,11 @@ function OfflineProgress (props: OfflineProgressProps) {
             <Modal.Body>
                 {!dataState && <>Your data is corrupted (or you&apos;re cheating). <br /></>}
                 While you were away for {time(progress.dt.div(1000))} ...
-                <br /> You gained {format(progress.power)} power.
-                <br /> You gained {format(progress.credits)} credits.
+                <br />
+                {progress.power.gt(0) && <>You gained {format(progress.power)} power. <br /></>}
+                {progress.body.gt(0) && <>You gained {format(progress.body)} body. <br /></>}
+                {progress.mind.gt(0) && <>You gained {format(progress.mind)} mind. <br /></>}
+                {progress.credits.gt(0) && <>You gained {format(progress.credits)} credits.</>}
 
             </Modal.Body>
             <Modal.Footer>

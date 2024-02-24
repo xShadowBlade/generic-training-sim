@@ -12,9 +12,17 @@ import Dropdown from "react-bootstrap/Dropdown";
 import { E, FormatType, FormatTypeList } from "emath.js";
 
 import Game, { gameConfig } from "../game";
+import { timePlayed, timePlayedReal } from "../features/time";
 
 import Hotkeys, { IHotkeyData, defaultHotkeys, HotkeysProps, updateHotkeys } from "./global/hotkeys";
 import FormatComponent, { FormatComponentProps, FormatTimeType, gameFormatClass } from "./global/format";
+
+const resetData = () => {
+    Game.dataManager.resetData();
+    localStorage.setItem(`${Game.config.name.id}-data`, "");
+    gameConfig.saveOnExit = false;
+    window.location.reload();
+};
 
 interface ISettings {
     gameplay: {
@@ -142,8 +150,11 @@ function Settings (props: SettingsProps) {
     // Update playtime
     useEffect(() => {
         setPlaytime({
-            real: gameFormats.time(Game.dataManager.getData("timePlayedReal").div(1000) ?? 0),
-            total: gameFormats.time(Game.dataManager.getData("timePlayed").div(1000) ?? 0),
+            // real: gameFormats.time(Game.dataManager.getData("timePlayedReal").div(1000) ?? 0),
+            // total: gameFormats.time(Game.dataManager.getData("timePlayed").div(1000) ?? 0),
+
+            real: gameFormats.time(timePlayedReal.value.div(1000) ?? 0),
+            total: gameFormats.time(timePlayed.value.div(1000) ?? 0),
         });
     }, [renderCount]);
 
@@ -294,11 +305,7 @@ function Settings (props: SettingsProps) {
                         variant="danger"
                         onClick={() => {
                             if (window.confirm("Are you sure you want to reset your data?")) {
-                                Game.dataManager.resetData();
-                                localStorage.setItem(`${Game.config.name.id}-data`, "");
-                                gameConfig.saveOnExit = false;
-                                window.location.reload();
-                                // Game.dataManager.resetData(true);
+                                resetData();
                             }
                         }}
                     >Reset Data</Button>
@@ -317,4 +324,4 @@ function Settings (props: SettingsProps) {
 }
 
 export default Settings;
-export { ISettings, defaultSettings };
+export { ISettings, defaultSettings, resetData };
