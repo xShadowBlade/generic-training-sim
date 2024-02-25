@@ -53,7 +53,7 @@ function augmentMultiplerSecondary (x: ESource) {
  */
 function augmentMultiplierCredits (x: ESource) {
     x = E(x);
-    return x.neq(0) ? rounding10(E.pow(2, x.mul(2).pow(1.3)).mul(10)) : E(1);
+    return x.neq(0) ? rounding10(E.pow(2, x.mul(2).pow(1.275)).mul(10)) : E(1);
 }
 
 // TODO: Make new augments

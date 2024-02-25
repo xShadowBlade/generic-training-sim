@@ -40,11 +40,13 @@ function moveToAreaWithCheck (areaType: AreaType, area: number, { setAlertPopup,
     if (area < 0) return;
     const areaClass = training[areaType];
     const moveArea = move[areaType];
-    if (!moveArea(area) && settings.display.trainingAreaFailPopup) {
-        setAlertPopup({
-            title: "Failed to move to area",
-            body: `You are not strong enough to train in this area. (You need ${gameFormats.format(areaClass.getArea(area).req)} ${areaClass.stat.name})`,
-        });
+    if (!moveArea(area)) {
+        if (settings.display.trainingAreaFailPopup) {
+            setAlertPopup({
+                title: "Failed to move to area",
+                body: `You are not strong enough to train in this area. (You need ${gameFormats.format(areaClass.getArea(area).req)} ${areaClass.stat.name})`,
+            });
+        }
         return;
     }
     setCurrentTrainingArea(areaClass.formatArea(area, gameFormats.format));

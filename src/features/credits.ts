@@ -9,7 +9,7 @@ import { gameFormatClass } from "../display/global/format";
 
 const credits = Game.addCurrency("credits");
 
-const upgCostFormula = (n: E) => rounding10(E.pow(1.2, n.pow(1.1)).mul(10), 10, 1);
+const upgCostFormula = (n: E) => rounding10(E.pow(1.2, n.pow(1.15)).mul(10), 10, 1);
 
 credits.static.addUpgrade([
     {

@@ -139,10 +139,11 @@ function App () {
     }, [settings]);
 
     // Rerender the game when the format changes
-    // useEffect(() => {
-    //     setCurrentTrainingArea(training.power.formatArea(player.training.area, gameFormats.format));
-    //     setCurrentAugmentStr(powerAugment.formatArea(currentAugment, gameFormats.format));
-    // }, [settings.display.format]);
+    useEffect(() => {
+        // setCurrentTrainingArea(training.power.formatArea(player.training.area, gameFormats.format));
+        setCurrentTrainingArea(training[currentAreaType].formatArea(currentArea, gameFormats.format));
+        setCurrentAugmentStr(powerAugment.formatArea(currentAugment, gameFormats.format));
+    }, [settings.display.format]);
 
     // Run the render event every frame
     useEffect(() => {
