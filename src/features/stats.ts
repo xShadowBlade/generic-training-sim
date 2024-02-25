@@ -5,6 +5,7 @@ import { E, ESource } from "emath.js";
 import Game, { player } from "../game";
 import { gameCurrency, Pointer } from "emath.js/game";
 import type { multiplierBasedArea } from "utility/area";
+import { gameFormatClass } from "../display/global/format";
 
 /**
  * Class to represent a stat.
@@ -12,9 +13,9 @@ import type { multiplierBasedArea } from "utility/area";
  */
 class stat<Multipliers> {
     public name: string;
-    public currency: gameCurrency;
+    public currency: gameCurrency<string>;
     public area: multiplierBasedArea<Multipliers>;
-    constructor (name: string | Pointer<gameCurrency>, area: multiplierBasedArea<Multipliers>) {
+    constructor (name: string | Pointer<gameCurrency<string>>, area: multiplierBasedArea<Multipliers>) {
         this.currency = typeof name === "string" ? Game.addCurrency(name) : (typeof name === "function" ? name() : name);
         this.name = this.currency.name;
         this.area = area;
@@ -29,7 +30,7 @@ const body = Game.addCurrency("body");
 body.static.boost.setBoost({
     id: "body",
     name: "Body",
-    desc: "Boost from body",
+    description: "Property of body (^0.9)",
     value: (n) => n.pow(0.9),
     order: 99,
 });
@@ -39,7 +40,7 @@ const mind = Game.addCurrency("mind");
 mind.static.boost.setBoost({
     id: "mind",
     name: "Mind",
-    desc: "Boost from mind",
+    description: "Property of mind (^0.75)",
     value: (n) => n.pow(0.75),
     order: 99,
 });
@@ -49,17 +50,17 @@ const secondaryStatBoost = (n: E, x: E) => x.mul(n.add(1).div(1000).pow(0.1).add
 power.static.boost.setBoost({
     id: "boostFromBody",
     name: "Boost from body",
-    desc: "Boost from body",
+    description: (gameFormat: gameFormatClass) => `Secondary stat boost from body: ${gameFormat.multi(secondaryStatBoost(body.value, E(1)))}`,
     value: (n) => secondaryStatBoost(body.value, n),
-    order: 99,
+    order: 3,
 });
 
 body.static.boost.setBoost({
     id: "boostFromMind",
     name: "Boost from mind",
-    desc: "Boost from mind",
+    description: (gameFormat: gameFormatClass) => `Secondary stat boost from mind: ${gameFormat.multi(secondaryStatBoost(mind.value, E(1)))}`,
     value: (n) => secondaryStatBoost(mind.value, n),
-    order: 99,
+    order: 3,
 });
 
 const gainStats = (dt: ESource) => {

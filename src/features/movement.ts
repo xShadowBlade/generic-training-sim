@@ -7,6 +7,7 @@ import { training, PowerTrainingAreaMul, MindTrainingAreaMul } from "./training"
 import { multiplierBasedArea } from "utility/area";
 import { power, mind, body } from "./stats";
 import Game, { player } from "../game";
+import { gameFormatClass } from "../display/global/format";
 
 // let playerState: ["idle", AreaType, number] = ["idle", "power", 0];
 
@@ -120,7 +121,7 @@ type AreaType = "power" | "mind" | "body";
  * @returns - Whether the move was successful.
  */
 function moveArea (areaType: AreaType, areaN: number, force = false): boolean {
-    let currency: gameCurrency;
+    let currency: gameCurrency<AreaType>;
     let trainingArea: ReturnType<typeof multiplierBasedArea.prototype.getArea>;
     let multiplier: E;
 
@@ -162,13 +163,21 @@ function moveArea (areaType: AreaType, areaN: number, force = false): boolean {
     };
     Game.dataManager.setData("player", player);
 
-    currency.static.boost.setBoost(
-        "trainingArea",
-        "Training Area",
-        "Boost from training area",
-        (n) => n.mul(multiplier),
-        2,
-    );
+    // currency.static.boost.setBoost(
+    //     "trainingArea",
+    //     "Training Area",
+    //     "Boost from training area",
+    //     (n) => n.mul(multiplier),
+    //     2,
+    // );
+    currency.static.boost.setBoost({
+        id: "trainingArea",
+        name: "Training Area",
+        // description: "Boost from training area",
+        description: (gameFormat: gameFormatClass) => `Boost from training area: ${gameFormat.multi(multiplier)}`,
+        value: (n) => n.mul(multiplier),
+        order: 3,
+    });
 
     return true;
 }

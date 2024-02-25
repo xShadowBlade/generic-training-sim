@@ -5,10 +5,11 @@ import { E, ESource } from "emath.js";
 import Game from "../game";
 import { power, body, mind } from "./stats";
 import { rounding10 } from "./training";
+import { gameFormatClass } from "../display/global/format";
 
 const credits = Game.addCurrency("credits");
 
-const upgCostFormula = (n: E) => rounding10(E.pow(1.3, n.pow(1.1)).mul(10), 10, 1);
+const upgCostFormula = (n: E) => rounding10(E.pow(1.2, n.pow(1.1)).mul(10), 10, 1);
 
 credits.static.addUpgrade([
     {
@@ -20,14 +21,22 @@ credits.static.addUpgrade([
             // console.log(this);
             // const level = this.getLevel();
 
-            power.static.boost.setBoost(
-                "boostUpg1Credits",
-                "Basic Stats Boost",
-                "Basic Stats Boost",
-                // n => n.mul(E.floor(E.mul(0.5, level).mul(E.ln(level)).add(level))),
-                n => n.mul(E.pow(2, level.sub(1))),
-                2,
-            );
+            // power.static.boost.setBoost(
+            //     "boostUpg1Credits",
+            //     "Basic Stats Boost",
+            //     "Basic Stats Boost",
+            //     // n => n.mul(E.floor(E.mul(0.5, level).mul(E.ln(level)).add(level))),
+            //     n => n.mul(E.pow(2, level.sub(1))),
+            //     2,
+            // );
+            power.static.boost.setBoost({
+                id: "boostUpg1Credits",
+                name: "Basic Stats Boost",
+                // description: "Basic Stats Boost",
+                description: (gameFormat: gameFormatClass) => `Basic Stats Boost: ${gameFormat.multi(E.pow(2, level.sub(1)))}`,
+                value: (n) => n.mul(E.pow(2, level.sub(1))),
+                order: 2,
+            });
         },
     },
     {
@@ -36,13 +45,21 @@ credits.static.addUpgrade([
         cost: upgCostFormula, // TODO: come up with a better formula
         maxLevel: E(1000),
         effect: function (level) {
-            body.static.boost.setBoost(
-                "boostUpg2Credits",
-                "Basic Stats Boost",
-                "Basic Stats Boost",
-                n => n.mul(E.pow(2, level.sub(1))),
-                2,
-            );
+            // body.static.boost.setBoost(
+            //     "boostUpg2Credits",
+            //     "Basic Stats Boost",
+            //     "Basic Stats Boost",
+            //     n => n.mul(E.pow(2, level.sub(1))),
+            //     2,
+            // );
+            body.static.boost.setBoost({
+                id: "boostUpg2Credits",
+                name: "Basic Stats Boost",
+                // description: "Basic Stats Boost",
+                description: (gameFormat: gameFormatClass) => `Basic Stats Boost: ${gameFormat.multi(E.pow(2, level.sub(1)))}`,
+                value: (n) => n.mul(E.pow(2, level.sub(1))),
+                order: 2,
+            });
         },
     },
     {
@@ -51,13 +68,21 @@ credits.static.addUpgrade([
         cost: upgCostFormula, // TODO: come up with a better formula
         maxLevel: E(1000),
         effect: function (level) {
-            mind.static.boost.setBoost(
-                "boostUpg3Credits",
-                "Basic Stats Boost",
-                "Basic Stats Boost",
-                n => n.mul(E.pow(2, level.sub(1))),
-                2,
-            );
+            // mind.static.boost.setBoost(
+            //     "boostUpg3Credits",
+            //     "Basic Stats Boost",
+            //     "Basic Stats Boost",
+            //     n => n.mul(E.pow(2, level.sub(1))),
+            //     2,
+            // );
+            mind.static.boost.setBoost({
+                id: "boostUpg3Credits",
+                name: "Basic Stats Boost",
+                // description: "Basic Stats Boost",
+                description: (gameFormat: gameFormatClass) => `Basic Stats Boost: ${gameFormat.multi(E.pow(2, level.sub(1)))}`,
+                value: (n) => n.mul(E.pow(2, level.sub(1))),
+                order: 2,
+            });
         },
     },
 ]);

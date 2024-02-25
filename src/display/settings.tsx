@@ -37,6 +37,7 @@ interface ISettings {
         trainingAreaFailPopup: boolean;
         augmentFailPopup: boolean;
         confirmAugment: boolean;
+        disableWelcomeMessage: boolean;
     };
     data: {
         autosave: boolean;
@@ -58,6 +59,7 @@ const defaultSettings: ISettings = {
         trainingAreaFailPopup: true,
         augmentFailPopup: true,
         confirmAugment: true,
+        disableWelcomeMessage: false,
     },
     data: {
         autosave: true,
@@ -71,6 +73,7 @@ interface SettingsProps extends HotkeysProps, FormatComponentProps {
     setSettings: (settings: ISettings) => void;
     renderCount: number;
     gameFormats: gameFormatClass;
+    showWelcomeMessage: () => void;
 }
 
 // eslint-disable-next-line jsdoc/require-param
@@ -78,7 +81,7 @@ interface SettingsProps extends HotkeysProps, FormatComponentProps {
  * @returns The settings component
  */
 function Settings (props: SettingsProps) {
-    const { settings, setSettings, renderCount, gameFormats } = props;
+    const { settings, setSettings, renderCount, gameFormats, showWelcomeMessage } = props;
     const [show, setShow] = useState(false);
     const [playtime, setPlaytime] = useState({
         real: "",
@@ -127,6 +130,7 @@ function Settings (props: SettingsProps) {
                 confirmAugment: (document.getElementById("settings-data-confirmAugment") as HTMLInputElement).checked,
                 trainingAreaFailPopup: (document.getElementById("settings-data-trainingAreaFailPopup") as HTMLInputElement).checked,
                 augmentFailPopup: (document.getElementById("settings-data-augmentFailPopup") as HTMLInputElement).checked,
+                disableWelcomeMessage: (document.getElementById("settings-display-disableWelcomeMessage") as HTMLInputElement).checked,
             },
             data: {
                 autosave: (document.getElementById("settings-data-autosave") as HTMLInputElement).checked,
@@ -254,6 +258,13 @@ function Settings (props: SettingsProps) {
                         checked={settings.display.confirmAugment}
                         onChange={saveSettings}
                     />
+                    <Form.Check
+                        type="switch"
+                        label="Disable welcome message"
+                        id="settings-display-disableWelcomeMessage"
+                        checked={settings.display.disableWelcomeMessage}
+                        onChange={saveSettings}
+                    />
                 </div>
                 <hr />
                 <div>
@@ -312,11 +323,30 @@ function Settings (props: SettingsProps) {
                 </div>
                 <hr />
                 <div>
+                    <h3>Other</h3>
+                    <Button
+                        variant="primary"
+                        onClick={showWelcomeMessage}
+                    >
+                        Show welcome message
+                    </Button>
+                    <br />
+                    <Button
+                        variant="danger"
+                        onClick={() => {
+                            if (window.confirm("Are you sure you want to reset your settings?")) {
+                                setSettings(defaultSettings);
+                            }
+                        }}
+                    >Reset Settings</Button>
+                </div>
+                <hr />
+                <div>
                     <h3>Credits</h3>
-                    <p>Version 0.4.0</p>
-                    <p>This game was made by <a href="https://github.com/xShadowBlade">xShadowBlade</a></p>
-                    <p>It is open source and available on <a href="https://github.com/xShadowBlade/generic-training-sim">GitHub</a>.</p>
-                    <p>It is licensed under the <a href="https://github.com/xShadowBlade/generic-training-sim/blob/main/LICENSE">MIT License</a>.</p>
+                    <p>Version {Game.config.name.version}</p>
+                    <p>This game was made by <a href="https://github.com/xShadowBlade" target="_blank" rel="noreferrer">xShadowBlade</a></p>
+                    <p>It is open source and available on <a href="https://github.com/xShadowBlade/generic-training-sim" target="_blank" rel="noreferrer">GitHub</a>.</p>
+                    <p>It is licensed under the <a href="https://github.com/xShadowBlade/generic-training-sim/blob/main/LICENSE" target="_blank" rel="noreferrer">MIT License</a>.</p>
                 </div>
             </Offcanvas.Body>
         </Offcanvas>

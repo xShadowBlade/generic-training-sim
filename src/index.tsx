@@ -2,6 +2,7 @@
  * @file This file is the entry point for your project.
  */
 /* eslint-disable import/first */
+// import "reflect-metadata";
 import React, { useState, useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import Accordion from "react-bootstrap/Accordion";
@@ -62,16 +63,25 @@ const dataState = Game.dataManager.loadData();
 // });
 
 // if old data exists, reset it
-// if (Game.dataManager.getData("currentArea")) resetData();
+if (Game.dataManager.getData("currentArea")) resetData();
 // console.log("b", player.training);
 
 Object.assign(player, Game.dataManager.getData("player") ?? {});
 // console.log("a", player.training, Game.dataManager.getData("player"));
 
 // const progress = offlineProgress();
-const currentArea = player.training[`${player.training.current}Area`];
-// console.log("move", player.training.current, currentArea);
-move[player.training.current](currentArea, true);
+const [currentAreaType, currentArea] = [player.training.current, player.training[`${player.training.current}Area`]];
+
+// Move all areas before moving to the current area
+move.power(player.training.powerArea, true);
+move.body(player.training.bodyArea, true);
+move.mind(player.training.mindArea, true);
+
+console.log("move", player.training.current, currentArea);
+
+move[currentAreaType](currentArea, true);
+
+
 // const currentAugment = Game.dataManager.getData("currentAugment") ?? 0;
 const currentAugment = player.augment.current;
 changePowerAugment(currentAugment, false, true);
@@ -154,6 +164,25 @@ function App () {
         }
     }, []);
 
+    const showWelcomeMessage = () => setAlertPopup({
+        title: "Welcome",
+        body: <>
+            Welcome to the game! This is a work in progress, so expect bugs and unfinished features.
+            <br />
+            To get started, click on the tutorial button in the top right corner.
+            <br />
+            Note: If you started playing before v0.5.0, your data was reset due to a significant update. You should be able to recover fairly quickly.
+        </>,
+    });
+
+    // Welcome message
+    useEffect(() => {
+        if (settings.display.disableWelcomeMessage) return;
+        showWelcomeMessage();
+        // After the welcome message is shown, disable it
+        settings.display.disableWelcomeMessage = true;
+    }, []);
+
     // Update the power and credits values every frame
     useEffect(() => {
         // Update the power and credits values every frame
@@ -178,7 +207,9 @@ function App () {
             alertPopup={alertPopup}
             setAlertPopup={setAlertPopup}
         />
-        <Navbar />
+        <Navbar
+            gameFormat={gameFormats}
+        />
         <Accordion defaultActiveKey={["0"]} alwaysOpen>
             <StatsMenu
                 renderCount={renderCount}
@@ -226,6 +257,7 @@ function App () {
             // gameFormat={gameFormat} // Add the missing gameFormat property
             basicStatUpg={basicStatUpg}
             setBasicStatUpg={setBasicStatUpg}
+            showWelcomeMessage={showWelcomeMessage}
         />
     </>);
 }

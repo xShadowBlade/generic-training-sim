@@ -7,8 +7,8 @@ import Button from "react-bootstrap/Button";
 
 interface IAlerts {
     // show: boolean;
-    title: string;
-    body: string;
+    title: React.ReactNode | React.JSX.Element;
+    body: React.ReactNode | React.JSX.Element;
 }
 
 interface IAlertsProps {

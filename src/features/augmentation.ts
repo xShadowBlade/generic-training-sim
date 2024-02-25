@@ -5,10 +5,11 @@ import { E, ESource } from "emath.js";
 // import { gameCurrency } from "emath.js/game";
 import { rounding10 } from "./training";
 import { multiplierBasedArea, BaseArea } from "../utility/area";
-import { power } from "./stats";
+import { power, body, mind } from "./stats";
 import { credits } from "./credits";
 import Game, { player } from "../game";
 import { move } from "./movement";
+import { gameFormatClass } from "../display/global/format";
 
 // let currentAugment = 0;
 
@@ -55,23 +56,33 @@ function augmentMultiplierCredits (x: ESource) {
     return x.neq(0) ? rounding10(E.pow(2, x.mul(2).pow(1.3)).mul(10)) : E(1);
 }
 
+// TODO: Make new augments
 const augments: BaseArea[] = [
-    { name: "Initiate", emoji: "🔰" },
-    { name: "Warrior", emoji: "🔷" },
-    { name: "Vanguard", emoji: "🔮" },
-    { name: "Sovereign", emoji: "🌠" },
-    { name: "Luminary", emoji: "🧠" },
-    { name: "Ethereal", emoji: "🌌" },
-    { name: "Paragon", emoji: "⭐️" },
-    { name: "Overlord", emoji: "👑" },
-    // { name: "Stellar Arbiter", emoji: "🌠" },
-    // { name: "Eternal Nexus Guardian", emoji: "🌌" },
-    // { name: "Quantum Paragon", emoji: "👑" },
-    // { name: "Celestial Maestro", emoji: "🎶" },
-    // { name: "Astral Sovereign", emoji: "🌠" },
-    // { name: "Stellar Virtuoso", emoji: "💫" },
-    // { name: "Nebula Luminary", emoji: "🌌" },
-    // { name: "Cosmic Mastermind", emoji: "🧠" },
+    // { name: "Initiate", emoji: "🔰" },
+    // { name: "Warrior", emoji: "🔷" },
+    // { name: "Vanguard", emoji: "🔮" },
+    // { name: "Sovereign", emoji: "🌠" },
+    // { name: "Luminary", emoji: "🧠" },
+    // { name: "Ethereal", emoji: "🌌" },
+    // { name: "Paragon", emoji: "⭐️" },
+    // { name: "Overlord", emoji: "👑" },
+
+    {"name": "Initiate Adept", "emoji": "🔰"},
+    {"name": "Tech Savant", "emoji": "🔷"},
+    {"name": "Psi-Warrior", "emoji": "🔮"},
+    {"name": "Cybernetic Vanguard", "emoji": "🤖"},
+    {"name": "Temporal Sovereign", "emoji": "⏳"},
+    {"name": "Nebula Warden", "emoji": "💫"},
+    {"name": "Astral Overlord", "emoji": "✨"},
+    {"name": "Stellar Arbiter", "emoji": "🌠"},
+    {"name": "Eternal Nexus Guardian", "emoji": "🌌"},
+    {"name": "Quantum Paragon", "emoji": "👑"},
+    {"name": "Celestial Maestro", "emoji": "🎶"},
+    {"name": "Astral Sovereign", "emoji": "🌠"},
+    {"name": "Stellar Virtuoso", "emoji": "💫"},
+    {"name": "Nebula Luminary", "emoji": "🌌"},
+    {"name": "Cosmic Mastermind", "emoji": "🧠"},
+    {"name": "Quantum Overlord", "emoji": "🌌"},
 ];
 
 // /**
@@ -151,24 +162,51 @@ function changePowerAugment (augmentN: number, reset = true, force = false, stat
         move.power(0, true);
         stateFn?.(powerAugment.formatArea(0, formatFn));
     }
-    power.static.boost.setBoost(
-        "augment",
-        "Augment",
-        "Boost from augment",
-        (n) => {
-            return n.mul(powerAugment.getArea(augmentN).multipliers.Power);
-        },
-        3,
-    );
-    credits.static.boost.setBoost(
-        "augment",
-        "Augment",
-        "Boost from augment",
-        (n) => {
-            return n.mul(powerAugment.getArea(augmentN).multipliers.Credits);
-        },
-        2,
-    );
+    // power.static.boost.setBoost(
+    //     "augment",
+    //     "Augment",
+    //     "Boost from augment",
+    //     (n) => {
+    //         return n.mul(powerAugment.getArea(augmentN).multipliers.Power);
+    //     },
+    //     3,
+    // );
+    // power.static.boost.setBoost({
+    //     id: "augment",
+    //     name: "Augment",
+    //     // description: "Boost from augment",
+    //     description: () => `Boost from augment: x${powerAugment.getArea(augmentN).multipliers.Power}`,
+    //     value: (n) => n.mul(powerAugment.getArea(augmentN).multipliers.Power),
+    //     order: 2,
+    // });
+    [power, body, mind].forEach((stat) => {
+        // Convert stat name to stat name with first letter capitalized
+        const statName = stat.name?.charAt(0).toUpperCase() + stat.name?.slice(1) as "Power" | "Body" | "Mind";
+        stat.static.boost.setBoost({
+            id: "augment",
+            name: "Augment",
+            description: (gameFormat: gameFormatClass) => `Boost from augment: ${gameFormat.multi(powerAugment.getArea(augmentN).multipliers[statName])}`,
+            value: (n) => n.mul(powerAugment.getArea(augmentN).multipliers[statName]),
+            order: 2,
+        });
+    });
+    // credits.static.boost.setBoost(
+    //     "augment",
+    //     "Augment",
+    //     "Boost from augment",
+    //     (n) => {
+    //         return n.mul(powerAugment.getArea(augmentN).multipliers.Credits);
+    //     },
+    //     2,
+    // );
+    credits.static.boost.setBoost({
+        id: "augment",
+        name: "Augment",
+        // description: "Boost from augment",
+        description: (gameFormat: gameFormatClass) => `Boost from augment: ${gameFormat.multi(powerAugment.getArea(augmentN).multipliers.Credits)}`,
+        value: (n) => n.mul(powerAugment.getArea(augmentN).multipliers.Credits),
+        order: 2,
+    });
     // console.log(formatAugment(augmentN));
     return true;
 }

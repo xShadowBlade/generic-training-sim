@@ -2,15 +2,20 @@
  * @file The navbar component, gui in the top right.
  */
 import React, { useState } from "react";
-import Button from "react-bootstrap/Button";
+// import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 
 import Tutorial from "./tutorial";
+import Info, { InfoProps } from "./info";
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+interface NavbarProps extends InfoProps {}
+
+// eslint-disable-next-line jsdoc/require-param
 /**
  * @returns The navbar component
  */
-function Navbar () {
+function Navbar (props: NavbarProps) {
     return (<Container style={{
         position: "fixed",
         top: "10px",
@@ -22,6 +27,7 @@ function Navbar () {
             // settings={settings}
             // setSettings={setSettings}
         />
+        <Info {...props} />
     </Container>);
 }
 
