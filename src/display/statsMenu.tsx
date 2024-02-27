@@ -68,7 +68,7 @@ function BuyUpgStat (props: StatsMenuProps & { upgType: AreaType }) {
         >
             {`Buy Basic ${[null, "✊", "💪", "🧠"][statId]} | ${upgTypeStr} Upgrade [Level: ${basicStatUpg[upgType].level}] (🪙 | Cost: ${gameFormats.format(upgCost)})`}
         </Button>
-    )
+    );
 }
 
 // eslint-disable-next-line jsdoc/require-param

@@ -21,17 +21,19 @@ interface MindTrainingAreaMul {
  * @param x - The number to round.
  * @param acc - The accuracy to round to (power)
  * @param sig - The significant figures to round to.
+ * @param max - The maximum power to round to.
  * @returns - The rounded number.
  */
-function rounding10 (x: E, acc = 10, sig = 0) {
+function rounding10 (x: ESource, acc: ESource = 10, sig: ESource = 0, max: ESource = 1000) {
+    x = E(x);
     // If the number is too large, don't round it
-    if (x.gte(E.pow(10, 301))) return x;
+    if (x.gte(E.pow(acc, max))) return x;
     /** The power of the number, rounded. acc^power = x */
-    const power = E.floor(E.log(x, acc));
-    let out = E(x).div(E.pow(acc, power));
+    const powerN = E.floor(E.log(x, acc));
+    let out = x.div(E.pow(acc, powerN));
     out = out.mul(E.pow(acc, sig)).round();
     out = out.div(E.pow(acc, sig));
-    out = out.mul(E.pow(acc, power));
+    out = out.mul(E.pow(acc, powerN));
     return out;
 }
 

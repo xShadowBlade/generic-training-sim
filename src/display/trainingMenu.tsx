@@ -6,14 +6,14 @@ import React, { useEffect, useState } from "react";
 import Accordion from "react-bootstrap/Accordion";
 import Dropdown from "react-bootstrap/Dropdown";
 import ProgressBar from "react-bootstrap/ProgressBar";
-import Modal from "react-bootstrap/Modal";
-import Button from "react-bootstrap/Button";
+// import Modal from "react-bootstrap/Modal";
+// import Button from "react-bootstrap/Button";
 import { E } from "emath.js";
 import { player } from "../game";
 import { training } from "../features/training";
-import { multiplierBasedArea } from "../utility/area";
+// import { multiplierBasedArea } from "../utility/area";
 import { move, AreaType } from "../features/movement";
-import { power } from "../features/stats";
+// import { power } from "../features/stats";
 import { ISettings } from "./settings";
 import { gameFormatClass } from "./global/format";
 import { IAlerts } from "./global/alerts";
@@ -30,9 +30,10 @@ interface TrainingMenuProps {
     settings: ISettings,
 }
 
+// eslint-disable-next-line jsdoc/require-param
 /**
  * Moves to the specified training area
- * @param areaType - The type of training area to move to
+ * @param areaType - The type of training area to move to'
  * @param area - The training area to move to
  * @param props - The training menu props
  */
@@ -122,7 +123,7 @@ function TrainingMenuStat (props: TrainingMenuProps & { areaType: AreaType, show
  * @returns The training menu component
  */
 function TrainingMenu (props: TrainingMenuProps) {
-    const { renderCount, currentTrainingArea, gameFormats, settings } = props;
+    // const { renderCount, currentTrainingArea, gameFormats, settings } = props;
     // const { format, time } = gameFormats;
 
     return (

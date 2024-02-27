@@ -35,7 +35,7 @@ function CheatsMenu ({ renderCount, setCurrentTrainingArea, setCurrentAugmentStr
     }
 
     return (
-        <Accordion.Item eventKey="3">
+        <Accordion.Item eventKey="4">
             <Accordion.Header>Cheats</Accordion.Header>
             <Accordion.Body>
                 Certain cheats are temporarily disabled.

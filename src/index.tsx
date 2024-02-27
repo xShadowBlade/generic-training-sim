@@ -91,6 +91,7 @@ import "./css/bootstrap.min.css";
 import StatsMenu from "./display/statsMenu";
 import TrainingMenu from "./display/trainingMenu";
 import AugmentMenu from "./display/augmentsMenu";
+import AdvancedUpgradesMenu from "./display/upgrades";
 // TODO: CheatsMenu
 import CheatsMenu from "./display/cheats";
 import OfflineProgress from "./display/global/offlineProgress";
@@ -240,6 +241,13 @@ function App () {
                 gameFormats={gameFormats}
                 settings={settings}
                 // gameFormatTime={gameFormatTime}
+            />
+            <AdvancedUpgradesMenu
+                renderCount={renderCount}
+                statsStored={statsStored}
+                basicStatUpg={basicStatUpg}
+                setBasicStatUpg={setBasicStatUpg}
+                gameFormats={gameFormats}
             />
             {settings.gameplay.cheats && <CheatsMenu
                 renderCount={renderCount}
