@@ -1,7 +1,7 @@
 /**
  * @file Display components
  */
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Accordion from "react-bootstrap/Accordion";
 import Button from "react-bootstrap/Button";
 
@@ -12,14 +12,13 @@ import { E } from "emath.js";
 import { gameFormatClass } from "./global/format";
 import { AreaType } from "../features/movement";
 
-
+// eslint-disable-next-line jsdoc/require-param
 /**
  * Buys and renders the basic stat upgrade
- * @param setBasicStatUpgCost - The function to set the basic stat upgrade cost
  */
-function buyBasicStatUpg({ setBasicStatUpg, basicStatUpg, upgType }: Pick<StatsMenuProps, "setBasicStatUpg" | "basicStatUpg"> & { upgType: AreaType }) {
+function buyBasicStatUpg ({ setBasicStatUpg, basicStatUpg, upgType }: Pick<StatsMenuProps, "setBasicStatUpg" | "basicStatUpg"> & { upgType: AreaType }) {
     // Function implementation
-    console.log("Buying basic stat upgrade");
+    // console.log("Buying basic stat upgrade");
     const boostId = [null, "power", "body", "mind"].indexOf(upgType) ?? 1;
     credits.static.buyUpgrade(`upg${boostId}Credits`);
     // const powerBoost = power.static.boost.getBoosts("boostUpg1Credits")[0];
@@ -51,7 +50,7 @@ interface StatsMenuProps {
  */
 function BuyUpgStat (props: StatsMenuProps & { upgType: AreaType }) {
     const { statsStored, upgType, basicStatUpg, gameFormats } = props;
-    const statAmt = statsStored[upgType];
+    // const statAmt = statsStored[upgType];
     const creditsStored = statsStored.credits;
     const upgCost = basicStatUpg[upgType]?.cost ?? E(0);
     const statId = [null, "power", "body", "mind"].indexOf(upgType) ?? 1;
@@ -77,7 +76,7 @@ function BuyUpgStat (props: StatsMenuProps & { upgType: AreaType }) {
  */
 // eslint-disable-next-line react/prop-types
 function StatsMenu (props: StatsMenuProps) {
-    const { renderCount, statsStored, basicStatUpg, gameFormats } = props;
+    const { statsStored, gameFormats } = props;
     const { format, gain } = gameFormats;
 
     const { power: powerStored, body: bodyStored, mind: mindStored, credits: creditsStored } = statsStored;

@@ -2,7 +2,7 @@
  * @file Features - Upgrades
  */
 import { E, ESource } from "emath.js";
-import { gameCurrency } from "emath.js/game";
+// import { gameCurrency } from "emath.js/game";
 import { power, mind, body } from "./stats";
 import { BaseArea, multiplierBasedArea } from "../utility/area";
 
@@ -101,7 +101,7 @@ const powerAreaList: BaseArea[] = [
  */
 function requirement (x: ESource): E {
     x = E(x);
-    const base = x.mul(2).add(E(2).pow(E.mul(x, 0.5)));
+    const base = x.mul(2).add(E.pow(2, x.div(1.9)));
     const exponent = x;
     const result = E.mul(10, E.pow(base, exponent));
     return result;
@@ -123,7 +123,7 @@ const powerTraining = (() => {
 })();
 
 // Test
-console.log(powerTraining.getArea(2).multipliers.Power);
+// console.log(powerTraining.getArea(2).multipliers.Power);
 
 const mindTraining = (() => {
     // TODO: Make unique areas, requirements, and multipliers for mind training

@@ -77,7 +77,7 @@ move.power(player.training.powerArea, true);
 move.body(player.training.bodyArea, true);
 move.mind(player.training.mindArea, true);
 
-console.log("move", player.training.current, currentArea);
+// console.log("move", player.training.current, currentArea);
 
 move[currentAreaType](currentArea, true);
 
@@ -95,7 +95,7 @@ import AdvancedUpgradesMenu from "./display/upgrades";
 // TODO: CheatsMenu
 import CheatsMenu from "./display/cheats";
 import OfflineProgress from "./display/global/offlineProgress";
-import Alerts, { IAlerts, defaultAlerts } from "./display/global/alerts";
+import Alerts, { defaultAlerts } from "./display/global/alerts";
 import { gameFormatClass } from "./display/global/format";
 // import Hotkeys from "./display/hotkeys";
 // import Tutorial from "./display/tutorial";

@@ -21,11 +21,32 @@ interface AdvancedUpgradesMenuProps {
 /**
  * Buys and renders the advanced stat upgrade
  */
-function buyAdvancedStatUpg ({ setBasicStatUpg, basicStatUpg }: Pick<AdvancedUpgradesMenuProps, "setBasicStatUpg" | "basicStatUpg">) {
+function buyAdvancedStatUpg ({ setBasicStatUpg, upg }: Pick<AdvancedUpgradesMenuProps, "setBasicStatUpg"> & { upg: number }) {
     // Function implementation
     console.log("Buying advanced stat upgrade");
-    credits.static.buyUpgrade(`upg4Credits`);
+    credits.static.buyUpgrade(`upg${upg}Credits`);
     setBasicStatUpg(getUpgDefaults());
+}
+
+// eslint-disable-next-line jsdoc/require-param
+/**
+ * @returns Advanced upgrades buy button
+ */
+function AdvancedUpgradesBuyButton (props: AdvancedUpgradesMenuProps & { children: React.ReactNode, id: number }) {
+    const { children, id } = props;
+    return (
+        <Button
+            type="button"
+            onClick={() => buyAdvancedStatUpg({ ...props, upg: id })}
+            disabled={props.statsStored.credits.lt((props.basicStatUpg as Record<number, ReturnType<typeof getUpgDefaults>[keyof ReturnType<typeof getUpgDefaults>]>)[id]?.cost ?? E(0))}
+            style={{
+                marginBottom: "5px",
+            }}
+        >
+            {children}
+        </Button>
+    );
+
 }
 
 // eslint-disable-next-line jsdoc/require-param
@@ -35,21 +56,22 @@ function buyAdvancedStatUpg ({ setBasicStatUpg, basicStatUpg }: Pick<AdvancedUpg
 function AdvancedUpgradesMenu (props: AdvancedUpgradesMenuProps) {
     const { statsStored, basicStatUpg, gameFormats } = props;
     const creditsStored = statsStored.credits;
-    const upgCost = basicStatUpg.advanced?.cost ?? E(0);
+    // const upgCost = basicStatUpg.advanced?.cost ?? E(0);
+    const upgCosts = {
+        4: basicStatUpg.advanced.cost,
+        5: basicStatUpg.keepPower.cost,
+    };
     return (
         <Accordion.Item eventKey="3">
             <Accordion.Header>Advanced Upgrades</Accordion.Header>
             <Accordion.Body>
-                <Button
-                    type="button"
-                    onClick={() => buyAdvancedStatUpg(props)}
-                    disabled={creditsStored.lt(upgCost)}
-                    style={{
-                        marginBottom: "5px",
-                    }}
-                >
-                    {`Buy Advanced Stat Upgrade [Level: ${basicStatUpg.advanced.level}] (🪙 | Cost: ${gameFormats.format(upgCost)}) {Effect: ${gameFormats.format(basicStatUpg.advanced.factor)}}`}
-                </Button>
+                <AdvancedUpgradesBuyButton {...props} id={4}>
+                    {`Buy Advanced Stat Upgrade [Level: ${basicStatUpg.advanced.level}] (🪙 | Cost: ${gameFormats.format(upgCosts[4])}) {Effect: ${gameFormats.format(basicStatUpg.advanced.factor)}}`}
+                </AdvancedUpgradesBuyButton>
+                <br />
+                <AdvancedUpgradesBuyButton {...props} id={5}>
+                    {`Buy Keep Power on Reset Upgrade [Active: ${basicStatUpg.keepPower.keep}] (🪙 | Cost: ${gameFormats.format(upgCosts[5])})`}
+                </AdvancedUpgradesBuyButton>
             </Accordion.Body>
         </Accordion.Item>
     );

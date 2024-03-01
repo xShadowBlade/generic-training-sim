@@ -12,7 +12,7 @@ const credits = Game.addCurrency("credits");
 const upgCostFormula = (n: E) => rounding10(E.pow(1.2, n.pow(1.2)).mul(10), 10, 1);
 
 const secondaryStatBoost = (n: E, x: E, level: E) => x.mul(n.add(1).div(1000).pow(secondaryStatBoostFactor(level)).add(0.5));
-const secondaryStatBoostFactor = (level: E) => level.pow(0.125).sub(0.9);
+const secondaryStatBoostFactor = (level: E) => level.pow(0.05).sub(0.9);
 
 credits.static.addUpgrade([
     {
@@ -112,6 +112,22 @@ credits.static.addUpgrade([
             });
         },
     },
+    {
+        name: "Keep power on reset",
+        id: "upg5Credits",
+        cost: (n) => n.eq(0) ? E("1e9") : E.dInf, // TODO: come up with a better formula
+        maxLevel: E(1),
+        level: E(0),
+        effect: function (level) {
+            // console.log(this);
+            // const level = this.getLevel();
+            // if (level.eq(1)) {
+            //     // power.static.setKeepOnReset(true);
+            //     power.static.reset
+            // }
+            Game.dataManager.setData("keepPowerOnReset", level.eq(1));
+        },
+    },
 ]);
 
 const gainCredits = (dt: ESource) => {
@@ -121,7 +137,7 @@ const gainCredits = (dt: ESource) => {
 Game.eventManager.setEvent("gainCredits", "interval", 0, gainCredits);
 
 const getUpgDefaults = () => {
-    return {
+    const out = {
         power: {
             cost: credits.static.getNextCost("upg1Credits"),
             boost: power.static.boost.getBoosts("boostUpg1Credits")[0].value(E(1)),
@@ -146,7 +162,36 @@ const getUpgDefaults = () => {
             factor: secondaryStatBoostFactor(credits.static.getUpgrade("upg4Credits")?.level ?? E(1)),
             level: credits.static.getUpgrade("upg4Credits")?.level ?? E(1),
         },
+        keepPower: {
+            cost: credits.static.getNextCost("upg5Credits"),
+            level: credits.static.getUpgrade("upg5Credits")?.level ?? E(0),
+            keep: Game.dataManager.getData("keepPowerOnReset"),
+        },
+        get 1 () { return this.power; },
+        get 2 () { return this.body; },
+        get 3 () { return this.mind; },
+        get 4 () { return this.advanced; },
+        get 5 () { return this.keepPower; },
     };
+    const exportObj: Record<number, typeof out[keyof typeof out]> = {};
+    // Object.entries(out).forEach(([key, value], i) => {
+    //     Object.defineProperty(exportObj, i, {
+    //         get: () => value,
+    //     });
+    // });
+
+    // return exportObj;
+    // for (let i = 0; i < Object.entries(out).length; i++) {
+    //     const [, value] = Object.entries(out);
+    //     (out as Record<number, {
+    //         [K in keyof typeof value]: typeof value[K]
+    //     }>)[i] = value;
+    // }
+    // return out as typeof out & Record<number, {
+    //     [K in keyof typeof Object.entries<typeof out>]: typeof Object.entries<typeof out>[K]
+    // }>;
+    return { ...out, ...exportObj };
+
 };
 
 export { credits, getUpgDefaults, gainCredits };

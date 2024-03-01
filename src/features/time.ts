@@ -63,7 +63,7 @@ function offlineProgress (): IOfflineProgress {
     // const last = Game.dataManager.getData("timeLastPlayed");
     // const dt = now.sub(last);
     const dt = now.sub(timeLastPlayed.value);
-    console.log("dt", dt);
+    // console.log("dt", dt);
     // If the last time played is less than 5 seconds ago, don't give any progress.
     if (!timeLastPlayed || dt.lt(5e3) || timeLastPlayed.value.eq(0)) {
         updateTimeLastPlayed();

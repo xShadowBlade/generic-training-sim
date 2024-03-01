@@ -40,6 +40,10 @@ interface InfoProps {
     gameFormat: gameFormatClass
 }
 
+// eslint-disable-next-line jsdoc/require-param
+/**
+ * @returns The info modal
+ */
 function FormulaInfo ({ showFormula, setShowFormula, setShow }: { showFormula: boolean; setShowFormula: (show: boolean) => void; setShow: (show: boolean) => void }) {
     // const [show, setShow] = useState(false);
     // const handleClose = () => setShow(false);
@@ -53,6 +57,8 @@ function FormulaInfo ({ showFormula, setShowFormula, setShow }: { showFormula: b
             <Modal.Title>Formulas</Modal.Title>
         </Modal.Header>
         <Modal.Body>
+            Here is a <a href="https://www.desmos.com/calculator/obej0ejnba" target="_blank" rel="noreferrer">Desmos graph</a> of the formulas.
+            <br />
             Most formulas are rounded to the nearest power of 10 via the formula:
             <br />
             <img
@@ -87,8 +93,8 @@ function FormulaInfo ({ showFormula, setShowFormula, setShow }: { showFormula: b
             <ol>
                 <li>
                     Requirement: <img
-                        src="https://latex.codecogs.com/svg.latex?10%5Cleft%282n&plus;2%5E%7B%5Cfrac%7Bn%7D%7B2%7D%7D%5Cright%29%5E%7Bn%7D"
-                        alt="10\left(2n+2^{\frac{n}{2}}\right)^{n}"
+                        src="https://latex.codecogs.com/svg.latex?10%5Cleft%282n&plus;1.9%5E%7B%5Cfrac%7Bn%7D%7B2%7D%7D%5Cright%29%5E%7Bn%7D"
+                        alt="10\left(2n+2^{\frac{n}{1.9}}\right)^{n}"
                     />
                 </li>
                 <li>
@@ -145,8 +151,8 @@ function FormulaInfo ({ showFormula, setShowFormula, setShow }: { showFormula: b
                 </li>
                 <li>
                     Effect: <img
-                        src="https://latex.codecogs.com/svg.latex?x%5E%7B0.125%7D-0.9"
-                        alt="x^{0.125}-0.9"
+                        src="https://latex.codecogs.com/svg.latex?x%5E%7B0.05%7D-0.9"
+                        alt="x^{0.05}-0.9"
                     />
                 </li>
             </ol>
@@ -178,7 +184,7 @@ function Info (props: InfoProps) {
 
     const [showFormulas, setShowFormulas] = useState(false);
     const handleShowFormulas = () => setShowFormulas(true);
-    const handleCloseFormulas = () => setShowFormulas(false);
+    // const handleCloseFormulas = () => setShowFormulas(false);
     return (<>
         {/* Button to open the info menu */}
         <Button

@@ -1,7 +1,7 @@
 /**
  * @file Initializes the game.
  */
-import { E, ESource } from "emath.js";
+// import { E, ESource } from "emath.js";
 import { game } from "emath.js/game";
 import type { AreaType } from "./features/movement";
 
@@ -11,7 +11,7 @@ const Game = new game({
     name: {
         title: "Generic Training Game",
         id: "generic-training-game",
-        version: "0.5.1",
+        version: "0.5.2",
     },
     settings: {
         framerate: 30,
@@ -48,7 +48,7 @@ const gameConfig = {
 
 // console.log("configTest", E(69).format());
 
-if (Game.config.mode === "development") (window as any)["Game"] = Game;
+if (Game.config.mode === "development") (window as typeof window & { Game: typeof Game })["Game"] = Game;
 
 // Aliases
 /** @alias Game.dataManager.setData */

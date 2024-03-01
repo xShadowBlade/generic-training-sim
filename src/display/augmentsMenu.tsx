@@ -8,7 +8,7 @@ import Dropdown from "react-bootstrap/Dropdown";
 import Modal from "react-bootstrap/Modal";
 import ProgressBar from "react-bootstrap/ProgressBar";
 // import { AlertList, Alert, AlertContainer } from "react-bs-notifier";
-import Button from "react-bootstrap/Button";
+// import Button from "react-bootstrap/Button";
 import { E } from "emath.js";
 
 // import { training, formatTrainingArea, getTrainingArea } from "../features/training";
@@ -19,6 +19,7 @@ import { ISettings } from "./settings";
 import { IAlerts } from "./global/alerts";
 import { gameFormatClass } from "./global/format";
 import { player } from "../game";
+import { getUpgDefaults } from "../features/credits";
 
 interface IAugmentMenuProps {
     renderCount: number,
@@ -64,14 +65,16 @@ function AugmentMenu (props: IAugmentMenuProps) {
                 } else if (settings.display.confirmAugment) {
                     setShowConfirm(true);
                 } else {
-                    changePowerAugment(currentAugmentToChange, true, false, setCurrentTrainingArea);
+                    // console.log("Changing augment to " + currentAugmentToChange);
+                    changePowerAugment(i, !getUpgDefaults().keepPower.keep as boolean | undefined, false, setCurrentTrainingArea);
+                    updateAugment(i);
                 }
             }}>{formatAugment(i, format)}</Dropdown.Item>);
         }
         return out;
     }
 
-    const updateAugment = () => setCurrentAugmentStr(formatAugment(currentAugment + 1, format));
+    const updateAugment = (augmentToChange: number) => setCurrentAugmentStr(formatAugment(augmentToChange, format));
 
     /**
      * Renders the training area progress bars
@@ -134,13 +137,13 @@ function AugmentMenu (props: IAugmentMenuProps) {
                                     body: `You are not strong enough for this augment. (You need ${format(getAugment(currentAugmentToChange).req)} power)`,
                                 });
                             } else {
-                                changePowerAugment(currentAugmentToChange, true, false, setCurrentTrainingArea);
+                                changePowerAugment(currentAugmentToChange, !getUpgDefaults().keepPower.keep as boolean | undefined, false, setCurrentTrainingArea);
                                 setAlertPopup({
                                     title: "Augment changed",
                                     body: `You have changed your augment to ${formatAugment(currentAugmentToChange, format)}`,
                                 });
                             }
-                            updateAugment();
+                            updateAugment(currentAugmentToChange);
                             setShowConfirm(false);
                         }}>Confirm</button>
                     </Modal.Footer>
