@@ -11,7 +11,7 @@ const Game = new game({
     name: {
         title: "Generic Training Game",
         id: "generic-training-game",
-        version: "0.5.2",
+        version: "0.5.3",
     },
     settings: {
         framerate: 30,

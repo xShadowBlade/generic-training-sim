@@ -4,7 +4,7 @@
 import React, { useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
-import { power, body, mind } from "../features/stats";
+import { power, body, mind, score } from "../features/stats";
 import { credits } from "../features/credits";
 import { gameCurrency } from "emath.js/game";
 import { gameFormatClass } from "./global/format";
@@ -178,6 +178,7 @@ function FormulaInfo ({ showFormula, setShowFormula, setShow }: { showFormula: b
  * @returns The info modal
  */
 function Info (props: InfoProps) {
+    const { format } = props.gameFormat;
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -219,6 +220,11 @@ function Info (props: InfoProps) {
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>
+                <p>{`🏆 | Power Score: ${format(score.power)}`}</p>
+                <p>{`🏆 | Body Score: ${format(score.body)}`}</p>
+                <p>{`🏆 | Mind Score: ${format(score.mind)}`}</p>
+                <p>{`🏆 | Total Score: ${format(score.total)}`}</p>
+                <hr />
                 <StatInfo {...props} stat={power} />
                 <hr />
                 <StatInfo {...props} stat={body} />

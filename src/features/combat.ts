@@ -4,12 +4,14 @@
 
 import { E, ESource } from "emath.js";
 import { Pointer } from "emath.js/game";
-import { power, mind } from "./stats";
+import { power, body, mind } from "./stats";
+import { rounding10 } from "./training";
 
 /**
  * Entity class
  */
 class entity {
+    public level: E;
     public stats: {
         health: E;
         maxHealth: E;
@@ -26,19 +28,25 @@ class entity {
     };
     /**
      * Create a new entity
+     * @param level - The level of the entity
      * @param stats - The stats of the entity
      */
-    constructor (stats: typeof entity.prototype.stats) {
-        this.stats = stats;
+    constructor (level: E) {
+        this.level = level;
+        this.stats = {
+            health: rounding10(level.pow(1.2).mul(10), 10, 3),
+            maxHealth: rounding10(level.pow(1.25).mul(20), 10, 3),
+            damage: rounding10(level.pow(1.15).mul(5), 10, 3),
+        };
+        // this.stats = stats;
     }
 }
 
 /**
  * Player class
  */
-class player<T> extends entity {
-    public stats: T;
-    constructor (stats: T) {
-        this.stats = stats;
+class player extends entity {
+    constructor () {
+        super(E(1));
     }
 }

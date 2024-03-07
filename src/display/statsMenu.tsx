@@ -5,7 +5,7 @@ import React from "react";
 import Accordion from "react-bootstrap/Accordion";
 import Button from "react-bootstrap/Button";
 
-import { power, mind, body, StatsStored } from "../features/stats";
+import { power, mind, body, StatsStored, score } from "../features/stats";
 import { credits, getUpgDefaults } from "../features/credits";
 import { player } from "../game";
 import { E } from "emath.js";
@@ -21,18 +21,6 @@ function buyBasicStatUpg ({ setBasicStatUpg, basicStatUpg, upgType }: Pick<Stats
     // console.log("Buying basic stat upgrade");
     const boostId = [null, "power", "body", "mind"].indexOf(upgType) ?? 1;
     credits.static.buyUpgrade(`upg${boostId}Credits`);
-    // const powerBoost = power.static.boost.getBoosts("boostUpg1Credits")[0];
-    // setBasicStatUpgCost({
-    //     credits: credits.static.getNextCost("upg1Credits"),
-    //     power: powerBoost.value(E(1)),
-    // });
-    // const statBoost = { power, body, mind }[upgType]?.static.boost.getBoosts(`boostUpg${boostId}Credits`)[0];
-    // const newUpg = basicStatUpg;
-    // newUpg[upgType] = {
-    //     cost: credits.static.getNextCost(`upg${boostId}Credits`),
-    //     boost: statBoost.value(E(1)),
-    // };
-    // setBasicStatUpg(newUpg);
     setBasicStatUpg(getUpgDefaults());
 }
 
@@ -90,6 +78,11 @@ function StatsMenu (props: StatsMenuProps) {
                 <p>{`🧠 | Mind: ${format(mindStored)} [x${format((mind.static.boost.getBoosts("boostUpg3Credits")[0] ?? { value: () => E(1) }).value(E(1)))}] ${player.training.current === "mind" ? gain(mindStored, mind.static.boost.calculate()) : ""}`}</p>
                 <br />
                 <p>{`🪙 | Credits: ${format(creditsStored)} ${gain(creditsStored, credits.static.boost.calculate())}`}</p>
+                {/* <br />
+                <p>{`🏆 | Power Score: ${format(score.power)}`}</p>
+                <p>{`🏆 | Body Score: ${format(score.body)}`}</p>
+                <p>{`🏆 | Mind Score: ${format(score.mind)}`}</p>
+                <p>{`🏆 | Total Score: ${format(score.total)}`}</p> */}
 
                 {/* <p>{`⏫ | Current Multiplier: x${format(basicStatUpg.power)}`}</p> */}
                 {/* <Button

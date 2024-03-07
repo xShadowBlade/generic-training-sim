@@ -21,17 +21,6 @@ credits.static.addUpgrade([
         cost: upgCostFormula, // TODO: come up with a better formula
         maxLevel: E(1000),
         effect: function (level) {
-            // console.log(this);
-            // const level = this.getLevel();
-
-            // power.static.boost.setBoost(
-            //     "boostUpg1Credits",
-            //     "Basic Stats Boost",
-            //     "Basic Stats Boost",
-            //     // n => n.mul(E.floor(E.mul(0.5, level).mul(E.ln(level)).add(level))),
-            //     n => n.mul(E.pow(2, level.sub(1))),
-            //     2,
-            // );
             power.static.boost.setBoost({
                 id: "boostUpg1Credits",
                 name: "Basic Stats Boost",
@@ -48,13 +37,6 @@ credits.static.addUpgrade([
         cost: upgCostFormula, // TODO: come up with a better formula
         maxLevel: E(1000),
         effect: function (level) {
-            // body.static.boost.setBoost(
-            //     "boostUpg2Credits",
-            //     "Basic Stats Boost",
-            //     "Basic Stats Boost",
-            //     n => n.mul(E.pow(2, level.sub(1))),
-            //     2,
-            // );
             body.static.boost.setBoost({
                 id: "boostUpg2Credits",
                 name: "Basic Stats Boost",
@@ -71,13 +53,6 @@ credits.static.addUpgrade([
         cost: upgCostFormula, // TODO: come up with a better formula
         maxLevel: E(1000),
         effect: function (level) {
-            // mind.static.boost.setBoost(
-            //     "boostUpg3Credits",
-            //     "Basic Stats Boost",
-            //     "Basic Stats Boost",
-            //     n => n.mul(E.pow(2, level.sub(1))),
-            //     2,
-            // );
             mind.static.boost.setBoost({
                 id: "boostUpg3Credits",
                 name: "Basic Stats Boost",
@@ -119,12 +94,6 @@ credits.static.addUpgrade([
         maxLevel: E(1),
         level: E(0),
         effect: function (level) {
-            // console.log(this);
-            // const level = this.getLevel();
-            // if (level.eq(1)) {
-            //     // power.static.setKeepOnReset(true);
-            //     power.static.reset
-            // }
             Game.dataManager.setData("keepPowerOnReset", level.eq(1));
         },
     },

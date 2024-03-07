@@ -94,6 +94,16 @@ Game.eventManager.setEvent("Gain Stats", "interval", 0, gainStats);
 // };
 // export { stats };
 
+const scoreFormula = (x: E, factor: E) => x.div(10).add(1).pow(factor.pow(1.5).recip()).log(1.1).mul(factor.recip()).pow(2);
+// const scoreFormula = (x: E, factor: E) => x.div(10).add(1).pow(factor.pow(1.5).recip()).pow(0.2).mul(factor.recip());
+
+const score = {
+    get power () { return scoreFormula(power.value, E(1)); },
+    get body () { return scoreFormula(body.value, E(0.9)); },
+    get mind () { return scoreFormula(mind.value, E(0.75)); },
+    get total () { return this.power.mul(this.mind).mul(this.body).pow(0.4); },
+};
+
 interface StatsStored {
     power: E;
     mind: E;
@@ -101,4 +111,4 @@ interface StatsStored {
     credits: E;
 }
 
-export { power, mind, body, StatsStored, gainStats };
+export { power, mind, body, StatsStored, gainStats, score };

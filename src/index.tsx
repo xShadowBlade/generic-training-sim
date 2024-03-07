@@ -28,6 +28,8 @@ Game.dataManager.setData("settings", defaultSettings);
 
 Game.init();
 
+const autoSaves: string[] = [];
+
 window.addEventListener("beforeunload", function (e) {
     if (!(Game.dataManager.getData("settings") as ISettings).data.saveOnExit || !gameConfig.saveOnExit) return;
     // Your code to run before the page unloads goes here
@@ -42,6 +44,7 @@ Game.eventManager.setEvent("save", "interval", 30e3, () => {
     if (!(Game.dataManager.getData("settings") as ISettings).data.autosave) return;
     updateTimeLastPlayed();
     Game.dataManager.saveData();
+    autoSaves.push(Game.dataManager.compileData());
     console.log("Auto save complete.");
 });
 
@@ -173,7 +176,7 @@ function App () {
             <br />
             To get started, click on the tutorial button in the top right corner.
             <br />
-            Note: If you started playing before v0.5.0, your data was reset due to a significant update. You should be able to recover fairly quickly.
+            This game has offline progress, and is meant to be played in the background.
         </>,
     });
 
