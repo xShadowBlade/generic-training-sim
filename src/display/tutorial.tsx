@@ -105,6 +105,7 @@ function Tutorial () {
                 zIndex: 1000,
             }}
             onClick={handleShow}
+            aria-label="Open tutorial"
         />
         {/* Modal for the tutorial */}
         <Modal

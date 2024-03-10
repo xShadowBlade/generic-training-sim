@@ -12,7 +12,7 @@ const credits = Game.addCurrency("credits");
 const upgCostFormula = (n: E) => rounding10(E.pow(1.2, n.pow(1.2)).mul(10), 10, 1);
 
 const secondaryStatBoost = (n: E, x: E, level: E) => x.mul(n.add(1).div(1000).pow(secondaryStatBoostFactor(level)).add(0.5));
-const secondaryStatBoostFactor = (level: E) => level.pow(0.05).sub(0.9);
+const secondaryStatBoostFactor = (level: E) => level.pow(0.075).sub(0.9);
 
 credits.static.addUpgrade([
     {
@@ -20,6 +20,7 @@ credits.static.addUpgrade([
         id: "upg1Credits",
         cost: upgCostFormula, // TODO: come up with a better formula
         maxLevel: E(1000),
+        el: () => getUpgDefaults().keepCreditsOnUpgrade.keep,
         effect: function (level) {
             power.static.boost.setBoost({
                 id: "boostUpg1Credits",
@@ -36,6 +37,7 @@ credits.static.addUpgrade([
         id: "upg2Credits",
         cost: upgCostFormula, // TODO: come up with a better formula
         maxLevel: E(1000),
+        el: () => getUpgDefaults().keepCreditsOnUpgrade.keep,
         effect: function (level) {
             body.static.boost.setBoost({
                 id: "boostUpg2Credits",
@@ -52,6 +54,7 @@ credits.static.addUpgrade([
         id: "upg3Credits",
         cost: upgCostFormula, // TODO: come up with a better formula
         maxLevel: E(1000),
+        el: () => getUpgDefaults().keepCreditsOnUpgrade.keep,
         effect: function (level) {
             mind.static.boost.setBoost({
                 id: "boostUpg3Credits",
@@ -97,6 +100,16 @@ credits.static.addUpgrade([
             Game.dataManager.setData("keepPowerOnReset", level.eq(1));
         },
     },
+    {
+        name: "Keep credits on upgrade",
+        id: "upg6Credits",
+        cost: (n) => n.eq(0) ? E("1e15") : E.dInf, // TODO: come up with a better formula
+        maxLevel: E(1),
+        level: E(0),
+        effect: function (level) {
+            Game.dataManager.setData("keepCreditsOnUpgrade", level.eq(1));
+        },
+    },
 ]);
 
 const gainCredits = (dt: ESource) => {
@@ -134,13 +147,19 @@ const getUpgDefaults = () => {
         keepPower: {
             cost: credits.static.getNextCost("upg5Credits"),
             level: credits.static.getUpgrade("upg5Credits")?.level ?? E(0),
-            keep: Game.dataManager.getData("keepPowerOnReset"),
+            keep: Boolean(Game.dataManager.getData("keepPowerOnReset") ?? false),
+        },
+        keepCreditsOnUpgrade: {
+            cost: credits.static.getNextCost("upg6Credits"),
+            level: credits.static.getUpgrade("upg6Credits")?.level ?? E(0),
+            keep: Boolean(Game.dataManager.getData("keepCreditsOnUpgrade") ?? false),
         },
         get 1 () { return this.power; },
         get 2 () { return this.body; },
         get 3 () { return this.mind; },
         get 4 () { return this.advanced; },
         get 5 () { return this.keepPower; },
+        get 6 () { return this.keepCreditsOnUpgrade; },
     };
     const exportObj: Record<number, typeof out[keyof typeof out]> = {};
     // Object.entries(out).forEach(([key, value], i) => {

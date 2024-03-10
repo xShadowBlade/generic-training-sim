@@ -203,6 +203,7 @@ function Info (props: InfoProps) {
                 zIndex: 1000,
             }}
             onClick={handleShow}
+            aria-label="Open info"
         />
         {/* Modal for the info */}
         <Modal

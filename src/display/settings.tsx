@@ -178,6 +178,7 @@ function Settings (props: SettingsProps) {
                 zIndex: 1000,
             }}
             onClick={handleShow}
+            aria-label="Open settings"
         />
         <Button onClick={handleShow}>Settings</Button>
         <Offcanvas show={show} onHide={handleClose}>

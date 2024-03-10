@@ -60,6 +60,7 @@ function AdvancedUpgradesMenu (props: AdvancedUpgradesMenuProps) {
     const upgCosts = {
         4: basicStatUpg.advanced.cost,
         5: basicStatUpg.keepPower.cost,
+        6: basicStatUpg.keepCreditsOnUpgrade.cost,
     };
     return (
         <Accordion.Item eventKey="3">
@@ -71,6 +72,10 @@ function AdvancedUpgradesMenu (props: AdvancedUpgradesMenuProps) {
                 <br />
                 <AdvancedUpgradesBuyButton {...props} id={5}>
                     {`Buy Keep Power on Reset Upgrade [Active: ${basicStatUpg.keepPower.keep}] (🪙 | Cost: ${gameFormats.format(upgCosts[5])})`}
+                </AdvancedUpgradesBuyButton>
+                <br />
+                <AdvancedUpgradesBuyButton {...props} id={6}>
+                    {`Buy Keep Credits on Upgrade Upgrade [Active: ${basicStatUpg.keepCreditsOnUpgrade.keep}] (🪙 | Cost: ${gameFormats.format(upgCosts[6])})`}
                 </AdvancedUpgradesBuyButton>
             </Accordion.Body>
         </Accordion.Item>
