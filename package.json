@@ -1,6 +1,6 @@
 {
   "name": "generic-training-sim",
-  "version": "0.5.0",
+  "version": "0.5.4",
   "private": true,
   "scripts": {
     "start": "webpack-dev-server --mode development --output-pathinfo",
