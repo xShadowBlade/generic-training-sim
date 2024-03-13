@@ -32,12 +32,18 @@ interface ISettings {
     display: {
         // animations: boolean;
         fps: number;
-        format: FormatType;
-        timeFormat: "short" | "long";
+        // format: FormatType;
+        // timeFormat: "short" | "long";
         trainingAreaFailPopup: boolean;
         augmentFailPopup: boolean;
         confirmAugment: boolean;
         disableWelcomeMessage: boolean;
+        format: {
+            formatType: FormatType;
+            formatTimeType: FormatTimeType;
+            acc: number;
+            max: number;
+        }
     };
     data: {
         autosave: boolean;
@@ -54,12 +60,18 @@ const defaultSettings: ISettings = {
     display: {
         // animations: true,
         fps: 30,
-        format: "mixed_sc",
-        timeFormat: "short",
+        // format: "mixed_sc",
+        // timeFormat: "short",
         trainingAreaFailPopup: true,
         augmentFailPopup: true,
         confirmAugment: true,
         disableWelcomeMessage: false,
+        format: {
+            formatType: "mixed_sc",
+            formatTimeType: "short",
+            acc: 2,
+            max: 9,
+        },
     },
     data: {
         autosave: true,
@@ -125,12 +137,18 @@ function Settings (props: SettingsProps) {
             display: {
                 // animations: (document.getElementById("settings-display-animations") as HTMLInputElement).checked,
                 fps: parseInt((document.getElementById("settings-display-fps") as HTMLInputElement).value, 10),
-                format: (document.getElementById("settings-display-format") as HTMLInputElement).value as FormatType,
-                timeFormat: (document.getElementById("settings-display-time-format") as HTMLInputElement).value as FormatTimeType,
+                // format: (document.getElementById("settings-display-format") as HTMLInputElement).value as FormatType,
+                // timeFormat: (document.getElementById("settings-display-time-format") as HTMLInputElement).value as FormatTimeType,
                 confirmAugment: (document.getElementById("settings-data-confirmAugment") as HTMLInputElement).checked,
                 trainingAreaFailPopup: (document.getElementById("settings-data-trainingAreaFailPopup") as HTMLInputElement).checked,
                 augmentFailPopup: (document.getElementById("settings-data-augmentFailPopup") as HTMLInputElement).checked,
                 disableWelcomeMessage: (document.getElementById("settings-display-disableWelcomeMessage") as HTMLInputElement).checked,
+                format: {
+                    formatType: (document.getElementById("settings-display-format") as HTMLSelectElement).value as FormatType,
+                    formatTimeType: (document.getElementById("settings-display-time-format") as HTMLSelectElement).value as FormatTimeType,
+                    acc: parseInt((document.getElementById("settings-display-format-acc") as HTMLInputElement).value, 10),
+                    max: parseInt((document.getElementById("settings-display-format-max") as HTMLInputElement).value, 10),
+                },
             },
             data: {
                 autosave: (document.getElementById("settings-data-autosave") as HTMLInputElement).checked,

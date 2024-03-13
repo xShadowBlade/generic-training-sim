@@ -32,6 +32,7 @@ module.exports = (env, argv) => {
                 // "@": path.resolve(__dirname, "src"),
                 "emath.js": "emath.js/ts",
                 "emath.js/game": "emath.js/ts/game",
+                "emath.js/presets": "emath.js/ts/presets",
             },
         },
         // watch: true,
@@ -80,16 +81,16 @@ module.exports = (env, argv) => {
             new HtmlWebpackPlugin({
                 template: "./public/index.html", // Use this HTML file as a template
             }),
-            // new webpack.DefinePlugin({
-            //     // "%PUBLIC_URL%": JSON.stringify(mode === "production" ? "../public/" : "./"),
-            //     MODE: JSON.stringify(mode),
-            // }),
-            new EsbuildPlugin({
-                define: {
-                    // "%PUBLIC_URL%": JSON.stringify(mode === "production" ? "../public/" : "./"),
-                    MODE: `"${mode}"`,
-                },
+            new webpack.DefinePlugin({
+                // "%PUBLIC_URL%": JSON.stringify(mode === "production" ? "../public/" : "./"),
+                MODE: JSON.stringify(mode),
             }),
+            // new EsbuildPlugin({
+            //     define: {
+            //         // "%PUBLIC_URL%": JSON.stringify(mode === "production" ? "../public/" : "./"),
+            //         MODE: `"${mode}"`,
+            //     },
+            // }),
             new HtmlReplaceWebpackPlugin([
                 {
                     pattern: "%PUBLIC_URL%",

@@ -23,7 +23,7 @@ interface AdvancedUpgradesMenuProps {
  */
 function buyAdvancedStatUpg ({ setBasicStatUpg, upg }: Pick<AdvancedUpgradesMenuProps, "setBasicStatUpg"> & { upg: number }) {
     // Function implementation
-    console.log("Buying advanced stat upgrade");
+    // console.log("Buying advanced stat upgrade");
     credits.static.buyUpgrade(`upg${upg}Credits`);
     setBasicStatUpg(getUpgDefaults());
 }

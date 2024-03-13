@@ -11,6 +11,9 @@ import Accordion from "react-bootstrap/Accordion";
 // import { E, ESource } from "emath.js";
 import "emath.js";
 import "emath.js/game";
+import "emath.js/presets";
+import type { FormatType } from "emath.js";
+import type { FormatTimeType } from "emath.js/presets";
 
 import Game, { gameConfig, player } from "./game";
 
@@ -114,7 +117,7 @@ function App () {
     const [settings, setSettings] = useState<ISettings>((Game.dataManager.getData("settings") as ISettings | undefined) ?? defaultSettings);
     const [alertPopup, setAlertPopup] = useState(defaultAlerts);
 
-    const gameFormats = new gameFormatClass({ settings: settings ?? defaultSettings });
+    const gameFormats = new gameFormatClass(settings.display.format ?? defaultSettings.display.format);
 
     // Stats
     const [statsStored, setStatsStored] = useState<StatsStored>({
@@ -139,6 +142,27 @@ function App () {
     // setBasicStatUpg = () => setBasicStatUpg(getUpgDefaults());
     // Update the settings when they change
     useEffect(() => {
+        // const newSettings = {
+        //     ...settings,
+        //     display: {
+        //         ...settings.display,
+        //         format: {
+        //             ...settings.display.format,
+        //             formatType: settings.display.format ?? settings.display.format.formatType,
+        //             formatTimeType: settings.display.format ?? settings.display.format.formatTimeType,
+        //         },
+        //     },
+        // };
+        // Backwards compatibility
+        if (typeof settings.display.format === "string" && typeof (settings.display as unknown as { timeFormat: FormatTimeType }).timeFormat === "string") {
+            const preFormat = settings.display.format as unknown as FormatType;
+            settings.display.format = {
+                ...defaultSettings.display.format,
+                formatType: preFormat,
+                formatTimeType: (settings.display as unknown as { timeFormat: FormatTimeType }).timeFormat,
+            };
+            delete (settings.display as unknown as { formatTimeType?: FormatTimeType }).formatTimeType;
+        }
         Game.dataManager.setData("settings", settings);
     }, [settings]);
 

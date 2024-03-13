@@ -57,7 +57,7 @@ function FormulaInfo ({ showFormula, setShowFormula, setShow }: { showFormula: b
             <Modal.Title>Formulas</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-            Here is a <a href="https://www.desmos.com/calculator/obej0ejnba" target="_blank" rel="noreferrer">Desmos graph</a> of the formulas.
+            Here is a <a href="https://www.desmos.com/calculator/hq6xlnvqsp" target="_blank" rel="noreferrer">Desmos graph</a> of the formulas.
             <br />
             Most formulas are rounded to the nearest power of 10 via the formula:
             <br />
@@ -150,9 +150,33 @@ function FormulaInfo ({ showFormula, setShowFormula, setShow }: { showFormula: b
                     />
                 </li>
                 <li>
-                    Effect: <img
-                        src="https://latex.codecogs.com/svg.latex?x%5E%7B0.05%7D-0.9"
-                        alt="x^{0.05}-0.9"
+                    Effect h(x): <img
+                        src="https://latex.codecogs.com/svg.latex?h%5Cleft%28x%5Cright%29%3Dx%5E%7B0.075%7D-0.9"
+                        alt="h\left(x\right)=x^{0.075}-0.9"
+                    />
+                </li>
+                <li>
+                    Secondary stat boost b(x, n), where x is the secondary stat, n is the level: <img
+                        src="https://latex.codecogs.com/svg.latex?b%5Cleft%28x%2Cn%5Cright%29%3D%5Cleft%28%5Cfrac%7Bx&plus;1%7D%7B1000%7D%5Cright%29%5E%7Bh%5Cleft%28n%5Cright%29%7D&plus;.5"
+                        alt="b\left(x,n\right)=\left(\frac{x+1}{1000}\right)^{h\left(n\right)}+.5"
+                    />
+                </li>
+            </ol>
+            <hr />
+            <h3>Score formulas</h3>
+            Let x = the stat value, n = the factor of the stat (1 for power, 0.9 for body, 0.75 for mind), and pbm = the product of the three stat scores.
+            <br />
+            <ol>
+                <li>
+                    Stat score: <img
+                        src="https://latex.codecogs.com/svg.latex?s%5Cleft%28x%2Cn%5Cright%29%3D%5Cleft%28%5Cfrac%7B%5Clog_%7B1.1%7D%5Cleft%28%5Cleft%28%5Cfrac%7Bx%7D%7B10%7D&plus;1%5Cright%29%5E%7B%5Cleft%28n%5E%7B-1.5%7D%5Cright%29%7D%5Cright%29%7D%7Bn%7D%5Cright%29%5E%7B2%7D"
+                        alt="s\left(x,n\right)=\left(\frac{\log_{1.1}\left(\left(\frac{x}{10}+1\right)^{\left(n^{-1.5}\right)}\right)}{n}\right)^{2}"
+                    />
+                </li>
+                <li>
+                    Total score: <img
+                        src="https://latex.codecogs.com/svg.latex?%5Cleft%28pbm%5Cright%29%5E%7B0.4%7D"
+                        alt="\left(pbm\right)^{0.4}"
                     />
                 </li>
             </ol>

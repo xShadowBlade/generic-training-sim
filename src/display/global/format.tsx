@@ -7,129 +7,14 @@ import Dropdown from "react-bootstrap/Dropdown";
 import Form from "react-bootstrap/Form";
 // import Button from "react-bootstrap/Button";
 import { E, FormatType, FormatTypeList, ESource } from "emath.js";
+import { formatOptions, formatTimeOptions, FormatTimeType, FormatOption, gameFormatClass } from "emath.js/presets";
 
 import { ISettings, defaultSettings } from "../settings";
-
-const gameFormatProps = (value: ESource, props: Pick<FormatComponentProps, "settings"> & { time?: boolean, multi?: boolean }): string => {
-    if (props.time) {
-        // return E.formatTime(value, 2, 9, props.settings.display.format ?? "mixed_sc");
-        switch (props.settings.display.timeFormat) {
-        case "short":
-            return E.formats.formatTime(value, 2, props.settings.display.format ?? "mixed_sc");
-        case "long":
-            return E.formats.formatTimeLong(value, true, 0, 9, props.settings.display.format ?? "mixed_sc");
-        }
-    }
-    if (props.multi) {
-        // TODO: Fix params
-        return E.formats.formatMult(value, 2);
-    }
-    return E.format(value, 2, 9, props.settings.display.format ?? "mixed_sc");
-};
-
-const gameFormatGainProps = (value: ESource, gain: ESource, props: Pick<FormatComponentProps, "settings">): string => {
-    return E.formatGain(value, gain, props.settings.display.format ?? "mixed_sc");
-};
-
-/**
- * Class to represent a game format.
- */
-class gameFormatClass {
-    public props: Pick<FormatComponentProps, "settings">;
-    constructor (props: Pick<FormatComponentProps, "settings">) {
-        // console.log("gameFormatClass constructor", props);
-        this.props = props;
-        // console.log("gameFormatClass constructor2", this.props);
-        
-    }
-    // public format (x: ESource) {
-    //     console.log("gameFormatClass constructor3", this);
-    //     return gameFormatProps(x, this.props);
-    // }
-
-    // public gain (x: ESource, gain: ESource) {
-    //     return gameFormatGainProps(x, gain, this.props);
-    // }
-
-    // public time (x: ESource) {
-    //     return gameFormatProps(x, { ...this.props, time: true });
-    // }
-
-    // public multi (x: ESource) {
-    //     return gameFormatProps(x, { ...this.props, multi: true });
-    // }
-
-    public format = (x: ESource) => gameFormatProps(x, this.props);
-    public gain = (x: ESource, gain: ESource) => gameFormatGainProps(x, gain, this.props);
-    public time = (x: ESource) => gameFormatProps(x, { ...this.props, time: true });
-    public multi = (x: ESource) => gameFormatProps(x, { ...this.props, multi: true });
-}
 
 interface FormatComponentProps {
     settings: ISettings;
     setSettings: (settings: ISettings) => void;
 }
-
-interface FormatOption<T = FormatType> {
-    name: string;
-    value: T;
-}
-
-type FormatTimeType = "short" | "long";
-
-const formatOptions: FormatOption[] = ([
-    {
-        name: "Standard",
-        value: "standard",
-    },
-    {
-        name: "Scientific",
-        value: "scientific",
-    },
-    {
-        name: "Mixed Scientific (default)",
-        value: "mixed_sc",
-    },
-    {
-        name: "Old Scientific",
-        value: "old_sc",
-    },
-    {
-        name: "Engineering",
-        value: "eng",
-    },
-    {
-        name: "Infinity",
-        value: "inf",
-    },
-    {
-        name: "Omega",
-        value: "omega",
-    },
-    {
-        name: "Omega Short",
-        value: "omega_short",
-    },
-    {
-        name: "Elemental",
-        value: "elemental",
-    },
-    {
-        name: "Layer",
-        value: "layer",
-    },
-] as FormatOption[]).sort((a, b) => a.name.localeCompare(b.name));
-
-const formatTimeOptions: FormatOption<FormatTimeType>[] = ([
-    {
-        name: "Short (default)",
-        value: "short",
-    },
-    {
-        name: "Long",
-        value: "long",
-    },
-] as FormatOption<FormatTimeType>[]).sort((a, b) => a.name.localeCompare(b.name));
 
 // eslint-disable-next-line jsdoc/require-param
 /**
@@ -150,11 +35,11 @@ function FormatComponent ({ show, props }: { show: boolean, props: FormatCompone
         <Form.Group controlId="settings-display-format">
             <Form.Label>Number Format</Form.Label>
             <Form.Select
-                value={settings.display.format}
+                value={settings.display.format.formatType}
                 onChange={(e) => {
                     const newSettings = { ...settings };
                     const val = (e.target as unknown as HTMLOptionElement ?? { value: "mixed_sc" }).value as FormatType;
-                    newSettings.display.format = val;
+                    settings.display.format.formatType = val;
                     // console.log(val);
                     setSettings(newSettings);
                 }}
@@ -165,11 +50,11 @@ function FormatComponent ({ show, props }: { show: boolean, props: FormatCompone
         <Form.Group controlId="settings-display-time-format">
             <Form.Label>Time Format</Form.Label>
             <Form.Select
-                value={settings.display.timeFormat}
+                value={settings.display.format.formatTimeType}
                 onChange={(e) => {
                     const newSettings = { ...settings };
                     const val = (e.target as unknown as HTMLOptionElement ?? { value: "short" }).value as FormatTimeType;
-                    newSettings.display.timeFormat = val;
+                    newSettings.display.format.formatTimeType = val;
                     // console.log(val);
                     setSettings(newSettings);
                 }}
@@ -177,8 +62,41 @@ function FormatComponent ({ show, props }: { show: boolean, props: FormatCompone
                 {formatTimeDropdown()}
             </Form.Select>
         </Form.Group>
+        <Form.Group controlId="settings-display-format-acc">
+            <Form.Label>Format accuracy (default 2)</Form.Label>
+            <Form.Control
+                type="number"
+                min={0}
+                max={15}
+                step={1}
+                value={settings.display.format.acc}
+                onChange={(e) => {
+                    const newSettings = { ...settings };
+                    // newSettings.display.fps = parseInt(e.target.value ?? "0", 10) ?? 30;
+                    newSettings.display.format.acc = parseInt((e.target.value ?? "2"), 10) ?? 2;
+                    setSettings(newSettings);
+                }}
+            />
+        </Form.Group>
+        <Form.Group controlId="settings-display-format-max">
+            <Form.Label>Format max (default 9)</Form.Label>
+            <Form.Control
+                type="number"
+                min={0}
+                max={15}
+                step={1}
+                value={settings.display.format.max}
+                onChange={(e) => {
+                    const newSettings = { ...settings };
+                    // newSettings.display.fps = parseInt(e.target.value ?? "0", 10) ?? 30;
+                    newSettings.display.format.max = parseInt((e.target.value ?? "9"), 10) ?? 9;
+                    setSettings(newSettings);
+                }}
+            />
+        </Form.Group>
     </>;
 }
 
 export default FormatComponent;
-export { FormatComponentProps, gameFormatProps, gameFormatGainProps, formatOptions, formatTimeOptions, FormatOption, FormatTimeType, gameFormatClass };
+export { FormatComponentProps, formatOptions, formatTimeOptions, gameFormatClass };
+export type { FormatOption, FormatTimeType };

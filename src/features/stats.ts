@@ -94,7 +94,7 @@ Game.eventManager.setEvent("Gain Stats", "interval", 0, gainStats);
 // };
 // export { stats };
 
-const scoreFormula = (x: E, factor: E) => x.div(10).add(1).pow(factor.pow(1.5).recip()).log(1.1).mul(factor.recip()).pow(2);
+const scoreFormula = (x: E, factor: E) => x.div(10).add(1).pow(factor.pow(-1.5)).log(1.1).div(factor).pow(2);
 // const scoreFormula = (x: E, factor: E) => x.div(10).add(1).pow(factor.pow(1.5).recip()).pow(0.2).mul(factor.recip());
 
 const score = {
