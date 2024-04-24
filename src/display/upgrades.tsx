@@ -7,14 +7,14 @@ import Button from "react-bootstrap/Button";
 import { E } from "emath.js";
 import { StatsStored } from "../features/stats";
 import { credits, getUpgDefaults } from "../features/credits";
-import { gameFormatClass } from "./global/format";
+import { GameFormatClass } from "./global/format";
 
 interface AdvancedUpgradesMenuProps {
     renderCount: number,
     statsStored: StatsStored,
     basicStatUpg: ReturnType<typeof getUpgDefaults>,
     setBasicStatUpg: (basicStatUpgCost: ReturnType<typeof getUpgDefaults>) => void,
-    gameFormats: gameFormatClass,
+    gameFormats: GameFormatClass,
 }
 
 // eslint-disable-next-line jsdoc/require-param

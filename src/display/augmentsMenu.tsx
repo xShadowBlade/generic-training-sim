@@ -17,7 +17,7 @@ import { powerAugment, checkAugment, changePowerAugment } from "../features/augm
 import { power } from "../features/stats";
 import { ISettings } from "./settings";
 import { IAlerts } from "./global/alerts";
-import { gameFormatClass } from "./global/format";
+import { GameFormatClass } from "./global/format";
 import { player } from "../game";
 import { getUpgDefaults } from "../features/credits";
 
@@ -29,7 +29,7 @@ interface IAugmentMenuProps {
     setAlertPopup: (alertPopup: IAlerts) => void,
     // gameFormat: (value: E) => string,
     // gameFormatTime: (value: E) => string,
-    gameFormats: gameFormatClass,
+    gameFormats: GameFormatClass,
     settings: ISettings,
 }
 

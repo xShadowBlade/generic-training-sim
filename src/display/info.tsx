@@ -6,8 +6,8 @@ import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import { power, body, mind, score } from "../features/stats";
 import { credits } from "../features/credits";
-import { gameCurrency } from "emath.js/game";
-import { gameFormatClass } from "./global/format";
+import { GameCurrency } from "emath.js/game";
+import { GameFormatClass } from "./global/format";
 import { AreaType } from "../features/movement";
 import { E } from "emath.js";
 
@@ -15,7 +15,7 @@ import { E } from "emath.js";
 /**
  * @returns The props for the stat info component
  */
-function StatInfo ({ stat, gameFormat }: InfoProps & { stat: gameCurrency<AreaType | "credits"> }) {
+function StatInfo ({ stat, gameFormat }: InfoProps & { stat: GameCurrency<AreaType | "credits"> }) {
     const statBoosts = stat.static.boost.boostArray.sort((a, b) => a.order - b.order);
     // console.log(statBoosts);'
     const capitalStat = stat.name.charAt(0).toUpperCase() + stat.name.slice(1);
@@ -37,7 +37,7 @@ function StatInfo ({ stat, gameFormat }: InfoProps & { stat: gameCurrency<AreaTy
 }
 
 interface InfoProps {
-    gameFormat: gameFormatClass
+    gameFormat: GameFormatClass
 }
 
 // eslint-disable-next-line jsdoc/require-param

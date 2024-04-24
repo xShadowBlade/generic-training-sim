@@ -2,14 +2,14 @@
  * @file Features/Augmentation - Augmentation
  */
 import { E, ESource } from "emath.js";
-// import { gameCurrency } from "emath.js/game";
+// import { GameCurrency } from "emath.js/game";
 import { rounding10 } from "./training";
 import { multiplierBasedArea, BaseArea } from "../utility/area";
 import { power, body, mind } from "./stats";
 import { credits } from "./credits";
 import Game, { player } from "../game";
 import { move } from "./movement";
-import { gameFormatClass } from "../display/global/format";
+import { GameFormatClass } from "../display/global/format";
 
 // let currentAugment = 0;
 
@@ -185,7 +185,7 @@ function changePowerAugment (augmentN: number, reset = true, force = false, stat
         stat.static.boost.setBoost({
             id: "augment",
             name: "Augment",
-            description: (gameFormat: gameFormatClass) => `Boost from augment: ${gameFormat.multi(powerAugment.getArea(augmentN).multipliers[statName])}`,
+            description: (gameFormat: GameFormatClass) => `Boost from augment: ${gameFormat.multi(powerAugment.getArea(augmentN).multipliers[statName])}`,
             value: (n) => n.mul(powerAugment.getArea(augmentN).multipliers[statName]),
             order: 2,
         });
@@ -203,7 +203,7 @@ function changePowerAugment (augmentN: number, reset = true, force = false, stat
         id: "augment",
         name: "Augment",
         // description: "Boost from augment",
-        description: (gameFormat: gameFormatClass) => `Boost from augment: ${gameFormat.multi(powerAugment.getArea(augmentN).multipliers.Credits)}`,
+        description: (gameFormat: GameFormatClass) => `Boost from augment: ${gameFormat.multi(powerAugment.getArea(augmentN).multipliers.Credits)}`,
         value: (n) => n.mul(powerAugment.getArea(augmentN).multipliers.Credits),
         order: 2,
     });

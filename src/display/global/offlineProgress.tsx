@@ -8,13 +8,13 @@ import { E } from "emath.js";
 import { offlineProgress } from "../../features/time";
 
 import Game from "../../game";
-import { gameFormatClass } from "./format";
+import { GameFormatClass } from "./format";
 
 interface OfflineProgressProps {
     progress: ReturnType<typeof offlineProgress>
     // gameFormat: (value: E) => string,
     // gameFormatTime: (value: E) => string,
-    gameFormats: gameFormatClass,
+    gameFormats: GameFormatClass,
     dataState: ReturnType<typeof Game.dataManager.loadData>,
 }
 

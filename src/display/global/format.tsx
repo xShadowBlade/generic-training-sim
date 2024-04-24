@@ -7,7 +7,7 @@ import Dropdown from "react-bootstrap/Dropdown";
 import Form from "react-bootstrap/Form";
 // import Button from "react-bootstrap/Button";
 import { E, FormatType, FormatTypeList, ESource } from "emath.js";
-import { formatOptions, formatTimeOptions, FormatTimeType, FormatOption, gameFormatClass } from "emath.js/presets";
+import { formatOptions, formatTimeOptions, FormatTimeType, FormatOption, GameFormatClass } from "emath.js/presets";
 
 import { ISettings, defaultSettings } from "../settings";
 
@@ -98,5 +98,5 @@ function FormatComponent ({ show, props }: { show: boolean, props: FormatCompone
 }
 
 export default FormatComponent;
-export { FormatComponentProps, formatOptions, formatTimeOptions, gameFormatClass };
+export { FormatComponentProps, formatOptions, formatTimeOptions, GameFormatClass };
 export type { FormatOption, FormatTimeType };

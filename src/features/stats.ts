@@ -3,9 +3,9 @@
  */
 import { E, ESource } from "emath.js";
 import Game, { player } from "../game";
-import { gameCurrency, Pointer } from "emath.js/game";
+import { GameCurrency, Pointer } from "emath.js/game";
 import type { multiplierBasedArea } from "utility/area";
-import { gameFormatClass } from "../display/global/format";
+import { GameFormatClass } from "../display/global/format";
 
 /**
  * Class to represent a stat.
@@ -13,9 +13,9 @@ import { gameFormatClass } from "../display/global/format";
  */
 class stat<Multipliers> {
     public name: string;
-    public currency: gameCurrency<string>;
+    public currency: GameCurrency<string>;
     public area: multiplierBasedArea<Multipliers>;
-    constructor (name: string | Pointer<gameCurrency<string>>, area: multiplierBasedArea<Multipliers>) {
+    constructor (name: string | Pointer<GameCurrency<string>>, area: multiplierBasedArea<Multipliers>) {
         this.currency = typeof name === "string" ? Game.addCurrency(name) : (typeof name === "function" ? name() : name);
         this.name = this.currency.name;
         this.area = area;
@@ -50,7 +50,7 @@ const secondaryStatBoost = (n: E, x: E) => x.mul(n.add(1).div(1000).pow(0.1).add
 power.static.boost.setBoost({
     id: "boostFromBody",
     name: "Boost from body",
-    description: (gameFormat: gameFormatClass) => `Secondary stat boost from body: ${gameFormat.multi(secondaryStatBoost(body.value, E(1)))}`,
+    description: (gameFormat: GameFormatClass) => `Secondary stat boost from body: ${gameFormat.multi(secondaryStatBoost(body.value, E(1)))}`,
     value: (n) => secondaryStatBoost(body.value, n),
     order: 3,
 });
@@ -58,7 +58,7 @@ power.static.boost.setBoost({
 body.static.boost.setBoost({
     id: "boostFromMind",
     name: "Boost from mind",
-    description: (gameFormat: gameFormatClass) => `Secondary stat boost from mind: ${gameFormat.multi(secondaryStatBoost(mind.value, E(1)))}`,
+    description: (gameFormat: GameFormatClass) => `Secondary stat boost from mind: ${gameFormat.multi(secondaryStatBoost(mind.value, E(1)))}`,
     value: (n) => secondaryStatBoost(mind.value, n),
     order: 3,
 });

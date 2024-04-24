@@ -15,7 +15,7 @@ import Game, { gameConfig } from "../game";
 import { timePlayed, timePlayedReal } from "../features/time";
 
 import Hotkeys, { IHotkeyData, defaultHotkeys, HotkeysProps, updateHotkeys } from "./global/hotkeys";
-import FormatComponent, { FormatComponentProps, FormatTimeType, gameFormatClass } from "./global/format";
+import FormatComponent, { FormatComponentProps, FormatTimeType, GameFormatClass } from "./global/format";
 
 const resetData = () => {
     Game.dataManager.resetData();
@@ -84,7 +84,7 @@ interface SettingsProps extends HotkeysProps, FormatComponentProps {
     settings: ISettings;
     setSettings: (settings: ISettings) => void;
     renderCount: number;
-    gameFormats: gameFormatClass;
+    gameFormats: GameFormatClass;
     showWelcomeMessage: () => void;
 }
 

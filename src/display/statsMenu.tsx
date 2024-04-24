@@ -9,7 +9,7 @@ import { power, mind, body, StatsStored, score } from "../features/stats";
 import { credits, getUpgDefaults } from "../features/credits";
 import { player } from "../game";
 import { E } from "emath.js";
-import { gameFormatClass } from "./global/format";
+import { GameFormatClass } from "./global/format";
 import { AreaType } from "../features/movement";
 
 // eslint-disable-next-line jsdoc/require-param
@@ -29,7 +29,7 @@ interface StatsMenuProps {
     statsStored: StatsStored,
     basicStatUpg: ReturnType<typeof getUpgDefaults>,
     setBasicStatUpg: (basicStatUpgCost: ReturnType<typeof getUpgDefaults>) => void,
-    gameFormats: gameFormatClass,
+    gameFormats: GameFormatClass,
 }
 
 // eslint-disable-next-line jsdoc/require-param

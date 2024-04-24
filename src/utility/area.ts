@@ -2,7 +2,7 @@
  * @file Declare a class to represent multiplier based training areas or other similar features.
  */
 import { E, ESource } from "emath.js";
-import { gameCurrency, Pointer } from "emath.js/game";
+import { GameCurrency, Pointer } from "emath.js/game";
 // import { power, mind } from "./stats";
 interface BaseArea {
     name: string;
@@ -16,7 +16,7 @@ interface MultiplierType { [key: string]: (x: ESource) => E }
  * @template Multipliers - The type of the multipliers for the training areas. Should be of type `Record<string, (x: ESource) => E>`.
  */
 class multiplierBasedArea<Multipliers> {
-    public stat: gameCurrency;
+    public stat: GameCurrency;
     public areas: BaseArea[];
     protected req: (x: ESource) => E;
     protected multipliers: Multipliers;
@@ -29,7 +29,7 @@ class multiplierBasedArea<Multipliers> {
      * @param multipliers - The multipliers to use. Note: The multipliers should be functions that take a Decimal and return a Decimal.
      * The multiplier keys are also used to format the training area, so they should be capitalized or otherwise formatted correctly.
      */
-    constructor (stat: Pointer<gameCurrency>, areas: BaseArea[], req: (x: ESource) => E, multipliers: Multipliers) {
+    constructor (stat: Pointer<GameCurrency>, areas: BaseArea[], req: (x: ESource) => E, multipliers: Multipliers) {
         // this.stat = stat;
         this.stat = typeof stat === "function" ? stat() : stat;
         this.areas = areas;

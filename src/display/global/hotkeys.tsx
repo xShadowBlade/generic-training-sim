@@ -13,7 +13,7 @@ import { ISettings } from "../settings";
 import { moveToAreaWithCheck } from "../trainingMenu";
 import { StatsMenuProps, buyBasicStatUpg } from "../statsMenu";
 import { TrainingMenuProps } from "../trainingMenu";
-import { gameFormatClass } from "./format";
+import { GameFormatClass } from "./format";
 
 interface IHotkey {
     name: string;
@@ -141,7 +141,7 @@ interface HotkeysProps extends Pick<TrainingMenuProps, "setAlertPopup" | "setCur
     settings: ISettings;
     setSettings: (settings: ISettings) => void;
     // setBasicStatUpgCost: (basicStatUpgCost: { credits: E, power: E }) => void;
-    gameFormats: gameFormatClass;
+    gameFormats: GameFormatClass;
 
     // setAlertPopup: (alertPopup: IAlerts) => void;
     // setCurrentTrainingArea: (area: string) => void;

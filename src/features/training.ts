@@ -2,7 +2,7 @@
  * @file Features - Upgrades
  */
 import { E, ESource } from "emath.js";
-// import { gameCurrency } from "emath.js/game";
+// import { GameCurrency } from "emath.js/game";
 import { power, mind, body } from "./stats";
 import { BaseArea, multiplierBasedArea } from "../utility/area";
 

@@ -2,10 +2,10 @@
  * @file Initializes the game.
  */
 // import { E, ESource } from "emath.js";
-import { game } from "emath.js/game";
+import { Game as GameClass } from "emath.js/game";
 import type { AreaType } from "./features/movement";
 
-const Game = new game({
+const Game = new GameClass({
     // // @ts-expect-error - Replaced by webpack
     mode: "development",
     name: {

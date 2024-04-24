@@ -5,7 +5,7 @@ import { E, ESource } from "emath.js";
 import Game from "../game";
 import { power, body, mind } from "./stats";
 import { rounding10 } from "./training";
-import { gameFormatClass } from "../display/global/format";
+import { GameFormatClass } from "../display/global/format";
 
 const credits = Game.addCurrency("credits");
 
@@ -26,7 +26,7 @@ credits.static.addUpgrade([
                 id: "boostUpg1Credits",
                 name: "Basic Stats Boost",
                 // description: "Basic Stats Boost",
-                description: (gameFormat: gameFormatClass) => `Basic Stats Boost: ${gameFormat.multi(E.pow(2, level.sub(1)))}`,
+                description: (gameFormat: GameFormatClass) => `Basic Stats Boost: ${gameFormat.multi(E.pow(2, level.sub(1)))}`,
                 value: (n) => n.mul(E.pow(2, level.sub(1))),
                 order: 2,
             });
@@ -43,7 +43,7 @@ credits.static.addUpgrade([
                 id: "boostUpg2Credits",
                 name: "Basic Stats Boost",
                 // description: "Basic Stats Boost",
-                description: (gameFormat: gameFormatClass) => `Basic Stats Boost: ${gameFormat.multi(E.pow(2, level.sub(1)))}`,
+                description: (gameFormat: GameFormatClass) => `Basic Stats Boost: ${gameFormat.multi(E.pow(2, level.sub(1)))}`,
                 value: (n) => n.mul(E.pow(2, level.sub(1))),
                 order: 2,
             });
@@ -60,7 +60,7 @@ credits.static.addUpgrade([
                 id: "boostUpg3Credits",
                 name: "Basic Stats Boost",
                 // description: "Basic Stats Boost",
-                description: (gameFormat: gameFormatClass) => `Basic Stats Boost: ${gameFormat.multi(E.pow(2, level.sub(1)))}`,
+                description: (gameFormat: GameFormatClass) => `Basic Stats Boost: ${gameFormat.multi(E.pow(2, level.sub(1)))}`,
                 value: (n) => n.mul(E.pow(2, level.sub(1))),
                 order: 2,
             });
@@ -76,7 +76,7 @@ credits.static.addUpgrade([
             power.static.boost.setBoost({
                 id: "boostFromBody",
                 name: "Boost from body",
-                description: (gameFormat: gameFormatClass) => `Secondary stat boost from body: ${gameFormat.multi(secondaryStatBoost(body.value, E(1), level))}`,
+                description: (gameFormat: GameFormatClass) => `Secondary stat boost from body: ${gameFormat.multi(secondaryStatBoost(body.value, E(1), level))}`,
                 value: (n) => secondaryStatBoost(body.value, n, level),
                 order: 3,
             });
@@ -84,7 +84,7 @@ credits.static.addUpgrade([
             body.static.boost.setBoost({
                 id: "boostFromMind",
                 name: "Boost from mind",
-                description: (gameFormat: gameFormatClass) => `Secondary stat boost from mind: ${gameFormat.multi(secondaryStatBoost(mind.value, E(1), level))}`,
+                description: (gameFormat: GameFormatClass) => `Secondary stat boost from mind: ${gameFormat.multi(secondaryStatBoost(mind.value, E(1), level))}`,
                 value: (n) => secondaryStatBoost(mind.value, n, level),
                 order: 3,
             });

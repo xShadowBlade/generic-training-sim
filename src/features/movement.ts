@@ -2,12 +2,12 @@
  * @file This file contains all the functions related to movement.
  */
 import { E, ESource } from "emath.js";
-import { gameCurrency } from "emath.js/game";
+import { GameCurrency } from "emath.js/game";
 import { training, PowerTrainingAreaMul, MindTrainingAreaMul } from "./training";
 import { multiplierBasedArea } from "utility/area";
 import { power, mind, body } from "./stats";
 import Game, { player } from "../game";
-import { gameFormatClass } from "../display/global/format";
+import { GameFormatClass } from "../display/global/format";
 
 // let playerState: ["idle", AreaType, number] = ["idle", "power", 0];
 
@@ -121,7 +121,7 @@ type AreaType = "power" | "mind" | "body";
  * @returns - Whether the move was successful.
  */
 function moveArea (areaType: AreaType, areaN: number, force = false): boolean {
-    let currency: gameCurrency<AreaType>;
+    let currency: GameCurrency<AreaType>;
     let trainingArea: ReturnType<typeof multiplierBasedArea.prototype.getArea>;
     let multiplier: E;
 
@@ -174,7 +174,7 @@ function moveArea (areaType: AreaType, areaN: number, force = false): boolean {
         id: "trainingArea",
         name: "Training Area",
         // description: "Boost from training area",
-        description: (gameFormat: gameFormatClass) => `Boost from training area: ${gameFormat.multi(multiplier)}`,
+        description: (gameFormat: GameFormatClass) => `Boost from training area: ${gameFormat.multi(multiplier)}`,
         value: (n) => n.mul(multiplier),
         order: 3,
     });

@@ -102,7 +102,7 @@ import AdvancedUpgradesMenu from "./display/upgrades";
 import CheatsMenu from "./display/cheats";
 import OfflineProgress from "./display/global/offlineProgress";
 import Alerts, { defaultAlerts } from "./display/global/alerts";
-import { gameFormatClass } from "./display/global/format";
+import { GameFormatClass } from "./display/global/format";
 // import Hotkeys from "./display/hotkeys";
 // import Tutorial from "./display/tutorial";
 import Navbar from "./display/navbar";
@@ -117,7 +117,7 @@ function App () {
     const [settings, setSettings] = useState<ISettings>((Game.dataManager.getData("settings") as ISettings | undefined) ?? defaultSettings);
     const [alertPopup, setAlertPopup] = useState(defaultAlerts);
 
-    const gameFormats = new gameFormatClass(settings.display.format ?? defaultSettings.display.format);
+    const gameFormats = new GameFormatClass(settings.display.format ?? defaultSettings.display.format);
 
     // Stats
     const [statsStored, setStatsStored] = useState<StatsStored>({

@@ -15,7 +15,7 @@ import { training } from "../features/training";
 import { move, AreaType } from "../features/movement";
 // import { power } from "../features/stats";
 import { ISettings } from "./settings";
-import { gameFormatClass } from "./global/format";
+import { GameFormatClass } from "./global/format";
 import { IAlerts } from "./global/alerts";
 
 interface TrainingMenuProps {
@@ -26,7 +26,7 @@ interface TrainingMenuProps {
     setAlertPopup: (alertPopup: IAlerts) => void,
     // gameFormat: (value: E) => string,
     // gameFormatTime: (value: E) => string,
-    gameFormats: gameFormatClass,
+    gameFormats: GameFormatClass,
     settings: ISettings,
 }
 
