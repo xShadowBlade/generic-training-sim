@@ -5,8 +5,13 @@ on:
   # Runs on pushes targeting the default branch
   push:
     branches: ["main"]
+    # Run only on pushes to /src/ or /documentation/ directories
     paths:
-      - "build/**"
+      - 'src/**'
+  pull_request:
+    branches: ["main"]
+    paths:
+      - 'src/**'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -24,15 +29,24 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # Single deploy job since we're just deploying
   deploy:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+
+      # Build the documentation
+      - name: Build game
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run build
+
+      # Deploy the documentation to GitHub Pages
       - name: Setup Pages
         uses: actions/configure-pages@v3
       - name: Upload artifact
