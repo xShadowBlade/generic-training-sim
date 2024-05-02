@@ -2,10 +2,9 @@
  * @file Combat features
  */
 
-import { E, ESource } from "emath.js";
+import { E, ESource, roundingBase } from "emath.js";
 import { Pointer } from "emath.js/game";
 import { power, body, mind } from "./stats";
-import { rounding10 } from "./training";
 
 /**
  * Entity class
@@ -34,9 +33,9 @@ class entity {
     constructor (level: E) {
         this.level = level;
         this.stats = {
-            health: rounding10(level.pow(1.2).mul(10), 10, 3),
-            maxHealth: rounding10(level.pow(1.25).mul(20), 10, 3),
-            damage: rounding10(level.pow(1.15).mul(5), 10, 3),
+            health: roundingBase(level.pow(1.2).mul(10), 10, 3),
+            maxHealth: roundingBase(level.pow(1.25).mul(20), 10, 3),
+            damage: roundingBase(level.pow(1.15).mul(5), 10, 3),
         };
         // this.stats = stats;
     }

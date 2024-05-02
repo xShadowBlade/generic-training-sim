@@ -3,7 +3,6 @@
  */
 import { E } from "emath.js";
 // import Game from "../game";
-import { rounding10 } from "./training";
 import { power } from "./stats";
 import { credits } from "./credits";
 

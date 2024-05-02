@@ -1,9 +1,8 @@
 /**
  * @file Features/Augmentation - Augmentation
  */
-import { E, ESource } from "emath.js";
+import { E, ESource, roundingBase } from "emath.js";
 // import { GameCurrency } from "emath.js/game";
-import { rounding10 } from "./training";
 import { multiplierBasedArea, BaseArea } from "../utility/area";
 import { power, body, mind } from "./stats";
 import { credits } from "./credits";
@@ -22,7 +21,7 @@ function augmentRequirement (x: ESource) {
     x = E(x);
     const base = x.mul(30).add(E(2).pow(x));
     const exponent = x.mul(5);
-    const result = rounding10(E.pow(base, exponent).mul("250e12"));
+    const result = roundingBase(E.pow(base, exponent).mul("250e12"));
     return result.neq(0) ? result : E(0);
 }
 
@@ -33,7 +32,7 @@ function augmentRequirement (x: ESource) {
  */
 function augmentMultiplierPower (x: ESource) {
     x = E(x);
-    return x.neq(0) ? rounding10(E.pow(2, x.add(x.pow(1.4)).pow(1.5)).mul(10)) : E(1);
+    return x.neq(0) ? roundingBase(E.pow(2, x.add(x.pow(1.4)).pow(1.5)).mul(10)) : E(1);
 }
 
 /**
@@ -43,7 +42,7 @@ function augmentMultiplierPower (x: ESource) {
  */
 function augmentMultiplerSecondary (x: ESource) {
     x = E(x);
-    return x.neq(0) ? rounding10(E.pow(2, x.add(x.pow(1.3)).pow(1.4)).mul(5)) : E(1);
+    return x.neq(0) ? roundingBase(E.pow(2, x.add(x.pow(1.3)).pow(1.4)).mul(5)) : E(1);
 }
 
 /**
@@ -53,7 +52,7 @@ function augmentMultiplerSecondary (x: ESource) {
  */
 function augmentMultiplierCredits (x: ESource) {
     x = E(x);
-    return x.neq(0) ? rounding10(E.pow(2, x.mul(2).pow(1.275)).mul(10)) : E(1);
+    return x.neq(0) ? roundingBase(E.pow(2, x.mul(2).pow(1.275)).mul(10)) : E(1);
 }
 
 // TODO: Make new augments
@@ -115,9 +114,9 @@ const augments: BaseArea[] = [
 //     return {
 //         name: augments[isExtended ? augments.length - 1 : n].name,
 //         emoji: augments[isExtended ? augments.length - 1 : n].emoji,
-//         req: n !== 0 ? rounding10(augmentRequirement(n)) : E(0),
-//         mulPower: n !== 0 ? rounding10(augmentMultiplierPower(n)) : E(1),
-//         mulCredits: n !== 0 ? rounding10(augmentMultiplierCredits(n)) : E(1),
+//         req: n !== 0 ? roundingBase(augmentRequirement(n)) : E(0),
+//         mulPower: n !== 0 ? roundingBase(augmentMultiplierPower(n)) : E(1),
+//         mulCredits: n !== 0 ? roundingBase(augmentMultiplierCredits(n)) : E(1),
 //     };
 // }
 

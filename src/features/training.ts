@@ -1,7 +1,7 @@
 /**
  * @file Features - Upgrades
  */
-import { E, ESource } from "emath.js";
+import { E, ESource, roundingBase } from "emath.js";
 // import { GameCurrency } from "emath.js/game";
 import { power, mind, body } from "./stats";
 import { BaseArea, multiplierBasedArea } from "../utility/area";
@@ -14,27 +14,6 @@ interface PowerTrainingAreaMul {
 
 interface MindTrainingAreaMul {
     Mind: (x: ESource) => E;
-}
-
-/**
- * Function to round a number to the nearest power of 10.
- * @param x - The number to round.
- * @param acc - The accuracy to round to (power)
- * @param sig - The significant figures to round to.
- * @param max - The maximum power to round to.
- * @returns - The rounded number.
- */
-function rounding10 (x: ESource, acc: ESource = 10, sig: ESource = 0, max: ESource = 1000) {
-    x = E(x);
-    // If the number is too large, don't round it
-    if (x.gte(E.pow(acc, max))) return x;
-    /** The power of the number, rounded. acc^power = x */
-    const powerN = E.floor(E.log(x, acc));
-    let out = x.div(E.pow(acc, powerN));
-    out = out.mul(E.pow(acc, sig)).round();
-    out = out.div(E.pow(acc, sig));
-    out = out.mul(E.pow(acc, powerN));
-    return out;
 }
 
 const powerAreaList: BaseArea[] = [
@@ -119,7 +98,7 @@ function multiplier (x: ESource): E {
 
 // TODO: Make unique areas, requirements, and multipliers for mind training
 const powerTraining = (() => {
-    return new multiplierBasedArea<PowerTrainingAreaMul>(power, powerAreaList, (x: ESource) => rounding10(requirement(x)), { Power: (x: ESource) => rounding10(multiplier(x)) });
+    return new multiplierBasedArea<PowerTrainingAreaMul>(power, powerAreaList, (x: ESource) => roundingBase(requirement(x)), { Power: (x: ESource) => roundingBase(multiplier(x)) });
 })();
 
 // Test
@@ -128,16 +107,16 @@ const powerTraining = (() => {
 const mindTraining = (() => {
     // TODO: Make unique areas, requirements, and multipliers for mind training
     const mindAreaList = powerAreaList;
-    const req = (x: ESource) => E(x).neq(0) ? rounding10(requirement(x).mul(3)) : E(0);
-    const mul = (x: ESource) => E(x).neq(0) ? rounding10(multiplier(x).div(3)) : E(0.3);
+    const req = (x: ESource) => E(x).neq(0) ? roundingBase(requirement(x).mul(3)) : E(0);
+    const mul = (x: ESource) => E(x).neq(0) ? roundingBase(multiplier(x).div(3)) : E(0.3);
     return new multiplierBasedArea<MindTrainingAreaMul>(mind, mindAreaList, req, { Mind: mul });
 })();
 
 const bodyTraining = (() => {
     // TODO: Make unique areas, requirements, and multipliers for body training
     const bodyAreaList = powerAreaList;
-    const req = (x: ESource) => E(x).neq(0) ? rounding10(requirement(x).mul(2)) : E(0);
-    const mul = (x: ESource) => E(x).neq(0) ? rounding10(multiplier(x).div(2)) : E(0.5);
+    const req = (x: ESource) => E(x).neq(0) ? roundingBase(requirement(x).mul(2)) : E(0);
+    const mul = (x: ESource) => E(x).neq(0) ? roundingBase(multiplier(x).div(2)) : E(0.5);
     return new multiplierBasedArea(body, bodyAreaList, req, { Body: mul });
 })();
 
@@ -147,5 +126,5 @@ const training = {
     body: bodyTraining,
 };
 
-// export { training, formatTrainingArea, getTrainingArea, rounding10, requirement, multiplier };
-export { powerAreaList, powerTraining, mindTraining, training, rounding10, requirement, multiplier, PowerTrainingAreaMul, MindTrainingAreaMul };
+// export { training, formatTrainingArea, getTrainingArea, requirement, multiplier };
+export { powerAreaList, powerTraining, mindTraining, training, requirement, multiplier, PowerTrainingAreaMul, MindTrainingAreaMul };

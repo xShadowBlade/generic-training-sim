@@ -1,7 +1,7 @@
 /**
  * @file Display components
  */
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Accordion from "react-bootstrap/Accordion";
 import Button from "react-bootstrap/Button";
 
@@ -16,11 +16,11 @@ import { AreaType } from "../features/movement";
 /**
  * Buys and renders the basic stat upgrade
  */
-function buyBasicStatUpg ({ setBasicStatUpg, basicStatUpg, upgType }: Pick<StatsMenuProps, "setBasicStatUpg" | "basicStatUpg"> & { upgType: AreaType }) {
+function buyBasicStatUpg ({ setBasicStatUpg, basicStatUpg, upgType, buyMax }: Pick<StatsMenuProps, "setBasicStatUpg" | "basicStatUpg"> & { upgType: AreaType, buyMax?: boolean }) {
     // Function implementation
     // console.log("Buying basic stat upgrade");
     const boostId = [null, "power", "body", "mind"].indexOf(upgType) ?? 1;
-    credits.static.buyUpgrade(`upg${boostId}Credits`);
+    credits.static.buyUpgrade(`upg${boostId}Credits`, buyMax ? undefined : 1);
     setBasicStatUpg(getUpgDefaults());
 }
 
@@ -37,25 +37,53 @@ interface StatsMenuProps {
  * @returns A button to buy the basic stat upgrade for the specified stat
  */
 function BuyUpgStat (props: StatsMenuProps & { upgType: AreaType }) {
-    const { statsStored, upgType, basicStatUpg, gameFormats } = props;
+    const { statsStored, upgType, gameFormats } = props;
     // const statAmt = statsStored[upgType];
+    const basicStatUpg = getUpgDefaults();
     const creditsStored = statsStored.credits;
     const upgCost = basicStatUpg[upgType]?.cost ?? E(0);
     const statId = [null, "power", "body", "mind"].indexOf(upgType) ?? 1;
     // Convert upgType to a string, with the first letter capitalized
     const upgTypeStr = upgType.charAt(0).toUpperCase() + upgType.slice(1);
-    return (
+    // const [maxData, setMaxData] = useState({
+    //     max: E(0),
+    //     cost: E(0),
+    // });
+    // useEffect(() => {
+    //     if (basicStatUpg[upgType]?.max) {
+    //         setMaxData({
+    //             max: basicStatUpg[upgType]?.max[0],
+    //             cost: basicStatUpg[upgType]?.max[1],
+    //         });
+    //     }
+    //     // console.log("Max data updated");
+    // }, [props.renderCount]);
+    return (<>
         <Button
             type="button"
             onClick={() => buyBasicStatUpg(props)}
             disabled={creditsStored.lt(upgCost)}
             style={{
                 marginBottom: "5px",
+                marginRight: "5px",
             }}
         >
             {`Buy Basic ${[null, "✊", "💪", "🧠"][statId]} | ${upgTypeStr} Upgrade [Level: ${basicStatUpg[upgType].level}] (🪙 | Cost: ${gameFormats.format(upgCost)})`}
         </Button>
-    );
+        |
+        {basicStatUpg[upgType]?.max && <Button
+            type="button"
+            onClick={() => buyBasicStatUpg({ ...props, buyMax: true })}
+            disabled={creditsStored.lt(upgCost)}
+            style={{
+                marginBottom: "5px",
+                marginLeft: "5px",
+            }}
+        >
+            {/* {`Buy ${maxData.max} upgrades (🪙 | Cost: ${gameFormats.format(maxData.cost)})`} */}
+            {`Buy ${basicStatUpg[upgType]?.max[0]} upgrades (🪙 | Cost: ${gameFormats.format(basicStatUpg[upgType]?.max[1])})`}
+        </Button>}
+    </>);
 }
 
 // eslint-disable-next-line jsdoc/require-param
