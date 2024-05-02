@@ -4,6 +4,7 @@
 
  - [Version 0.5.4](#version-054)
  - [Version 0.5.5](#version-055)
+ - [Version 0.6.0](#version-060)
 </details>
 
 ## Version 0.5.4
@@ -20,3 +21,10 @@ Added:
 Added:
  - Format settings for acc and max
  - Updated formulas
+
+## Version 0.6.0
+
+05/2/2024
+Added:
+ - Buy max
+ - Various optimizations
