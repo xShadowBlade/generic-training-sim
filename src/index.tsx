@@ -113,6 +113,9 @@ import Navbar from "./display/navbar";
 function App () {
     // Misc / Global
     const [renderCount, setRenderCount] = useState(0);
+    const [frameDt, setFrameDt] = useState(0);
+    const [fps, setFps] = useState(0);
+
     const [progress, setProgress] = useState<IOfflineProgress>();
     const [settings, setSettings] = useState<ISettings>((Game.dataManager.getData("settings") as ISettings | undefined) ?? defaultSettings);
     const [alertPopup, setAlertPopup] = useState(defaultAlerts);
@@ -175,8 +178,31 @@ function App () {
 
     // Run the render event every frame
     useEffect(() => {
-        Game.eventManager.setEvent("render", "interval", 0, () => {
+        const fpsList: number[] = [];
+        const fpsListLength = 60;
+
+        Game.eventManager.setEvent("render", "interval", 0, (dt) => {
             setRenderCount((prevCount) => prevCount + 1);
+            setFrameDt(dt);
+            // setFps(1000 / dt);
+            // setFpsList((prevList) => {
+            //     let newList = [...prevList];
+            //     // newList.slice(0);
+            //     newList.shift();
+            //     newList.push(1000 / dt);
+            //     // console.log(newList);
+            //     return newList;
+            // });
+
+            // fpsList.shift();
+            // fpsList.push(1000 / dt);
+
+            fpsList.push(1000 / dt);
+            if (fpsList.length > fpsListLength) fpsList.shift();
+
+            // console.log(fpsList, fpsList.reduce((a, b) => a + b) / fpsList.length);
+            setFps(fpsList.reduce((a, b) => a + b) / fpsList.length);
+            // console.log(fps);
         });
 
         return () => {
@@ -238,6 +264,8 @@ function App () {
         />
         <Navbar
             gameFormat={gameFormats}
+            frameDt={frameDt}
+            fps={fps}
         />
         <Accordion defaultActiveKey={["0"]} alwaysOpen>
             <StatsMenu

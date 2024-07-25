@@ -37,7 +37,9 @@ function StatInfo ({ stat, gameFormat }: InfoProps & { stat: GameCurrency<AreaTy
 }
 
 interface InfoProps {
-    gameFormat: GameFormatClass
+    gameFormat: GameFormatClass;
+    frameDt: number;
+    fps: number;
 }
 
 // eslint-disable-next-line jsdoc/require-param
@@ -202,6 +204,8 @@ function FormulaInfo ({ showFormula, setShowFormula, setShow }: { showFormula: b
  * @returns The info modal
  */
 function Info (props: InfoProps) {
+    const { frameDt, fps } = props;
+
     const { format } = props.gameFormat;
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
@@ -245,6 +249,8 @@ function Info (props: InfoProps) {
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>
+                <p>FPS: {fps.toFixed(2)}</p>
+
                 <p>{`🏆 | Power Score: ${format(score.power)}`}</p>
                 <p>{`🏆 | Body Score: ${format(score.body)}`}</p>
                 <p>{`🏆 | Mind Score: ${format(score.mind)}`}</p>
