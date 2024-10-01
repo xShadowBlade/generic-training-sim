@@ -4,10 +4,10 @@
 /* eslint-disable jsdoc/check-tag-names */
 /* eslint-disable @typescript-eslint/no-var-requires */
 const path = require("path");
-const { EsbuildPlugin } = require("esbuild-loader");
 const webpack = require("webpack");
 // in case you run into any typescript error when configuring `devServer`
 require("webpack-dev-server");
+const { EsbuildPlugin } = require("esbuild-loader");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const HtmlReplaceWebpackPlugin = require("html-replace-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
@@ -15,7 +15,6 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 
 module.exports = (env, argv) => {
-    console.log("Args:", argv);
     const mode = argv.mode;
     /**
      * @type {import("webpack").Configuration}
@@ -29,16 +28,11 @@ module.exports = (env, argv) => {
         resolve: {
             extensions: [".css", ".tsx", ".ts", ".js", "..."],
             alias: {
-                // "@": path.resolve(__dirname, "src"),
                 "emath.js": "emath.js/ts",
                 "emath.js/game": "emath.js/ts/game",
                 "emath.js/presets": "emath.js/ts/presets",
             },
         },
-        // watch: true,
-        // watchOptions: {
-        //     ignored: "**/node_modules",
-        // },
         module: {
             rules: [
             // Use esbuild to compile JavaScript & TypeScript
@@ -49,7 +43,7 @@ module.exports = (env, argv) => {
                     loader: "esbuild-loader",
                     options: {
                     // JavaScript version to compile to
-                        target: "es2017",
+                        target: "es2015",
                         tsconfig: "./tsconfig.json",
                     },
                 },
@@ -60,8 +54,6 @@ module.exports = (env, argv) => {
                     use: [
                         mode === "development" ? "style-loader" : MiniCssExtractPlugin.loader,
                         "css-loader",
-                        // "postcss-loader",
-                        // "sass-loader",
                     ],
                 },
             ],
@@ -69,10 +61,7 @@ module.exports = (env, argv) => {
         optimization: {
             minimizer: [
                 new EsbuildPlugin({
-                    target: "es2015", // Syntax to transpile to (see options below for possible values)
-                    // loader: "tsx", // Specify the loader for TypeScript files
-                    // minify: true, // Enable minification
-                    // format: "esm", // Generate ES modules (ESM)
+                    target: "es2015", // Syntax to transpile to
                 }),
                 new CssMinimizerPlugin(),
             ],
@@ -81,16 +70,12 @@ module.exports = (env, argv) => {
             new HtmlWebpackPlugin({
                 template: "./public/index.html", // Use this HTML file as a template
             }),
-            new webpack.DefinePlugin({
-                // "%PUBLIC_URL%": JSON.stringify(mode === "production" ? "../public/" : "./"),
-                MODE: JSON.stringify(mode),
+            // Define global constants
+            new EsbuildPlugin({
+                define: {
+                    MODE: JSON.stringify(mode),
+                },
             }),
-            // new EsbuildPlugin({
-            //     define: {
-            //         // "%PUBLIC_URL%": JSON.stringify(mode === "production" ? "../public/" : "./"),
-            //         MODE: `"${mode}"`,
-            //     },
-            // }),
             new HtmlReplaceWebpackPlugin([
                 {
                     pattern: "%PUBLIC_URL%",
@@ -102,9 +87,6 @@ module.exports = (env, argv) => {
     };
     if (mode === "production") {
         options.plugins.push(
-            // new webpack.optimize.LimitChunkCountPlugin({
-            //     maxChunks: 1,
-            // }),
             // Copies public folder to dist folder
             new CopyPlugin({
                 patterns: [
@@ -121,12 +103,6 @@ module.exports = (env, argv) => {
         );
     } else if (mode === "development") {
         options.devtool = "eval-cheap-module-source-map";
-        // options.devServer = {
-        //     contentBase: path.join(__dirname, "build"),
-        //     compress: true,
-        //     port: 3000,
-        //     historyApiFallback: true,
-        // };
     }
     return options;
 };
